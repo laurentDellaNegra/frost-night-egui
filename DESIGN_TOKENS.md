@@ -98,13 +98,16 @@ The UI primarily uses a clean sans-serif and a monospace for data displays.
 
 ## 3. Spacing Patterns
 
-| Token  | Value (approx.) | Usage                                            |
-| ------ | ---------------- | ------------------------------------------------ |
-| `xs`   | 4px              | Tight gaps (between icon and label)              |
-| `sm`   | 8px              | Standard inner padding, gaps between list items  |
-| `md`   | 12px             | Panel inner padding, form field spacing          |
-| `lg`   | 16px             | Section spacing, panel outer margins             |
-| `xl`   | 24px             | Large section gaps, dialog padding               |
+Implemented as `SpacingScale` in `scale.rs`, accessible via `theme.spacing.*`.
+All components reference the scale — no hardcoded spacing values.
+
+| Token  | Value | `theme.spacing` | Usage                                                    |
+| ------ | ----- | ---------------- | -------------------------------------------------------- |
+| `xs`   | 4px   | `.xs`            | Tight gaps, toolbar padding, body offsets, inner margins |
+| `sm`   | 8px   | `.sm`            | Input horizontal margin, header gaps, close button hit area |
+| `md`   | 12px  | `.md`            | Card/panel inner padding, drag handle zone height        |
+| `lg`   | 16px  | `.lg`            | Segmented horizontal pad, close button size, grab bar width |
+| `xl`   | 24px  | `.xl`            | Title row height, large section gaps                     |
 
 ---
 

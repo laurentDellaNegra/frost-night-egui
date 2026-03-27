@@ -43,8 +43,8 @@ pub fn toolbar(
 ) -> Response {
     let icon_size = 18.0;
     let button_size = 36.0;
-    let padding = 6.0;
-    let separator_margin = 4.0;
+    let padding = theme.spacing.xs;
+    let separator_margin = theme.spacing.xs;
 
     // Count total items for flat indexing
     let total_items: usize = groups.iter().map(|g| g.len()).sum();
@@ -61,7 +61,8 @@ pub fn toolbar(
         let cr = CornerRadius::same(theme.radius.lg);
 
         // Toolbar background (semi-transparent like card)
-        ui.painter().rect_filled(outer_rect, cr, theme.palette.surface_blur);
+        ui.painter()
+            .rect_filled(outer_rect, cr, theme.palette.surface_blur);
         ui.painter().rect_stroke(
             outer_rect,
             cr,
@@ -77,8 +78,8 @@ pub fn toolbar(
             // Separator before group (except first)
             if gi > 0 {
                 y += separator_margin;
-                let sep_x0 = outer_rect.left() + padding + 4.0;
-                let sep_x1 = outer_rect.right() - padding - 4.0;
+                let sep_x0 = outer_rect.left() + padding + theme.spacing.xs;
+                let sep_x1 = outer_rect.right() - padding - theme.spacing.xs;
                 ui.painter().line_segment(
                     [egui::pos2(sep_x0, y), egui::pos2(sep_x1, y)],
                     Stroke::new(1.0, theme.palette.border),
@@ -137,8 +138,8 @@ pub fn toolbar(
                 // Notification badge dot
                 if let Some(badge_color) = item.badge {
                     let dot_pos = egui::pos2(
-                        btn_rect.right() - 8.0,
-                        btn_rect.top() + 8.0,
+                        btn_rect.right() - theme.spacing.sm,
+                        btn_rect.top() + theme.spacing.sm,
                     );
                     ui.painter().circle_filled(dot_pos, 3.0, badge_color);
                 }

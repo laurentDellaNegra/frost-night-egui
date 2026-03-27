@@ -17,6 +17,6 @@ pub mod tokens;
 pub use blur::BlurRect;
 pub use helpers::apply_theme;
 pub use palette::ColorPalette;
-pub use scale::{ControlSize, RadiusScale};
+pub use scale::{ControlSize, RadiusScale, SpacingScale};
 pub use theme::Theme;
 pub use tokens::{mix, ControlVariant, StateColors, VariantTokens};

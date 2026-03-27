@@ -43,6 +43,12 @@ All interactive controls (checkbox, toggle, segmented) share a consistent visual
 
 These values live in `palette.rs` and `theme.rs` — components reference them via `theme`, never as local constants.
 
+### Spacing scale
+All spacing (padding, margins, gaps) uses `theme.spacing` (`SpacingScale` in `scale.rs`):
+- `xs` = 4px, `sm` = 8px, `md` = 12px, `lg` = 16px, `xl` = 24px.
+- Do not hardcode spacing values in components — always use `theme.spacing.*`.
+- When a value doesn't land exactly on the scale (e.g. 6px), express it as `theme.spacing.xs + 2.0`.
+
 ### Color source of truth
 - All colors come from Figma mockups. Do not invent colors.
 - `palette.rs` is the single source of truth for semantic colors.

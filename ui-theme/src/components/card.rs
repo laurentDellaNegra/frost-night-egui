@@ -12,7 +12,7 @@ pub fn card(ui: &mut Ui, theme: &Theme, add_contents: impl FnOnce(&mut Ui)) -> R
         .fill(theme.palette.card)
         .stroke(egui::Stroke::new(1.0, theme.palette.border))
         .corner_radius(cr)
-        .inner_margin(egui::Margin::same(12))
+        .inner_margin(egui::Margin::same(theme.spacing.md as i8))
         .show(ui, add_contents)
         .response
 }

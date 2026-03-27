@@ -2,6 +2,34 @@
 
 use egui::{CornerRadius, FontId, Vec2};
 
+/// Spacing scale derived from Figma measurements.
+#[derive(Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct SpacingScale {
+    /// Extra-small — tight gaps (4px).
+    pub xs: f32,
+    /// Small — standard inner padding, list item gaps (8px).
+    pub sm: f32,
+    /// Medium — panel inner padding, form field spacing (12px).
+    pub md: f32,
+    /// Large — section spacing, panel outer margins (16px).
+    pub lg: f32,
+    /// Extra-large — large section gaps, dialog padding (24px).
+    pub xl: f32,
+}
+
+impl Default for SpacingScale {
+    fn default() -> Self {
+        Self {
+            xs: 4.0,
+            sm: 8.0,
+            md: 12.0,
+            lg: 16.0,
+            xl: 24.0,
+        }
+    }
+}
+
 /// Corner radius scale derived from Figma measurements.
 #[derive(Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

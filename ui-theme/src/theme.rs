@@ -3,7 +3,7 @@
 use egui::CornerRadius;
 
 use crate::palette::ColorPalette;
-use crate::scale::{ControlSize, RadiusScale};
+use crate::scale::{ControlSize, RadiusScale, SpacingScale};
 use crate::tokens::{variant_tokens, ControlVariant, VariantTokens};
 
 /// Resolved visual properties for rendering a control.
@@ -32,6 +32,7 @@ pub struct InputVisuals {
 pub struct Theme {
     pub palette: ColorPalette,
     pub radius: RadiusScale,
+    pub spacing: SpacingScale,
     /// Gap between outer border and inner fill in controls (checkbox, toggle, segmented).
     pub control_gap: f32,
 }
@@ -48,6 +49,7 @@ impl Theme {
         Self {
             palette: ColorPalette::dark(),
             radius: RadiusScale::default(),
+            spacing: SpacingScale::default(),
             control_gap: 3.0,
         }
     }

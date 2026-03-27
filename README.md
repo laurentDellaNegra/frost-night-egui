@@ -97,7 +97,7 @@ ui-theme/           # The theme/component library crate
   src/
     palette.rs      # Semantic color palette (ColorPalette)
     tokens.rs       # Interaction state derivation (VariantTokens, mix)
-    scale.rs        # Radius, size, variant enums
+    scale.rs        # Radius, spacing, size, variant enums (SpacingScale, RadiusScale)
     theme.rs        # Main Theme struct
     helpers.rs      # egui integration (apply_theme)
     icons.rs        # Lucide icon font integration and codepoint constants

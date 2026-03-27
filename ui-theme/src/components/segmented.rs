@@ -16,7 +16,7 @@ pub fn segmented(
     selected: &mut usize,
 ) -> Response {
     let font = egui::FontId::proportional(12.0);
-    let pad = Vec2::new(16.0, 6.0);
+    let pad = Vec2::new(theme.spacing.lg, theme.spacing.xs + 2.0);
     let gap = theme.control_gap;
 
     // Measure total width

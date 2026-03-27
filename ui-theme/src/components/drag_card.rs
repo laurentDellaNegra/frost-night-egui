@@ -37,10 +37,10 @@ pub fn drag_card(
     add_contents: impl FnOnce(&mut Ui),
 ) -> DragCardResponse {
     let cr = CornerRadius::same(theme.radius.lg);
-    let padding = 12.0;
-    let dots_zone_h = 12.0; // top zone with 3 dots / grab bar
-    let title_h = 24.0;     // title + close button row
-    let header_gap = 8.0;   // space between dots zone and title
+    let padding = theme.spacing.md;
+    let dots_zone_h = theme.spacing.md; // top zone with 3 dots / grab bar
+    let title_h = theme.spacing.xl;     // title + close button row
+    let header_gap = theme.spacing.sm;  // space between dots zone and title
     let handle_h = dots_zone_h + header_gap + title_h;
 
     // --- Drag interaction on the full handle zone ---
@@ -97,7 +97,7 @@ pub fn drag_card(
     let dot_spacing = 6.0;
 
     // Bar dimensions (target of animation)
-    let bar_half_w = 16.0;
+    let bar_half_w = theme.spacing.lg;
     let bar_h = 3.0;
     let bar_cr = CornerRadius::same(2);
 
@@ -153,12 +153,12 @@ pub fn drag_card(
     );
 
     // Close button (X)
-    let close_size = 16.0;
+    let close_size = theme.spacing.lg;
     let close_center = egui::pos2(
         card_rect.right() - padding - close_size / 2.0,
         title_center_y,
     );
-    let close_rect = Rect::from_center_size(close_center, Vec2::splat(close_size + 8.0));
+    let close_rect = Rect::from_center_size(close_center, Vec2::splat(close_size + theme.spacing.sm));
     let close_response = ui.interact(close_rect, id.with("close"), Sense::click());
 
     let x_color = if close_response.hovered() {
@@ -185,7 +185,7 @@ pub fn drag_card(
     }
 
     // --- Body content ---
-    let body_top = card_rect.top() + padding + handle_h + 4.0;
+    let body_top = card_rect.top() + padding + handle_h + theme.spacing.xs;
     let body_rect = Rect::from_min_max(
         egui::pos2(card_rect.left() + padding, body_top),
         egui::pos2(card_rect.right() - padding, card_rect.bottom() - padding),
@@ -194,7 +194,7 @@ pub fn drag_card(
     let mut body_ui = ui.new_child(egui::UiBuilder::new().max_rect(body_rect));
     egui::ScrollArea::vertical().show(&mut body_ui, |ui| {
         egui::Frame::new()
-            .inner_margin(egui::Margin::symmetric(4, 2))
+            .inner_margin(egui::Margin::symmetric(theme.spacing.xs as i8, 2))
             .show(ui, |ui| add_contents(ui));
     });
 

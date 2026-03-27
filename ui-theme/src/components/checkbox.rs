@@ -11,7 +11,7 @@ use crate::tokens::mix;
 /// Unchecked: border-only rounded square.
 pub fn checkbox(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> Response {
     let box_size = 22.0;
-    let spacing = 6.0;
+    let spacing = theme.spacing.xs + 2.0;
     let font = egui::FontId::proportional(13.0);
 
     let text = egui::WidgetText::from(

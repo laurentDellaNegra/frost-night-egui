@@ -28,7 +28,7 @@ pub fn text_input<S: TextBuffer>(
                 .font(vis.font)
                 .text_color(vis.text_color)
                 .desired_width(f32::INFINITY)
-                .margin(egui::Margin::symmetric(8, 6)),
+                .margin(egui::Margin::symmetric(theme.spacing.sm as i8, 6)),
         )
     })
     .inner
