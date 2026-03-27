@@ -1,5 +1,0 @@
-/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/foreign_types_shared-abdbd1e44ba11635.d: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/foreign-types-shared-0.3.1/src/lib.rs
-
-/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/libforeign_types_shared-abdbd1e44ba11635.rmeta: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/foreign-types-shared-0.3.1/src/lib.rs
-
-/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/foreign-types-shared-0.3.1/src/lib.rs:

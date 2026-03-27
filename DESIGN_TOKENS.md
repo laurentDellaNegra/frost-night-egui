@@ -18,7 +18,7 @@ Figma project: **SKY SkyScope UI** by Skyguide.
 | `background`        | `#04070E`                | Main app/map background (Figma-confirmed)                |
 | `surface`           | `#0C1622`                | Sidebar panels, opaque card backgrounds                  |
 | `surface_elevated`  | `#111D2E`                | Elevated cards, input field backgrounds                  |
-| `surface_blur`      | `#0C1622` at **75% opacity** | Glassmorphism panels (dialogs, popovers, floating windows) |
+| `surface_blur`      | `#0C1622` at **85% opacity** | Semi-transparent card/panel backdrop                 |
 
 ### Foregrounds (Text)
 
@@ -28,71 +28,69 @@ Figma project: **SKY SkyScope UI** by Skyguide.
 | `foreground_secondary` | `#8494A7`     | Labels, secondary text                |
 | `foreground_muted`     | `#5A6A7E`     | Placeholder text, disabled text       |
 
-### Primary (Gold/Amber Accent)
+### Primary (Frost/Silver)
 
 | Token                 | Hex (approx.) | Usage                                            |
 | --------------------- | ------------- | ------------------------------------------------ |
-| `primary`             | `#C9A54C`     | Active tabs, primary buttons, filled badges, radio fills |
-| `primary_foreground`  | `#0C1622`     | Text on primary-colored backgrounds              |
+| `primary`             | `#CCD4E2`     | Primary buttons, filled badges                   |
+| `primary_foreground`  | `#0E1724`     | Text on primary-colored backgrounds              |
 
 ### Secondary
 
 | Token                   | Hex (approx.) | Usage                                    |
 | ----------------------- | ------------- | ---------------------------------------- |
-| `secondary`             | `#182536`     | Secondary button fills, inactive tabs    |
-| `secondary_foreground`  | `#E0E8F0`     | Text on secondary backgrounds            |
+| `secondary`             | `#141E2E`     | Secondary button fills, inactive tabs    |
+| `secondary_foreground`  | `#8A96A8`     | Text on secondary backgrounds            |
+| `secondary_border`      | `#3D2D55`     | Border for secondary controls (violet tint) |
 
-### Accent (Blue/Cyan)
+### Accent (Navy)
 
-| Token               | Hex (approx.) | Usage                                 |
-| -------------------- | ------------- | ------------------------------------- |
-| `accent`             | `#4A90CF`     | Outlined badges/tags, info highlights |
-| `accent_foreground`  | `#E0E8F0`     | Text on accent backgrounds            |
+| Token               | Hex (approx.) | Usage                                         |
+| -------------------- | ------------- | --------------------------------------------- |
+| `accent`             | `#0F1E3D`     | Dark navy accent used in control inner fills   |
+| `accent_foreground`  | `#E0E8F0`     | Text on accent backgrounds                     |
+
+### Interactive Controls
+
+Checkbox, toggle, and segmented controls share a consistent visual pattern:
+
+| Token               | Hex       | Usage                                             |
+| -------------------- | --------- | ------------------------------------------------- |
+| `outer_border`       | `#3C4656` | Outer border stroke for checkboxes, toggles, segmented |
+| `inner_fill_off`     | `#0E1A38` | Inner fill when control is OFF                    |
+| `inner_fill_on`      | `#162C59` | Inner fill when control is ON                     |
 
 ### Borders & Dividers
 
 | Token    | Hex (approx.) | Usage                                    |
 | -------- | ------------- | ---------------------------------------- |
 | `border` | `#1A2B40`     | Panel borders, input borders, dividers   |
-| `ring`   | `#C9A54C`     | Focus ring (matches primary)             |
+| `ring`   | `#4A90CF`     | Focus ring, accent badge color           |
 | `input`  | `#1A2B40`     | Input field borders (same as border)     |
 
 ### Status / Semantic
 
 | Token         | Hex (approx.) | Usage                          |
 | ------------- | ------------- | ------------------------------ |
-| `success`     | `#22C55E`     | Green status dot, online state |
-| `destructive` | `#EF4444`     | Red status dot, error/alert, emergency |
+| `destructive` | `#EF4444`     | Red status dot, error/alert    |
 | `destructive_foreground` | `#FFFFFF` | Text on destructive backgrounds |
-
-### Glassmorphism / Blur
-
-| Token                | Value           | Usage                                      |
-| -------------------- | --------------- | ------------------------------------------ |
-| `surface_blur_tint`  | `#0C1622` @ 75% | Semi-transparent overlay on blurred panels |
-| `surface_blur_radius`| `16px`          | Backdrop blur radius for frosted glass     |
-| `surface_blur_border`| `#1A2B40` @ 50% | Subtle border on glassmorphism panels      |
 
 ---
 
 ## 2. Typography Scale
 
-**Figma loads**: Inter (400, 600), Apercu (200, 400, 500), Apercu-Mono (400), Roboto (300–700), Roboto Mono (400, 700).
+The UI primarily uses a clean sans-serif and a monospace for data displays.
 
-From visual analysis, the UI primarily uses a clean sans-serif (likely **Inter** or **Apercu**) and a monospace for data displays.
+| Token        | Size (approx.) | Weight | Usage                              |
+| ------------ | -------------- | ------ | ---------------------------------- |
+| `heading`    | 16px           | 600    | Panel titles                       |
+| `subheading` | 13px           | 500    | Section headers, tab labels        |
+| `body`       | 12px           | 400    | Body text, form labels, list items |
+| `caption`    | 10px           | 400    | Small labels, badge text, metadata |
+| `mono`       | 12px           | 400    | Time display, status codes, data   |
+| `mono_sm`    | 10px           | 400    | Small data labels                  |
 
-| Token        | Size (approx.) | Weight | Family          | Usage                              |
-| ------------ | -------------- | ------ | --------------- | ---------------------------------- |
-| `heading`    | 16px           | 600    | Inter / Apercu  | Panel titles ("Maps", "Placeholder Text") |
-| `subheading` | 13px           | 500    | Inter / Apercu  | Section headers, tab labels        |
-| `body`       | 12px           | 400    | Inter / Apercu  | Body text, form labels, list items |
-| `caption`    | 10px           | 400    | Inter / Apercu  | Small labels, badge text, metadata |
-| `mono`       | 12px           | 400    | Apercu-Mono     | Time display, status codes, data   |
-| `mono_sm`    | 10px           | 400    | Apercu-Mono     | Small data labels ("FLYPRO", "ENRR") |
-
-**Line height**: Approximately 1.3–1.5x font size across the board.
-
-> **egui note**: egui doesn't support Apercu out of the box. For the crate, default to the egui built-in proportional font (which is similar to Inter). We can add font loading as an optional feature. Use `FontId::proportional(size)` and `FontId::monospace(size)`.
+> **egui note**: Uses built-in proportional and monospace fonts (`FontId::proportional(size)` / `FontId::monospace(size)`).
 
 ---
 
@@ -100,7 +98,7 @@ From visual analysis, the UI primarily uses a clean sans-serif (likely **Inter**
 
 | Token  | Value (approx.) | Usage                                            |
 | ------ | ---------------- | ------------------------------------------------ |
-| `xs`   | 4px              | Tight gaps (between icon and label, badge padding inline) |
+| `xs`   | 4px              | Tight gaps (between icon and label)              |
 | `sm`   | 8px              | Standard inner padding, gaps between list items  |
 | `md`   | 12px             | Panel inner padding, form field spacing          |
 | `lg`   | 16px             | Section spacing, panel outer margins             |
@@ -113,8 +111,8 @@ From visual analysis, the UI primarily uses a clean sans-serif (likely **Inter**
 | Token  | Value (approx.) | Usage                                         |
 | ------ | ---------------- | --------------------------------------------- |
 | `sm`   | 4px              | Badges, tags, small chips                     |
-| `md`   | 6px              | Buttons, input fields, tabs                   |
-| `lg`   | 8px              | Cards, panels, dialogs                        |
+| `md`   | 6px              | Buttons, input fields, inner control fills    |
+| `lg`   | 8px              | Cards, panels, outer control borders          |
 | `full` | 9999px           | Circular elements (radio buttons, status dots)|
 
 ---
@@ -125,132 +123,76 @@ From visual analysis, the UI primarily uses a clean sans-serif (likely **Inter**
 | -------------- | ----- | ------------------ | --------------------------------- |
 | Panel border   | 1px   | `#1A2B40`          | Sidebar edges, card outlines      |
 | Input border   | 1px   | `#1A2B40`          | Text input field borders          |
-| Input focused  | 1px   | `#C9A54C`          | Focus state (primary ring)        |
+| Control border | 1px   | `#3C4656`          | Checkbox/toggle/segmented outer   |
+| Input focused  | 1px   | `#4A90CF`          | Focus state ring                  |
 | Divider        | 1px   | `#1A2B40` @ 50%    | Horizontal separators             |
-| Badge outline  | 1px   | varies per variant | Outlined badge/tag borders        |
-| Glass border   | 1px   | `#1A2B40` @ 50%    | Glassmorphism panel edges         |
 
 ---
 
 ## 6. Component Inventory
 
-### Buttons
-- **Primary**: Gold/amber fill (`#C9A54C`), dark text. Rounded ~6px.
-- **Secondary / Ghost**: Dark fill or transparent, light border, light text.
-- **Action bar buttons**: "Return" (secondary), "Done" (secondary) — bottom of sidebar.
+### Controls (Shared Pattern)
 
-### Tabs
-- **Active tab**: Gold/amber background, dark text, rounded ~6px.
-- **Inactive tab**: Transparent/dark background, muted text.
-- Tab group appears pill-shaped with a subtle container background.
+Checkbox, toggle, and segmented controls follow a consistent structure:
+- **Outer border**: `#3C4656`, 1px stroke, `lg` radius (8px)
+- **Gap**: 3px between outer border and inner fill
+- **Inner fill**: `md` radius (6px), `#0E1A38` (OFF) / `#162C59` (ON)
+
+### Buttons
+- **Primary**: Frost/silver fill (`#CCD4E2`), dark text. Rounded ~6px.
+- **Secondary / Ghost**: Dark fill or transparent, light border, light text.
+
+### Badges / Tags
+- **Accent (blue)**: Ring color border + text (`#4A90CF`). Rounded ~4px.
+- **Primary**: Primary fill with dark text. Rounded ~4px.
+- **Outlined**: Primary border + text on transparent bg.
 
 ### Text Inputs
 - Dark background (`#111D2E`), 1px border (`#1A2B40`), rounded ~6px.
 - Label above in secondary text color.
-- Placeholder text in muted color.
-- Focus state: border changes to primary gold.
+- Inner padding: 8px horizontal, 6px vertical.
 
-### Radio Buttons
-- Unchecked: Dark circle with border.
-- Checked: Gold/amber filled circle with inner dot.
-- Paired with label text.
-
-### Checkboxes
-- Seen in the windows mockup.
-- Unchecked: Dark rounded square with border.
-- Checked: Likely gold/amber fill with checkmark.
-
-### Badges / Tags
-- **Outlined (blue)**: Blue border + blue text on transparent bg (`#4A90CF`). Rounded ~4px.
-- **Filled (gold)**: Gold background with dark text. Rounded ~4px.
-- **Outlined (gold)**: Gold border + gold text on transparent bg.
-- Small, compact sizing (~10px text).
-
-### Tree / Accordion
-- Expandable sections with disclosure arrow (▸ / ▾).
-- Section header in secondary text with count badge.
-- Child items are radio buttons or checkboxes with labels.
-
-### Cards / Panels
-- Opaque dark surface background.
+### Cards / Drag Cards
+- Semi-transparent backdrop (`surface_blur`).
 - 1px border, rounded ~8px.
-- Inner padding ~12–16px.
+- Drag handle at top, close button.
+- Fades to 15% opacity when being dragged.
 
-### Toolbar (Left Icon Bar)
-- Vertical strip of icon buttons.
-- Dark background (slightly darker than panels).
-- Icons in muted color, likely highlight on hover/active.
-
-### Top Bar / Header
-- Full-width bar at top.
-- Contains: logo, branding text, time display, status indicators, action buttons.
-- Dark background blending with main bg.
-
-### Status Indicators
-- Small colored dots: green (online/active), red (error/alert).
-- Paired with label text.
-
-### Close Button (X)
-- Top-right of panels/dialogs.
-- Light icon on transparent bg, hover likely lightens.
+### Segmented Control
+- Pill-shaped container with `#3C4656` border.
+- Active segment: 3px inset with `#162C59` fill.
 
 ---
 
-## 7. Surface / Overlay Styles (Glassmorphism)
-
-Observed in `windows.png` — three overlapping "Maps" panels showing clear glassmorphism:
-
-| Component          | Bg Color    | Opacity | Blur Radius | Border               | Corner Radius |
-| ------------------ | ----------- | ------- | ----------- | -------------------- | ------------- |
-| **Dialog / Window**| `#0C1622`   | ~75%    | ~16px       | 1px `#1A2B40` @ 50%  | 8px           |
-| **Sidebar Panel**  | `#0C1622`   | ~90%    | ~12px       | 1px `#1A2B40`        | 0px (docked)  |
-| **Popover**        | `#0C1622`   | ~80%    | ~16px       | 1px `#1A2B40` @ 50%  | 8px           |
-| **Top Bar**        | `#04070E`   | ~90%    | ~8px        | none visible         | 0px           |
-| **Tooltip**        | `#111D2E`   | ~95%    | ~4px        | 1px `#1A2B40`        | 4px           |
-
-The glassmorphism is most pronounced in the floating "Maps" windows where the underlying map content is clearly visible through the panel backgrounds. The blur appears to be a moderate Gaussian (~16px radius) with a dark navy tint overlay.
-
----
-
-## Semantic Token Mapping (for `ColorPalette` struct)
+## 7. Semantic Token Mapping (for `ColorPalette` struct)
 
 | Struct Field            | Source Value       | Notes                                        |
 | ----------------------- | ------------------ | -------------------------------------------- |
 | `background`            | `#04070E`          | Figma-confirmed                              |
 | `foreground`            | `#E0E8F0`          | Primary text                                 |
-| `primary`               | `#C9A54C`          | Gold/amber accent                            |
-| `primary_foreground`    | `#0C1622`          | Dark text on gold                            |
-| `secondary`             | `#182536`          | Subtle dark fills                            |
-| `secondary_foreground`  | `#E0E8F0`          | Light text on secondary                      |
+| `primary`               | `#CCD4E2`          | Frost/silver accent                          |
+| `primary_foreground`    | `#0E1724`          | Dark text on primary                         |
+| `secondary`             | `#141E2E`          | Subtle dark fills                            |
+| `secondary_foreground`  | `#8A96A8`          | Muted text on secondary                      |
+| `secondary_border`      | `#3D2D55`          | Violet-tinted border                         |
 | `muted`                 | `#111D2E`          | Input backgrounds, subtle surfaces           |
 | `muted_foreground`      | `#5A6A7E`          | Placeholder/disabled text                    |
-| `accent`                | `#4A90CF`          | Blue highlights                              |
+| `accent`                | `#0F1E3D`          | Dark navy accent                             |
 | `accent_foreground`     | `#E0E8F0`          | Text on accent                               |
-| `destructive`           | `#EF4444`          | Error/alert/emergency                        |
+| `destructive`           | `#EF4444`          | Error/alert                                  |
 | `destructive_foreground`| `#FFFFFF`          | Text on destructive                          |
 | `border`                | `#1A2B40`          | All borders                                  |
 | `input`                 | `#1A2B40`          | Input borders (= border)                     |
-| `ring`                  | `#C9A54C`          | Focus ring (= primary)                       |
+| `ring`                  | `#4A90CF`          | Focus ring, accent badge color               |
 | `card`                  | `#0C1622`          | Card/panel background                        |
 | `card_foreground`       | `#E0E8F0`          | Text on cards                                |
-| `popover`               | `#0C1622`          | Popover/dialog background (with blur)        |
+| `popover`               | `#0C1622`          | Popover/dialog background                    |
 | `popover_foreground`    | `#E0E8F0`          | Text on popovers                             |
-| `surface_blur`          | `#0C1622` @ 75%    | Glassmorphism tint                           |
-| `surface_blur_radius`   | `16.0`             | Default blur radius (px)                     |
-
-**Total: 20 color tokens + 2 blur tokens** — within the ~20 token target.
+| `surface_blur`          | `#0C1622` @ 85%    | Semi-transparent backdrop                    |
+| `surface_blur_radius`   | `16.0`             | Default blur radius (px, reserved for future) |
 
 ---
 
 ## Tokens Needing Light-Mode Counterparts (Future)
 
-All color tokens above are dark-mode values. For a future light mode, the following would need counterparts:
-- `background` → light: ~`#F5F7FA`
-- `foreground` → light: ~`#1A1A2E`
-- `surface` / `card` → light: ~`#FFFFFF`
-- `primary` → likely stays the same gold (or slightly darker for contrast)
-- `border` → light: ~`#D0D5DD`
-- `muted` → light: ~`#F0F2F5`
-- Blur tint → light: `#FFFFFF` @ 70%
-
-The `mix()` hover/active derivation would also flip: use `BLACK` instead of `WHITE` as the mix target.
+All color tokens above are dark-mode values. The `ColorPalette` struct is theme-agnostic in structure — a future `ColorPalette::light()` would be a second constructor with different values.
