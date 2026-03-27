@@ -53,11 +53,15 @@ pub fn checkbox(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> 
             egui::StrokeKind::Inside,
         );
 
-        // Inner fill (gap, same as switch thumb)
+        // Inner fill (gap, same as switch thumb) — only when checked
         let inner_rect = outer_rect.shrink(theme.control_gap);
         let inner_cr = CornerRadius::same(theme.radius.md);
-        let bg = mix(theme.palette.control_fill_off, theme.palette.control_fill_on, how_on);
-        ui.painter().rect_filled(inner_rect, inner_cr, bg);
+        if how_on > 0.01 {
+            let bg = mix(theme.palette.control_fill_off, theme.palette.control_fill_on, how_on);
+            let alpha = (how_on * 255.0) as u8;
+            let bg = Color32::from_rgba_unmultiplied(bg.r(), bg.g(), bg.b(), alpha);
+            ui.painter().rect_filled(inner_rect, inner_cr, bg);
+        }
 
         // Checkmark (fade in)
         if how_on > 0.01 {

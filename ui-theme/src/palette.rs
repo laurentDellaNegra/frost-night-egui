@@ -99,7 +99,7 @@ impl ColorPalette {
             card_foreground: Color32::from_rgb(0xE0, 0xE8, 0xF0),
             popover: Color32::from_rgb(0x0C, 0x16, 0x22),
             popover_foreground: Color32::from_rgb(0xE0, 0xE8, 0xF0),
-            surface_blur: Color32::from_rgba_unmultiplied(0x0C, 0x16, 0x22, 0xD8),
+            surface_blur: Color32::from_rgba_unmultiplied(0x06, 0x0C, 0x16, 0xD8),
             surface_blur_radius: 16.0,
             control_border: Color32::from_rgb(0x3C, 0x46, 0x56),
             control_fill_off: Color32::from_rgb(0x0E, 0x1A, 0x38),

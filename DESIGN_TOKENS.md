@@ -17,7 +17,7 @@ Extracted from Figma mockups (visual analysis of `interface.png` and `windows.pn
 | `background`        | `#04070E`                | Main app/map background (Figma-confirmed)                |
 | `surface`           | `#0C1622`                | Sidebar panels, opaque card backgrounds                  |
 | `surface_elevated`  | `#111D2E`                | Elevated cards, input field backgrounds                  |
-| `surface_blur`      | `#0C1622` at **85% opacity** | Semi-transparent card/panel backdrop                 |
+| `surface_blur`      | `#060C16` at **85% opacity** | Semi-transparent card/panel backdrop                 |
 
 ### Foregrounds (Text)
 
@@ -142,6 +142,7 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - **Outer border**: `theme.palette.control_border`, 1px stroke, `theme.radius.lg`
 - **Gap**: `theme.control_gap` between outer border and inner fill
 - **Inner fill**: `theme.radius.md`, `theme.palette.control_fill_off` (OFF) / `theme.palette.control_fill_on` (ON)
+- **Exception**: Checkbox has no inner fill when unchecked (transparent); fill fades in with the checkmark.
 
 ### Buttons
 - **Primary**: Frost/silver fill (`#CCD4E2`), dark text. Rounded ~6px.
@@ -226,7 +227,7 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 | `card_foreground`       | `#E0E8F0`          | Text on cards                                |
 | `popover`               | `#0C1622`          | Popover/dialog background                    |
 | `popover_foreground`    | `#E0E8F0`          | Text on popovers                             |
-| `surface_blur`          | `#0C1622` @ 85%    | Semi-transparent backdrop                    |
+| `surface_blur`          | `#060C16` @ 85%    | Semi-transparent backdrop                    |
 | `surface_blur_radius`   | `16.0`             | Default blur radius (px, reserved for future) |
 | `control_border`        | `#3C4656`          | Outer border for checkbox/toggle/segmented   |
 | `control_fill_off`      | `#0E1A38`          | Inner fill when control is OFF               |
