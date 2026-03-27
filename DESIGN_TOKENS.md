@@ -158,13 +158,15 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - Label above in secondary text color.
 - Inner padding: 8px horizontal, 6px vertical.
 
-### Cards / Drag Cards
+### Sidebar Cards
 - Semi-transparent backdrop (`surface_blur`).
-- 1px border, rounded ~8px.
+- 1px border, rounded ~8px. Open/close animation: slide from left + fade in (0.15s).
 - Top handle zone: 3 dots animate into a grab bar on hover (0.15s transition).
-- Close button in title row.
+- Title row with close button (X). Drag handle excludes close button area.
 - On drag: border glows to `ring` color (1.0→1.8px width), outer halo expands 4px.
-- Global drag fade: all UI elements (toolbar, card) fade to 15% opacity (0.2s).
+- Scrollable body content area with inner margin.
+- Can be docked (attached to toolbar) or floating (detached via drag).
+- Global drag fade: all UI elements (toolbar, card) fade to 15% opacity (0.15s).
 
 ### Toolbar (Left Sidebar)
 - Vertical icon strip with grouped items separated by 1px dividers.

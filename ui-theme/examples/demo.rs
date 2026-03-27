@@ -211,8 +211,111 @@ fn paint_background(ui: &egui::Ui, live_tracks: &[LiveTrack]) {
 }
 
 // ---------------------------------------------------------------------------
+// Demo card content (shared across docked + floating cards)
+// ---------------------------------------------------------------------------
+
+fn demo_card_content(
+    ui: &mut egui::Ui,
+    theme: &Theme,
+    card_salt: usize,
+    input_text: &mut String,
+    toggle_on: &mut bool,
+    check_a: &mut bool,
+    check_b: &mut bool,
+    check_c: &mut bool,
+    segment_idx: &mut usize,
+) {
+    ui.push_id(card_salt, |ui| {
+        // Buttons
+        ui.label(egui::RichText::new("Buttons").size(13.0).strong());
+        ui.add_space(4.0);
+        egui::Grid::new("sidebar_buttons_grid")
+            .spacing([6.0, 4.0])
+            .show(ui, |ui| {
+                for variant in [
+                    ControlVariant::Primary,
+                    ControlVariant::Secondary,
+                    ControlVariant::Ghost,
+                    ControlVariant::Outline,
+                    ControlVariant::Destructive,
+                    ControlVariant::Link,
+                ] {
+                    for size in [ControlSize::Sm, ControlSize::Md, ControlSize::Lg] {
+                        button(ui, theme, format!("{variant:?}"), variant, size);
+                    }
+                    ui.end_row();
+                }
+            });
+
+        ui.add_space(8.0);
+        separator(ui, theme);
+        ui.add_space(8.0);
+
+        // Text Input
+        ui.label(egui::RichText::new("Text Input").size(13.0).strong());
+        ui.add_space(4.0);
+        text_input(ui, theme, input_text, ControlSize::Md);
+
+        ui.add_space(8.0);
+        separator(ui, theme);
+        ui.add_space(8.0);
+
+        // Badges
+        ui.label(egui::RichText::new("Badges").size(13.0).strong());
+        ui.add_space(4.0);
+        ui.horizontal(|ui| {
+            badge(ui, theme, "Primary", BadgeVariant::Primary);
+            badge(ui, theme, "Accent", BadgeVariant::Accent);
+            badge(ui, theme, "Outline", BadgeVariant::Outline);
+            badge(ui, theme, "Destructive", BadgeVariant::Destructive);
+        });
+
+        ui.add_space(8.0);
+        separator(ui, theme);
+        ui.add_space(8.0);
+
+        // Toggle
+        ui.label(egui::RichText::new("Toggle Switch").size(13.0).strong());
+        ui.add_space(4.0);
+        ui.horizontal(|ui| {
+            toggle(ui, theme, toggle_on);
+            ui.label(if *toggle_on { "ON" } else { "OFF" });
+        });
+
+        ui.add_space(8.0);
+        separator(ui, theme);
+        ui.add_space(8.0);
+
+        // Checkbox
+        ui.label(egui::RichText::new("Checkbox").size(13.0).strong());
+        ui.add_space(4.0);
+        checkbox(ui, theme, check_a, "Label (checked)");
+        ui.add_space(2.0);
+        checkbox(ui, theme, check_b, "Label");
+        ui.add_space(2.0);
+        checkbox(ui, theme, check_c, "Label");
+
+        ui.add_space(8.0);
+        separator(ui, theme);
+        ui.add_space(8.0);
+
+        // Segmented Control
+        ui.label(egui::RichText::new("Segmented Control").size(13.0).strong());
+        ui.add_space(4.0);
+        segmented(ui, theme, &["Active", "Inactive"], segment_idx);
+    });
+}
+
+// ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
+
+/// A floating (parked) card detached from the toolbar.
+#[derive(Clone)]
+struct FloatingCard {
+    pos: egui::Pos2,
+    from_button: usize,
+}
 
 struct DemoApp {
     theme: Theme,
@@ -222,10 +325,18 @@ struct DemoApp {
     check_b: bool,
     check_c: bool,
     segment_idx: usize,
-    card_state: DragCardState,
-    card_open: bool,
-    card_dragging: bool,
-    toolbar_selected: usize,
+    /// Which toolbar button has a docked card open (None = no docked card).
+    docked_button: Option<usize>,
+    /// Cards that have been detached and parked freely.
+    floating_cards: Vec<FloatingCard>,
+    /// Last known docked card position + button index, for smooth close animation.
+    last_docked_pos: Option<(egui::Pos2, usize)>,
+    /// Set when a docked card is detached via drag (suppresses close animation).
+    docked_detached: bool,
+    /// Accumulated drag offset while dragging the docked card (before detaching).
+    docked_drag_offset: egui::Vec2,
+    /// Whether any card was being dragged last frame (drives global opacity fade).
+    any_card_dragging: bool,
     live_tracks: Vec<LiveTrack>,
 }
 
@@ -259,13 +370,12 @@ impl DemoApp {
             check_b: false,
             check_c: false,
             segment_idx: 0,
-            card_state: DragCardState {
-                pos: egui::pos2(190.0, 40.0),
-                size: egui::vec2(420.0, 560.0),
-            },
-            card_open: true,
-            card_dragging: false,
-            toolbar_selected: 3,
+            docked_button: None,
+            floating_cards: Vec::new(),
+            last_docked_pos: None,
+            docked_detached: false,
+            docked_drag_offset: egui::Vec2::ZERO,
+            any_card_dragging: false,
             live_tracks,
         }
     }
@@ -288,19 +398,21 @@ impl eframe::App for DemoApp {
         }
         ui.ctx().request_repaint();
 
-        // Background
+        // Background (painted before opacity fade)
         ui.painter()
             .rect_filled(full_rect, 0.0, self.theme.palette.background);
         paint_background(ui, &self.live_tracks);
 
-        // Global drag fade: when card is being dragged, fade all UI elements
-        let global_drag_t = ui.ctx().animate_bool_with_time(
+        // Global drag fade (based on PREVIOUS frame's drag state)
+        let drag_fade_t = ui.ctx().animate_bool_with_time(
             egui::Id::new("global_drag_fade"),
-            self.card_dragging,
-            0.2,
+            self.any_card_dragging,
+            0.15,
         );
-        let global_opacity = egui::lerp(1.0..=0.15, global_drag_t);
-        ui.set_opacity(global_opacity);
+        if drag_fade_t > 0.01 {
+            ui.set_opacity(egui::lerp(1.0..=0.15, drag_fade_t));
+        }
+        let mut any_dragging_this_frame = false;
 
         // Left toolbar (fixed)
         let toolbar_groups: Vec<ToolbarGroup> = vec![
@@ -329,12 +441,14 @@ impl eframe::App for DemoApp {
         let top_tb_x = full_rect.left() + toolbar_margin;
         let top_tb_y = full_rect.top() + toolbar_margin;
         let mut top_tb_ui = ui.new_child(
-            egui::UiBuilder::new().max_rect(
-                egui::Rect::from_min_size(
-                    egui::pos2(top_tb_x, top_tb_y),
-                    egui::vec2(full_rect.width() - toolbar_margin * 2.0, top_tb_height),
+            egui::UiBuilder::new()
+                .id_salt("top_toolbar")
+                .max_rect(
+                    egui::Rect::from_min_size(
+                        egui::pos2(top_tb_x, top_tb_y),
+                        egui::vec2(full_rect.width() - toolbar_margin * 2.0, top_tb_height),
+                    ),
                 ),
-            ),
         );
         let _top_response = top_toolbar(
             &mut top_tb_ui,
@@ -351,14 +465,205 @@ impl eframe::App for DemoApp {
         let tb_x = full_rect.left() + toolbar_margin;
         let tb_y = top_tb_y + top_tb_height + toolbar_margin;
         let mut toolbar_ui = ui.new_child(
-            egui::UiBuilder::new().max_rect(
-                egui::Rect::from_min_size(
-                    egui::pos2(tb_x, tb_y),
-                    egui::vec2(60.0, full_rect.height() - tb_y - toolbar_margin),
+            egui::UiBuilder::new()
+                .id_salt("left_toolbar")
+                .max_rect(
+                    egui::Rect::from_min_size(
+                        egui::pos2(tb_x, tb_y),
+                        egui::vec2(60.0, full_rect.height() - tb_y - toolbar_margin),
+                    ),
                 ),
-            ),
         );
-        toolbar(&mut toolbar_ui, &self.theme, &toolbar_groups, &mut self.toolbar_selected);
+        // Active toolbar button = docked button only (floating cards don't highlight)
+        let tb_response = toolbar(&mut toolbar_ui, &self.theme, &toolbar_groups, self.docked_button);
+
+        // Sidebar / floating card constants
+        let left_tb_width = 36.0 + self.theme.spacing.xs * 2.0;
+        let sidebar_card_width = 420.0;
+        let sidebar_card_height = 560.0;
+        let dock_x = tb_x + left_tb_width + self.theme.spacing.xs;
+
+        // Handle toolbar button clicks
+        if let Some(clicked) = tb_response.clicked {
+            // Button has a floating card? Close it.
+            if let Some(idx) = self.floating_cards.iter().position(|f| f.from_button == clicked) {
+                self.floating_cards.remove(idx);
+            }
+            // Button is the currently docked card? Close it (with animation).
+            else if self.docked_button == Some(clicked) {
+                let btn_y = tb_response.button_centers_y.get(clicked).copied().unwrap_or(tb_y);
+                self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), clicked));
+                self.docked_button = None;
+            }
+            // Open as new docked card (replaces current if any).
+            else {
+                self.docked_button = Some(clicked);
+                self.docked_detached = false;
+            }
+        }
+
+        let panel_titles = [
+            "Panel", "Map", "Layers", "Globe", "Add", "Radar", "Navigation",
+            "Crosshair", "Filter", "Settings",
+        ];
+
+        // --- Docked card (with open/close animation) ---
+        // Uses a fixed ID so switching between toolbar buttons doesn't cause
+        // "widget rect changed id" warnings in egui.
+        let mut pending_float: Option<FloatingCard> = None;
+        let is_docked_open = self.docked_button.is_some();
+        let docked_open_t = ui.ctx().animate_bool_with_time(
+            egui::Id::new("sidebar_card_anim"),
+            is_docked_open,
+            0.15,
+        );
+
+        if docked_open_t > 0.01 && !self.docked_detached {
+            let (base_pos, button_idx) = if let Some(idx) = self.docked_button {
+                let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
+                let card_top = btn_y - self.theme.spacing.md;
+                let pos = egui::pos2(dock_x, card_top);
+                self.last_docked_pos = Some((pos, idx));
+                (pos, idx)
+            } else {
+                // Closing animation — use last known position
+                self.last_docked_pos.unwrap_or((egui::pos2(dock_x, tb_y), 0))
+            };
+
+            // Apply accumulated drag offset (card stays docked during drag)
+            let card_rect = egui::Rect::from_min_size(
+                base_pos + self.docked_drag_offset,
+                egui::vec2(sidebar_card_width, sidebar_card_height),
+            );
+            let title = panel_titles.get(button_idx).copied().unwrap_or("Panel");
+
+            let card_resp = if button_idx == 0 {
+                let theme = &self.theme;
+                let input_text = &mut self.input_text;
+                let toggle_on = &mut self.toggle_on;
+                let check_a = &mut self.check_a;
+                let check_b = &mut self.check_b;
+                let check_c = &mut self.check_c;
+                let segment_idx = &mut self.segment_idx;
+                sidebar_card(
+                    ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                    card_rect, docked_open_t, title,
+                    |ui| {
+                        demo_card_content(
+                            ui, theme, 0, input_text, toggle_on,
+                            check_a, check_b, check_c, segment_idx,
+                        );
+                    },
+                )
+            } else {
+                let theme = &self.theme;
+                sidebar_card(
+                    ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                    card_rect, docked_open_t, title,
+                    |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{title} panel content"))
+                                .size(13.0)
+                                .color(theme.palette.muted_foreground),
+                        );
+                    },
+                )
+            };
+
+            if card_resp.dragging {
+                // Accumulate offset — card stays docked until drag ends
+                self.docked_drag_offset += card_resp.drag_delta;
+                any_dragging_this_frame = true;
+            } else if self.docked_drag_offset.length() > 1.0 {
+                // Drag ended with significant movement → convert to floating
+                if let Some(idx) = self.docked_button.take() {
+                    pending_float = Some(FloatingCard {
+                        pos: card_rect.min,
+                        from_button: idx,
+                    });
+                    self.docked_detached = true;
+                }
+                self.docked_drag_offset = egui::Vec2::ZERO;
+            } else {
+                // Not dragging / tiny movement — reset offset
+                self.docked_drag_offset = egui::Vec2::ZERO;
+                if card_resp.closed {
+                    if let Some(idx) = self.docked_button {
+                        let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
+                        self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), idx));
+                    }
+                    self.docked_button = None;
+                }
+            }
+        }
+
+        // Reset detach flag once the close animation finishes
+        if docked_open_t <= 0.01 {
+            self.docked_detached = false;
+        }
+
+        // --- Floating (parked) cards ---
+        let mut floating_to_remove = vec![];
+        for i in 0..self.floating_cards.len() {
+            let pos = self.floating_cards[i].pos;
+            let from_button = self.floating_cards[i].from_button;
+            let card_rect = egui::Rect::from_min_size(
+                pos,
+                egui::vec2(sidebar_card_width, sidebar_card_height),
+            );
+            let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
+
+            let card_resp = if from_button == 0 {
+                let theme = &self.theme;
+                let input_text = &mut self.input_text;
+                let toggle_on = &mut self.toggle_on;
+                let check_a = &mut self.check_a;
+                let check_b = &mut self.check_b;
+                let check_c = &mut self.check_c;
+                let segment_idx = &mut self.segment_idx;
+                sidebar_card(
+                    ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                    card_rect, 1.0, title,
+                    |ui| {
+                        demo_card_content(
+                            ui, theme, from_button, input_text, toggle_on,
+                            check_a, check_b, check_c, segment_idx,
+                        );
+                    },
+                )
+            } else {
+                let theme = &self.theme;
+                sidebar_card(
+                    ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                    card_rect, 1.0, title,
+                    |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{title} panel content"))
+                                .size(13.0)
+                                .color(theme.palette.muted_foreground),
+                        );
+                    },
+                )
+            };
+
+            if card_resp.dragging {
+                self.floating_cards[i].pos = pos + card_resp.drag_delta;
+                any_dragging_this_frame = true;
+            }
+            if card_resp.closed {
+                floating_to_remove.push(i);
+            }
+        }
+        for idx in floating_to_remove.into_iter().rev() {
+            self.floating_cards.remove(idx);
+        }
+
+        // Deferred push: add newly detached card after rendering existing floating cards
+        if let Some(fc) = pending_float {
+            self.floating_cards.push(fc);
+        }
+
+        self.any_card_dragging = any_dragging_this_frame;
 
         // Bottom-right zoom control toolbar
         let zoom_margin = 12.0;
@@ -373,120 +678,15 @@ impl eframe::App for DemoApp {
             full_rect.right() - zoom_margin - zoom_w,
             full_rect.bottom() - zoom_margin - zoom_h,
         );
-        let mut zoom_ui = ui.new_child(
-            egui::UiBuilder::new().max_rect(
-                egui::Rect::from_min_size(zoom_pos, egui::vec2(zoom_w, zoom_h)),
-            ),
-        );
+        let zoom_rect = egui::Rect::from_min_size(zoom_pos, egui::vec2(zoom_w, zoom_h));
         let _zoom_response = zoom_toolbar(
-            &mut zoom_ui,
+            ui,
             &self.theme,
+            zoom_rect,
             ICON_PLUS,
             ICON_MINUS,
         );
 
-        // Draggable card
-        if self.card_open {
-            let card_response = drag_card(
-                ui,
-                &self.theme,
-                egui::Id::new("demo_card"),
-                &mut self.card_state,
-                "Frost Night UI Demo",
-                |ui| {
-                    // Buttons
-                    ui.label(egui::RichText::new("Buttons").size(13.0).strong());
-                    ui.add_space(4.0);
-                    egui::Grid::new("buttons_grid")
-                        .spacing([6.0, 4.0])
-                        .show(ui, |ui| {
-                            for variant in [
-                                ControlVariant::Primary,
-                                ControlVariant::Secondary,
-                                ControlVariant::Ghost,
-                                ControlVariant::Outline,
-                                ControlVariant::Destructive,
-                                ControlVariant::Link,
-                            ] {
-                                for size in [ControlSize::Sm, ControlSize::Md, ControlSize::Lg] {
-                                    button(
-                                        ui, &self.theme,
-                                        format!("{variant:?}"), variant, size,
-                                    );
-                                }
-                                ui.end_row();
-                            }
-                        });
-
-                    ui.add_space(8.0);
-                    separator(ui, &self.theme);
-                    ui.add_space(8.0);
-
-                    // Text Input
-                    ui.label(egui::RichText::new("Text Input").size(13.0).strong());
-                    ui.add_space(4.0);
-                    text_input(ui, &self.theme, &mut self.input_text, ControlSize::Md);
-
-                    ui.add_space(8.0);
-                    separator(ui, &self.theme);
-                    ui.add_space(8.0);
-
-                    // Badges
-                    ui.label(egui::RichText::new("Badges").size(13.0).strong());
-                    ui.add_space(4.0);
-                    ui.horizontal(|ui| {
-                        badge(ui, &self.theme, "Primary", BadgeVariant::Primary);
-                        badge(ui, &self.theme, "Accent", BadgeVariant::Accent);
-                        badge(ui, &self.theme, "Outline", BadgeVariant::Outline);
-                        badge(ui, &self.theme, "Destructive", BadgeVariant::Destructive);
-                    });
-
-                    ui.add_space(8.0);
-                    separator(ui, &self.theme);
-                    ui.add_space(8.0);
-
-                    // Toggle
-                    ui.label(egui::RichText::new("Toggle Switch").size(13.0).strong());
-                    ui.add_space(4.0);
-                    ui.horizontal(|ui| {
-                        toggle(ui, &self.theme, &mut self.toggle_on);
-                        ui.label(if self.toggle_on { "ON" } else { "OFF" });
-                    });
-
-                    ui.add_space(8.0);
-                    separator(ui, &self.theme);
-                    ui.add_space(8.0);
-
-                    // Checkbox
-                    ui.label(egui::RichText::new("Checkbox").size(13.0).strong());
-                    ui.add_space(4.0);
-                    checkbox(ui, &self.theme, &mut self.check_a, "Label (checked)");
-                    ui.add_space(2.0);
-                    checkbox(ui, &self.theme, &mut self.check_b, "Label");
-                    ui.add_space(2.0);
-                    checkbox(ui, &self.theme, &mut self.check_c, "Label");
-
-                    ui.add_space(8.0);
-                    separator(ui, &self.theme);
-                    ui.add_space(8.0);
-
-                    // Segmented Control
-                    ui.label(
-                        egui::RichText::new("Segmented Control").size(13.0).strong(),
-                    );
-                    ui.add_space(4.0);
-                    segmented(
-                        ui, &self.theme,
-                        &["Active", "Inactive"],
-                        &mut self.segment_idx,
-                    );
-                },
-            );
-            self.card_dragging = card_response.dragging;
-            if card_response.closed {
-                self.card_open = false;
-            }
-        }
     }
 }
 

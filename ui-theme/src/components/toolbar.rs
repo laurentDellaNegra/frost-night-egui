@@ -3,7 +3,7 @@
 //! A dark vertical strip with icon buttons, separators between groups,
 //! and an active-item highlight using the shared control fill pattern.
 
-use egui::{Color32, CornerRadius, Rect, Response, Sense, Stroke, StrokeKind, Ui, Vec2};
+use egui::{Color32, CornerRadius, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
 
 use crate::icons::icon_font;
 use crate::theme::Theme;
@@ -30,17 +30,27 @@ impl ToolbarItem {
 /// A group of toolbar items separated by dividers.
 pub type ToolbarGroup = Vec<ToolbarItem>;
 
+/// Response from the toolbar.
+pub struct ToolbarResponse {
+    /// The button index that was clicked this frame, if any.
+    pub clicked: Option<usize>,
+    /// The outer rect of the toolbar (for positioning attached panels).
+    pub rect: Rect,
+    /// The Y position of each button center (flat index), for aligning cards.
+    pub button_centers_y: Vec<f32>,
+}
+
 /// A vertical icon toolbar.
 ///
 /// Items are organized in groups separated by thin horizontal dividers.
 /// The active item gets a filled background using `control_fill_on`.
-/// Returns the newly selected index (flat across all groups) if changed.
+/// `selected` is `Option<usize>` — `None` means no button is active.
 pub fn toolbar(
     ui: &mut Ui,
     theme: &Theme,
     groups: &[ToolbarGroup],
-    selected: &mut usize,
-) -> Response {
+    selected: Option<usize>,
+) -> ToolbarResponse {
     let icon_size = 18.0;
     let button_size = 36.0;
     let padding = theme.spacing.xs;
@@ -54,8 +64,14 @@ pub fn toolbar(
         + total_separators as f32 * (separator_margin * 2.0 + 1.0);
     let total_width = button_size + padding * 2.0;
 
-    let (outer_rect, mut response) =
+    let (outer_rect, _response) =
         ui.allocate_exact_size(Vec2::new(total_width, total_height), Sense::hover());
+
+    let mut result = ToolbarResponse {
+        clicked: None,
+        rect: outer_rect,
+        button_centers_y: Vec::with_capacity(total_items),
+    };
 
     if ui.is_rect_visible(outer_rect) {
         let cr = CornerRadius::same(theme.radius.lg);
@@ -93,15 +109,16 @@ pub fn toolbar(
                     Vec2::splat(button_size),
                 );
 
-                let is_active = flat_idx == *selected;
+                result.button_centers_y.push(btn_rect.center().y);
+
+                let is_active = selected == Some(flat_idx);
 
                 // Interaction
                 let btn_id = ui.id().with(("toolbar_btn", flat_idx));
                 let btn_response = ui.interact(btn_rect, btn_id, Sense::click());
 
                 if btn_response.clicked() {
-                    *selected = flat_idx;
-                    response.mark_changed();
+                    result.clicked = Some(flat_idx);
                 }
 
                 let hovered = btn_response.hovered();
@@ -119,9 +136,7 @@ pub fn toolbar(
                 }
 
                 // Icon
-                let icon_color = if is_active {
-                    theme.palette.foreground
-                } else if hovered {
+                let icon_color = if is_active || hovered {
                     theme.palette.foreground
                 } else {
                     theme.palette.muted_foreground
@@ -148,9 +163,7 @@ pub fn toolbar(
                 flat_idx += 1;
             }
         }
-
-        let _ = total_items; // suppress warning
     }
 
-    response
+    result
 }
