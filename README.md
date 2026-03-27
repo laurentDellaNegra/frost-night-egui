@@ -32,6 +32,8 @@ No external theming dependencies. Just `egui`.
 | `card` | Themed panel with border |
 | `drag_card` | Draggable card with handle animation, border glow, and global drag fade |
 | `toolbar` | Vertical icon toolbar with grouped items, badges, and active highlights |
+| `top_toolbar` | Horizontal top bar with title, clock, QNH/TL data, error indicator, and icon buttons |
+| `zoom_toolbar` | Vertical zoom control strip with +, −, and Reset buttons |
 | `separator` | Themed horizontal divider |
 
 All interactive controls (checkbox, toggle, segmented) share a consistent visual pattern:

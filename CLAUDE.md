@@ -63,6 +63,8 @@ Components should be self-contained and not rely on the demo to define styles:
 - `drag_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally.
 - `drag_card` returns `DragCardResponse { closed, dragging }` — the caller drives global drag fade via `ui.set_opacity()`.
 - `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers.
+- `top_toolbar` paints its own backdrop, vertical separators, and icon buttons. Returns `TopToolbarResponse { icon_clicked }`.
+- `zoom_toolbar` paints its own backdrop with +/− icon buttons, separator, and Reset text button. Returns `ZoomToolbarResponse { zoom_in, zoom_out, reset }`.
 - All control colors come from `theme.palette` — never hardcode hex colors in component files.
 
 ### Global drag fade
@@ -71,7 +73,7 @@ When a card is being dragged, the demo applies `ui.set_opacity(0.15)` to all UI 
 ### Icons
 - Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
 - `load_icon_font(ctx)` is called automatically by `apply_theme()`.
-- Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, etc.
+- Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, etc.
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app

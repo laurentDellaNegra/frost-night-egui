@@ -322,20 +322,68 @@ impl eframe::App for DemoApp {
             ],
         ];
 
-        // Position toolbar on the left, vertically centered
         let toolbar_margin = 12.0;
-        let tb_x = full_rect.left() + toolbar_margin;
-        let tb_y = full_rect.top() + toolbar_margin;
-        let toolbar_rect = egui::Rect::from_min_size(
-            egui::pos2(tb_x, tb_y),
-            egui::vec2(0.0, 0.0), // will be sized by the component
+        let top_tb_height = 36.0;
+
+        // Top toolbar (at the top-left)
+        let top_tb_x = full_rect.left() + toolbar_margin;
+        let top_tb_y = full_rect.top() + toolbar_margin;
+        let mut top_tb_ui = ui.new_child(
+            egui::UiBuilder::new().max_rect(
+                egui::Rect::from_min_size(
+                    egui::pos2(top_tb_x, top_tb_y),
+                    egui::vec2(full_rect.width() - toolbar_margin * 2.0, top_tb_height),
+                ),
+            ),
         );
+        let _top_response = top_toolbar(
+            &mut top_tb_ui,
+            &self.theme,
+            "Frost Night egui",
+            "23:14:20",
+            "1016",
+            "80",
+            Some("ERROR"),
+            &[ICON_GRID, ICON_COMPASS, ICON_EYE],
+        );
+
+        // Left toolbar (below top toolbar)
+        let tb_x = full_rect.left() + toolbar_margin;
+        let tb_y = top_tb_y + top_tb_height + toolbar_margin;
         let mut toolbar_ui = ui.new_child(
             egui::UiBuilder::new().max_rect(
-                egui::Rect::from_min_size(toolbar_rect.min, egui::vec2(60.0, full_rect.height() - toolbar_margin * 2.0)),
+                egui::Rect::from_min_size(
+                    egui::pos2(tb_x, tb_y),
+                    egui::vec2(60.0, full_rect.height() - tb_y - toolbar_margin),
+                ),
             ),
         );
         toolbar(&mut toolbar_ui, &self.theme, &toolbar_groups, &mut self.toolbar_selected);
+
+        // Bottom-right zoom control toolbar
+        let zoom_margin = 12.0;
+        // Pre-calculate size to position from bottom-right
+        let zoom_w = 36.0 + self.theme.spacing.xs * 2.0;
+        let zoom_h = self.theme.spacing.xs * 2.0
+            + 36.0 * 2.0
+            + self.theme.spacing.xs * 2.0
+            + 1.0
+            + 28.0;
+        let zoom_pos = egui::pos2(
+            full_rect.right() - zoom_margin - zoom_w,
+            full_rect.bottom() - zoom_margin - zoom_h,
+        );
+        let mut zoom_ui = ui.new_child(
+            egui::UiBuilder::new().max_rect(
+                egui::Rect::from_min_size(zoom_pos, egui::vec2(zoom_w, zoom_h)),
+            ),
+        );
+        let _zoom_response = zoom_toolbar(
+            &mut zoom_ui,
+            &self.theme,
+            ICON_PLUS,
+            ICON_MINUS,
+        );
 
         // Draggable card
         if self.card_open {

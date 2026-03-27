@@ -10,6 +10,8 @@ mod segmented;
 mod separator;
 mod toggle;
 mod toolbar;
+mod top_toolbar;
+mod zoom_toolbar;
 
 pub use badge::{badge, BadgeVariant};
 pub use button::button;
@@ -21,3 +23,5 @@ pub use segmented::segmented;
 pub use separator::separator;
 pub use toggle::toggle;
 pub use toolbar::{toolbar, ToolbarGroup, ToolbarItem};
+pub use top_toolbar::{top_toolbar, TopToolbarResponse};
+pub use zoom_toolbar::{zoom_toolbar, ZoomToolbarResponse};
