@@ -1,0 +1,10 @@
+/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/accesskit_consumer-4954fb2be0a5b23e.d: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/lib.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/tree.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/node.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/filters.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/iterators.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/text.rs
+
+/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/libaccesskit_consumer-4954fb2be0a5b23e.rmeta: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/lib.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/tree.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/node.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/filters.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/iterators.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/text.rs
+
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/lib.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/tree.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/node.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/filters.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/iterators.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_consumer-0.35.0/src/text.rs:

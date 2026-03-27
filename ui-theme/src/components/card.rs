@@ -1,0 +1,18 @@
+//! Themed card container.
+
+use egui::{Response, Ui};
+
+use crate::theme::Theme;
+
+/// A themed card with border and rounded corners.
+pub fn card(ui: &mut Ui, theme: &Theme, add_contents: impl FnOnce(&mut Ui)) -> Response {
+    let cr = egui::CornerRadius::same(theme.radius.lg);
+
+    egui::Frame::new()
+        .fill(theme.palette.card)
+        .stroke(egui::Stroke::new(1.0, theme.palette.border))
+        .corner_radius(cr)
+        .inner_margin(egui::Margin::same(12))
+        .show(ui, add_contents)
+        .response
+}

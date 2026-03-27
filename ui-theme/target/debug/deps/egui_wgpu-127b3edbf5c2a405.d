@@ -1,0 +1,11 @@
+/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/egui_wgpu-127b3edbf5c2a405.d: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/lib.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/renderer.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/setup.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/capture.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/winit.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/egui.wgsl /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/texture_copy.wgsl
+
+/Users/laurent/work/frost-night-egui/ui-theme/target/debug/deps/libegui_wgpu-127b3edbf5c2a405.rmeta: /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/lib.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/renderer.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/setup.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/capture.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/winit.rs /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/egui.wgsl /Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/texture_copy.wgsl
+
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/lib.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/renderer.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/setup.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/capture.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/winit.rs:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/egui.wgsl:
+/Users/laurent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/egui-wgpu-0.34.0/src/texture_copy.wgsl:
