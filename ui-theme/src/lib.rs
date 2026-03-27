@@ -6,6 +6,7 @@
 pub mod blur;
 pub mod components;
 pub mod helpers;
+pub mod icons;
 pub mod oklch;
 pub mod palette;
 pub mod scale;

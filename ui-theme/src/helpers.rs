@@ -61,4 +61,7 @@ pub fn apply_theme(ctx: &egui::Context, theme: &Theme) {
     visuals.widgets = to_egui_widgets(&default_tokens, corner_radius, 1.0);
 
     ctx.set_visuals(visuals);
+
+    // Load the Lucide icon font
+    crate::icons::load_icon_font(ctx);
 }

@@ -54,8 +54,19 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
-- `drag_card` paints its own `surface_blur` backdrop and handles drag-to-fade opacity animation internally.
+- `drag_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally.
+- `drag_card` returns `DragCardResponse { closed, dragging }` — the caller drives global drag fade via `ui.set_opacity()`.
+- `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers.
 - All control colors come from `theme.palette` — never hardcode hex colors in component files.
+
+### Global drag fade
+When a card is being dragged, the demo applies `ui.set_opacity(0.15)` to all UI elements (toolbar + card). The animation is driven by `card_response.dragging` from the previous frame via `animate_bool_with_time`. The drag_card does NOT set its own opacity — only its border glow, halo, and handle effects are internal.
+
+### Icons
+- Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
+- `load_icon_font(ctx)` is called automatically by `apply_theme()`.
+- Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, etc.
+- Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app
 - `demo.rs` and `web-demo/src/main.rs` should stay in sync — they are the same demo with different entry points.

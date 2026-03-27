@@ -9,6 +9,7 @@ mod input;
 mod segmented;
 mod separator;
 mod toggle;
+mod toolbar;
 
 pub use badge::{badge, BadgeVariant};
 pub use button::button;
@@ -19,3 +20,4 @@ pub use input::text_input;
 pub use segmented::segmented;
 pub use separator::separator;
 pub use toggle::toggle;
+pub use toolbar::{toolbar, ToolbarGroup, ToolbarItem};

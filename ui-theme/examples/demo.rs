@@ -1,5 +1,6 @@
 use eframe::egui;
 use ui_theme::components::*;
+use ui_theme::icons::*;
 use ui_theme::{apply_theme, ControlSize, ControlVariant, Theme};
 
 // ---------------------------------------------------------------------------
@@ -223,6 +224,8 @@ struct DemoApp {
     segment_idx: usize,
     card_state: DragCardState,
     card_open: bool,
+    card_dragging: bool,
+    toolbar_selected: usize,
     live_tracks: Vec<LiveTrack>,
 }
 
@@ -261,6 +264,8 @@ impl DemoApp {
                 size: egui::vec2(420.0, 560.0),
             },
             card_open: true,
+            card_dragging: false,
+            toolbar_selected: 3,
             live_tracks,
         }
     }
@@ -287,6 +292,50 @@ impl eframe::App for DemoApp {
         ui.painter()
             .rect_filled(full_rect, 0.0, self.theme.palette.background);
         paint_background(ui, &self.live_tracks);
+
+        // Global drag fade: when card is being dragged, fade all UI elements
+        let global_drag_t = ui.ctx().animate_bool_with_time(
+            egui::Id::new("global_drag_fade"),
+            self.card_dragging,
+            0.2,
+        );
+        let global_opacity = egui::lerp(1.0..=0.15, global_drag_t);
+        ui.set_opacity(global_opacity);
+
+        // Left toolbar (fixed)
+        let toolbar_groups: Vec<ToolbarGroup> = vec![
+            vec![
+                ToolbarItem::new(ICON_PANEL_LEFT),
+            ],
+            vec![
+                ToolbarItem::new(ICON_MAP).with_badge(egui::Color32::from_rgb(0xE0, 0x5A, 0x7A)),
+                ToolbarItem::new(ICON_LAYERS).with_badge(egui::Color32::from_rgb(0x4A, 0x90, 0xCF)),
+                ToolbarItem::new(ICON_GLOBE),
+                ToolbarItem::new(ICON_PLUS),
+                ToolbarItem::new(ICON_RADAR),
+                ToolbarItem::new(ICON_NAVIGATION),
+                ToolbarItem::new(ICON_CROSSHAIR),
+            ],
+            vec![
+                ToolbarItem::new(ICON_FILTER),
+                ToolbarItem::new(ICON_SETTINGS),
+            ],
+        ];
+
+        // Position toolbar on the left, vertically centered
+        let toolbar_margin = 12.0;
+        let tb_x = full_rect.left() + toolbar_margin;
+        let tb_y = full_rect.top() + toolbar_margin;
+        let toolbar_rect = egui::Rect::from_min_size(
+            egui::pos2(tb_x, tb_y),
+            egui::vec2(0.0, 0.0), // will be sized by the component
+        );
+        let mut toolbar_ui = ui.new_child(
+            egui::UiBuilder::new().max_rect(
+                egui::Rect::from_min_size(toolbar_rect.min, egui::vec2(60.0, full_rect.height() - toolbar_margin * 2.0)),
+            ),
+        );
+        toolbar(&mut toolbar_ui, &self.theme, &toolbar_groups, &mut self.toolbar_selected);
 
         // Draggable card
         if self.card_open {
@@ -385,6 +434,7 @@ impl eframe::App for DemoApp {
                     );
                 },
             );
+            self.card_dragging = card_response.dragging;
             if card_response.closed {
                 self.card_open = false;
             }

@@ -157,12 +157,27 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 ### Cards / Drag Cards
 - Semi-transparent backdrop (`surface_blur`).
 - 1px border, rounded ~8px.
-- Drag handle at top, close button.
-- Fades to 15% opacity when being dragged.
+- Top handle zone: 3 dots animate into a grab bar on hover (0.15s transition).
+- Close button in title row.
+- On drag: border glows to `ring` color (1.0→1.8px width), outer halo expands 4px.
+- Global drag fade: all UI elements (toolbar, card) fade to 15% opacity (0.2s).
+
+### Toolbar
+- Vertical icon strip with grouped items separated by 1px dividers.
+- Semi-transparent backdrop (`surface_blur`), 1px `border` stroke, `lg` radius.
+- Active item: `control_fill_on` background, `md` radius.
+- Hover item: `control_fill_off` background.
+- Icons: 18px Lucide icon font. Optional notification badge dots (3px radius).
+- Button size: 36×36px, 6px padding around strip.
 
 ### Segmented Control
 - Pill-shaped container with `control_border` border.
 - Active segment: `control_gap` inset with `control_fill_on` fill.
+
+### Icons
+- Lucide icon font v1.7.0 (TTF, embedded via `include_bytes!`).
+- Registered as custom `FontFamily::Name("lucide")` in egui.
+- Named codepoint constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, etc.
 
 ---
 

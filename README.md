@@ -12,7 +12,9 @@ A minimal egui theming and component library for dark aviation UIs, extracted fr
 
 - **Semantic color palette** — dark theme with background/foreground pairs extracted from Figma
 - **Design tokens** — interaction states (idle, hover, active, disabled) derived automatically from the palette
-- **Component library** — themed wrappers for buttons, inputs, checkboxes, toggles, segmented controls, badges, cards
+- **Component library** — themed wrappers for buttons, inputs, checkboxes, toggles, segmented controls, badges, cards, toolbar
+- **Icon font** — embedded Lucide icon font with named codepoint constants
+- **Drag animations** — border glow, handle morphing (dots → bar), global drag fade
 - **Glassmorphism fallback** — semi-transparent backdrop API, ready for a future blur shader
 
 No external theming dependencies. Just `egui`.
@@ -28,7 +30,8 @@ No external theming dependencies. Just `egui`.
 | `segmented` | Segmented control with shared visual style |
 | `badge` | Primary, Accent, Outline, Destructive variants |
 | `card` | Themed panel with border |
-| `drag_card` | Draggable card with close button and drag-to-fade animation |
+| `drag_card` | Draggable card with handle animation, border glow, and global drag fade |
+| `toolbar` | Vertical icon toolbar with grouped items, badges, and active highlights |
 | `separator` | Themed horizontal divider |
 
 All interactive controls (checkbox, toggle, segmented) share a consistent visual pattern:
@@ -58,6 +61,15 @@ let mut selected = 0;
 segmented(ui, &theme, &["Tab A", "Tab B", "Tab C"], &mut selected);
 
 badge(ui, &theme, "Status", BadgeVariant::Accent);
+
+// Toolbar with icon groups
+use ui_theme::icons::*;
+let groups = vec![
+    vec![ToolbarItem::new(ICON_MAP), ToolbarItem::new(ICON_LAYERS)],
+    vec![ToolbarItem::new(ICON_SETTINGS)],
+];
+let mut selected = 0;
+toolbar(ui, &theme, &groups, &mut selected);
 ```
 
 ## Running the demo
@@ -88,8 +100,10 @@ ui-theme/           # The theme/component library crate
     scale.rs        # Radius, size, variant enums
     theme.rs        # Main Theme struct
     helpers.rs      # egui integration (apply_theme)
+    icons.rs        # Lucide icon font integration and codepoint constants
     blur.rs         # Semi-transparent backdrop API
     oklch.rs        # OKLCH color space utilities
+    fonts/lucide.ttf  # Embedded Lucide icon font (v1.7.0)
     components/     # Themed component wrappers
   examples/
     demo.rs         # Native demo showcasing all components
