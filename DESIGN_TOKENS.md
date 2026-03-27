@@ -51,13 +51,16 @@ Extracted from Figma mockups (visual analysis of `interface.png` and `windows.pn
 
 ### Interactive Controls
 
-Checkbox, toggle, and segmented controls share a consistent visual pattern:
+Checkbox, toggle, and segmented controls share a consistent visual pattern.
+These are stored in `ColorPalette` and accessed via `theme.palette.control_*`:
 
-| Token               | Hex       | Usage                                             |
-| -------------------- | --------- | ------------------------------------------------- |
-| `outer_border`       | `#3C4656` | Outer border stroke for checkboxes, toggles, segmented |
-| `inner_fill_off`     | `#0E1A38` | Inner fill when control is OFF                    |
-| `inner_fill_on`      | `#162C59` | Inner fill when control is ON                     |
+| Palette Field         | Hex       | Usage                                             |
+| ---------------------- | --------- | ------------------------------------------------- |
+| `control_border`       | `#3C4656` | Outer border stroke for checkboxes, toggles, segmented |
+| `control_fill_off`     | `#0E1A38` | Inner fill when control is OFF                    |
+| `control_fill_on`      | `#162C59` | Inner fill when control is ON                     |
+
+The gap between outer border and inner fill is `theme.control_gap` (3px).
 
 ### Borders & Dividers
 
@@ -133,9 +136,9 @@ The UI primarily uses a clean sans-serif and a monospace for data displays.
 ### Controls (Shared Pattern)
 
 Checkbox, toggle, and segmented controls follow a consistent structure:
-- **Outer border**: `#3C4656`, 1px stroke, `lg` radius (8px)
-- **Gap**: 3px between outer border and inner fill
-- **Inner fill**: `md` radius (6px), `#0E1A38` (OFF) / `#162C59` (ON)
+- **Outer border**: `theme.palette.control_border`, 1px stroke, `theme.radius.lg`
+- **Gap**: `theme.control_gap` between outer border and inner fill
+- **Inner fill**: `theme.radius.md`, `theme.palette.control_fill_off` (OFF) / `theme.palette.control_fill_on` (ON)
 
 ### Buttons
 - **Primary**: Frost/silver fill (`#CCD4E2`), dark text. Rounded ~6px.
@@ -158,8 +161,8 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - Fades to 15% opacity when being dragged.
 
 ### Segmented Control
-- Pill-shaped container with `#3C4656` border.
-- Active segment: 3px inset with `#162C59` fill.
+- Pill-shaped container with `control_border` border.
+- Active segment: `control_gap` inset with `control_fill_on` fill.
 
 ---
 
@@ -189,6 +192,9 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 | `popover_foreground`    | `#E0E8F0`          | Text on popovers                             |
 | `surface_blur`          | `#0C1622` @ 85%    | Semi-transparent backdrop                    |
 | `surface_blur_radius`   | `16.0`             | Default blur radius (px, reserved for future) |
+| `control_border`        | `#3C4656`          | Outer border for checkbox/toggle/segmented   |
+| `control_fill_off`      | `#0E1A38`          | Inner fill when control is OFF               |
+| `control_fill_on`       | `#162C59`          | Inner fill when control is ON/active         |
 
 ---
 

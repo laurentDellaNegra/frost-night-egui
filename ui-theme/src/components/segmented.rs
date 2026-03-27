@@ -1,13 +1,9 @@
 //! Themed segmented control (toggle buttons).
 
-use egui::{Color32, CornerRadius, Response, Sense, Ui, Vec2};
+use egui::{CornerRadius, Response, Sense, Ui, Vec2};
 
 use crate::theme::Theme;
 use crate::tokens::mix;
-
-// Same colors as checkbox / toggle
-const OUTER_BORDER: Color32 = Color32::from_rgb(0x3C, 0x46, 0x56);
-const INNER_FILL_ON: Color32 = Color32::from_rgb(0x16, 0x2C, 0x59);
 
 /// A horizontal segmented control. Returns the newly selected index if changed.
 ///
@@ -21,7 +17,7 @@ pub fn segmented(
 ) -> Response {
     let font = egui::FontId::proportional(12.0);
     let pad = Vec2::new(16.0, 6.0);
-    let gap = 3.0;
+    let gap = theme.control_gap;
 
     // Measure total width
     let galleys: Vec<_> = labels
@@ -50,7 +46,7 @@ pub fn segmented(
         ui.painter().rect_stroke(
             outer_rect,
             outer_cr,
-            egui::Stroke::new(1.0, OUTER_BORDER),
+            egui::Stroke::new(1.0, theme.palette.control_border),
             egui::StrokeKind::Inside,
         );
 
@@ -78,7 +74,7 @@ pub fn segmented(
             // Active segment: inset filled rect (3px gap, md radius)
             if is_active {
                 let inset = seg_rect.shrink(gap);
-                ui.painter().rect_filled(inset, inner_cr, INNER_FILL_ON);
+                ui.painter().rect_filled(inset, inner_cr, theme.palette.control_fill_on);
             }
 
             // Text

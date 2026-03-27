@@ -37,11 +37,11 @@ cd web-demo && trunk build --release --public-url ./
 
 ### Component pattern
 All interactive controls (checkbox, toggle, segmented) share a consistent visual structure:
-- Outer border: `#3C4656` with `theme.radius.lg`
-- 3px gap
-- Inner fill: `#0E1A38` (off) / `#162C59` (on) with `theme.radius.md`
+- Outer border: `theme.palette.control_border` (`#3C4656`) with `theme.radius.lg`
+- Gap: `theme.control_gap` (3px)
+- Inner fill: `theme.palette.control_fill_off` (`#0E1A38`) / `theme.palette.control_fill_on` (`#162C59`) with `theme.radius.md`
 
-Shared constants (`OUTER_BORDER`, `INNER_FILL_OFF`, `INNER_FILL_ON`) are defined locally in each component file.
+These values live in `palette.rs` and `theme.rs` — components reference them via `theme`, never as local constants.
 
 ### Color source of truth
 - All colors come from Figma mockups. Do not invent colors.
@@ -52,10 +52,14 @@ Shared constants (`OUTER_BORDER`, `INNER_FILL_OFF`, `INNER_FILL_ON`) are defined
 ### Component API pattern
 Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response` (or a custom response struct like `DragCardResponse`).
 
+### Self-contained components
+Components should be self-contained and not rely on the demo to define styles:
+- `drag_card` paints its own `surface_blur` backdrop and handles drag-to-fade opacity animation internally.
+- All control colors come from `theme.palette` — never hardcode hex colors in component files.
+
 ### Demo app
 - `demo.rs` and `web-demo/src/main.rs` should stay in sync — they are the same demo with different entry points.
 - Tracks animate continuously along velocity vectors (frame-rate independent with `dt`).
-- Card fades to 15% opacity when dragged via `ui.set_opacity()`.
 
 ## Deployment
 - GitHub Pages via `.github/workflows/deploy.yml` — triggers on push to `main`.

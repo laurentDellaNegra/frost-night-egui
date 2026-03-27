@@ -32,6 +32,8 @@ pub struct InputVisuals {
 pub struct Theme {
     pub palette: ColorPalette,
     pub radius: RadiusScale,
+    /// Gap between outer border and inner fill in controls (checkbox, toggle, segmented).
+    pub control_gap: f32,
 }
 
 impl Default for Theme {
@@ -46,6 +48,7 @@ impl Theme {
         Self {
             palette: ColorPalette::dark(),
             radius: RadiusScale::default(),
+            control_gap: 3.0,
         }
     }
 

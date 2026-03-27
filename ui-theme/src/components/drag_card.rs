@@ -1,10 +1,9 @@
 //! Draggable card with a title bar handle.
 //!
-//! The caller is responsible for painting the backdrop (e.g. glassmorphism
-//! blur) before calling [`drag_card`]. This component only draws the border,
-//! title bar, close button, and scrollable body.
+//! Paints its own semi-transparent backdrop (`surface_blur`) and handles
+//! drag-to-fade opacity animation internally.
 
-use egui::{CornerRadius, Id, Pos2, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
+use egui::{Color32, CornerRadius, Id, Pos2, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
 
 use crate::theme::Theme;
 
@@ -15,14 +14,6 @@ pub struct DragCardState {
     pub size: Vec2,
 }
 
-/// A draggable floating card.
-///
-/// The top bar acts as a drag handle showing the title and a close button.
-/// The body is scrollable.
-///
-/// **Backdrop**: not drawn by this component — paint your own blur/fill
-/// before calling this function so it appears behind the card content.
-///
 /// Response from a drag card.
 pub struct DragCardResponse {
     /// The close button was clicked.
@@ -31,7 +22,11 @@ pub struct DragCardResponse {
     pub dragging: bool,
 }
 
-/// Returns close and dragging state.
+/// A draggable floating card with built-in backdrop and drag-to-fade animation.
+///
+/// The card paints a semi-transparent `surface_blur` backdrop, a border,
+/// a title bar with drag handle and close button, and a scrollable body.
+/// When dragged, the entire card fades to 15% opacity.
 pub fn drag_card(
     ui: &mut Ui,
     theme: &Theme,
@@ -44,7 +39,35 @@ pub fn drag_card(
     let handle_h = 32.0;
     let padding = 12.0;
 
+    // --- Drag interaction (detect first so we know opacity) ---
+    let handle_rect = Rect::from_min_size(state.pos, Vec2::new(state.size.x, handle_h));
+    let drag_response = ui.interact(handle_rect, id.with("drag"), Sense::drag());
+    if drag_response.dragged() {
+        state.pos += drag_response.drag_delta();
+    }
+    // Recompute after potential drag delta
     let card_rect = Rect::from_min_size(state.pos, state.size);
+    let handle_rect = Rect::from_min_size(state.pos, Vec2::new(state.size.x, handle_h));
+
+    // --- Opacity animation: fade to 15% when dragging ---
+    let target_opacity = if drag_response.dragged() { 0.15 } else { 1.0 };
+    let opacity = ui.ctx().animate_value_with_time(
+        id.with("card_opacity"),
+        target_opacity,
+        0.15,
+    );
+
+    // --- Semi-transparent backdrop ---
+    let [r, g, b, a] = theme.palette.surface_blur.to_array();
+    let drag_alpha = (a as f32 * opacity) as u8;
+    ui.painter().rect_filled(
+        card_rect,
+        cr,
+        Color32::from_rgba_unmultiplied(r, g, b, drag_alpha),
+    );
+
+    // Apply opacity to all subsequent painting
+    ui.set_opacity(opacity);
 
     // Border
     ui.painter().rect_stroke(
@@ -54,9 +77,7 @@ pub fn drag_card(
         StrokeKind::Outside,
     );
 
-    // --- Title bar / drag handle ---
-    let handle_rect = Rect::from_min_size(state.pos, Vec2::new(state.size.x, handle_h));
-
+    // --- Title bar ---
     // Title text
     ui.painter().text(
         egui::pos2(handle_rect.left() + padding, handle_rect.center().y),
@@ -90,12 +111,6 @@ pub fn drag_card(
         Stroke::new(1.5, x_color),
     );
 
-    // Drag interaction on the handle
-    let drag_response = ui.interact(handle_rect, id.with("drag"), Sense::drag());
-    if drag_response.dragged() {
-        state.pos += drag_response.drag_delta();
-    }
-
     // Cursor hint
     if drag_response.hovered() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
@@ -112,6 +127,9 @@ pub fn drag_card(
 
     let mut body_ui = ui.new_child(egui::UiBuilder::new().max_rect(body_rect));
     egui::ScrollArea::vertical().show(&mut body_ui, add_contents);
+
+    // Restore full opacity for anything drawn after the card
+    ui.set_opacity(1.0);
 
     DragCardResponse {
         closed: close_response.clicked(),

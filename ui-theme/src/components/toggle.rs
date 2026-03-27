@@ -5,11 +5,6 @@ use egui::{Color32, CornerRadius, Response, Sense, Ui, Vec2};
 use crate::theme::Theme;
 use crate::tokens::mix;
 
-// Same colors as checkbox
-const OUTER_BORDER: Color32 = Color32::from_rgb(0x3C, 0x46, 0x56);
-const INNER_FILL_OFF: Color32 = Color32::from_rgb(0x0E, 0x1A, 0x38);
-const INNER_FILL_ON: Color32 = Color32::from_rgb(0x16, 0x2C, 0x59);
-
 /// A themed toggle switch matching the Frost Night design.
 ///
 /// Pill-shaped outer border with a sliding rounded-rect thumb inside.
@@ -28,7 +23,7 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
 
         // Outer border (same color / style as checkbox)
         let outer_cr = CornerRadius::same(theme.radius.lg);
-        let border_color = mix(OUTER_BORDER, theme.palette.muted_foreground, how_on * 0.3);
+        let border_color = mix(theme.palette.control_border, theme.palette.muted_foreground, how_on * 0.3);
         ui.painter().rect_stroke(
             rect,
             outer_cr,
@@ -36,8 +31,8 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
             egui::StrokeKind::Inside,
         );
 
-        // Inner thumb (3px gap, md radius — same as checkbox inner)
-        let gap = 3.0;
+        // Inner thumb (gap, md radius — same as checkbox inner)
+        let gap = theme.control_gap;
         let inner_cr = CornerRadius::same(theme.radius.md);
         let thumb_size = rect.height() - gap * 2.0;
         let thumb_half = thumb_size / 2.0;
@@ -50,13 +45,18 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
             Vec2::splat(thumb_size),
         );
 
-        let thumb_color = mix(INNER_FILL_OFF, INNER_FILL_ON, how_on);
+        let thumb_color = mix(theme.palette.control_fill_off, theme.palette.control_fill_on, how_on);
         ui.painter().rect_filled(thumb_rect, inner_cr, thumb_color);
 
         // Checkmark on thumb when ON (fade in)
         if how_on > 0.01 {
             let alpha = (how_on * 255.0) as u8;
-            let check_color = Color32::from_rgba_unmultiplied(0xFF, 0xFF, 0xFF, alpha);
+            let check_color = Color32::from_rgba_unmultiplied(
+                theme.palette.foreground.r(),
+                theme.palette.foreground.g(),
+                theme.palette.foreground.b(),
+                alpha,
+            );
             let center = thumb_rect.center();
             let s = thumb_size * 0.22;
             let painter = ui.painter();

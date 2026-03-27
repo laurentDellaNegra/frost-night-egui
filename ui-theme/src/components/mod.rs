@@ -14,7 +14,7 @@ pub use badge::{badge, BadgeVariant};
 pub use button::button;
 pub use card::card;
 pub use checkbox::checkbox;
-pub use drag_card::{drag_card, DragCardState};
+pub use drag_card::{drag_card, DragCardResponse, DragCardState};
 pub use input::text_input;
 pub use segmented::segmented;
 pub use separator::separator;

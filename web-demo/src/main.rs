@@ -168,7 +168,6 @@ struct DemoApp {
     segment_idx: usize,
     card_state: DragCardState,
     card_open: bool,
-    card_dragging: bool,
     live_tracks: Vec<LiveTrack>,
 }
 
@@ -201,7 +200,6 @@ impl DemoApp {
                 size: egui::vec2(420.0, 560.0),
             },
             card_open: true,
-            card_dragging: false,
             live_tracks,
         }
     }
@@ -227,18 +225,6 @@ impl eframe::App for DemoApp {
         paint_background(ui, &self.live_tracks);
 
         if self.card_open {
-            let card_rect = egui::Rect::from_min_size(self.card_state.pos, self.card_state.size);
-            let cr = egui::CornerRadius::same(self.theme.radius.lg);
-
-            let target_opacity = if self.card_dragging { 0.15 } else { 1.0 };
-            let opacity = ui.ctx().animate_value_with_time(egui::Id::new("card_opacity"), target_opacity, 0.15);
-
-            let [r, g, b, a] = self.theme.palette.surface_blur.to_array();
-            let drag_alpha = (a as f32 * opacity) as u8;
-            ui.painter().rect_filled(card_rect, cr, egui::Color32::from_rgba_unmultiplied(r, g, b, drag_alpha));
-
-            ui.set_opacity(opacity);
-
             let card_response = drag_card(
                 ui, &self.theme, egui::Id::new("demo_card"),
                 &mut self.card_state, "Frost Night UI Demo",
@@ -311,12 +297,9 @@ impl eframe::App for DemoApp {
                     segmented(ui, &self.theme, &["Active", "Inactive"], &mut self.segment_idx);
                 },
             );
-            self.card_dragging = card_response.dragging;
             if card_response.closed {
                 self.card_open = false;
             }
-
-            ui.set_opacity(1.0);
         }
     }
 }

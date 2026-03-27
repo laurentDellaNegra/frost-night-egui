@@ -5,11 +5,6 @@ use egui::{Color32, CornerRadius, Response, Sense, Ui, Vec2};
 use crate::theme::Theme;
 use crate::tokens::mix;
 
-// Same border color as the switch track
-const OUTER_BORDER: Color32 = Color32::from_rgb(0x3C, 0x46, 0x56);
-const INNER_FILL_OFF: Color32 = Color32::from_rgb(0x0E, 0x1A, 0x38);
-const INNER_FILL_ON: Color32 = Color32::from_rgb(0x16, 0x2C, 0x59);
-
 /// A themed checkbox with rounded square and accent checkmark.
 ///
 /// Checked: dark navy fill with accent-colored checkmark.
@@ -50,7 +45,7 @@ pub fn checkbox(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> 
             Vec2::splat(box_size),
         );
         let outer_cr = CornerRadius::same(theme.radius.lg);
-        let border_color = mix(OUTER_BORDER, theme.palette.muted_foreground, how_on * 0.3);
+        let border_color = mix(theme.palette.control_border, theme.palette.muted_foreground, how_on * 0.3);
         ui.painter().rect_stroke(
             outer_rect,
             outer_cr,
@@ -58,11 +53,10 @@ pub fn checkbox(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> 
             egui::StrokeKind::Inside,
         );
 
-        // Inner fill (3px gap, same as switch thumb)
-        let gap = 3.0;
-        let inner_rect = outer_rect.shrink(gap);
+        // Inner fill (gap, same as switch thumb)
+        let inner_rect = outer_rect.shrink(theme.control_gap);
         let inner_cr = CornerRadius::same(theme.radius.md);
-        let bg = mix(INNER_FILL_OFF, INNER_FILL_ON, how_on);
+        let bg = mix(theme.palette.control_fill_off, theme.palette.control_fill_on, how_on);
         ui.painter().rect_filled(inner_rect, inner_cr, bg);
 
         // Checkmark (fade in)
