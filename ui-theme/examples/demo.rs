@@ -320,7 +320,7 @@ impl eframe::App for DemoApp {
                 &self.theme,
                 egui::Id::new("demo_card"),
                 &mut self.card_state,
-                "SkyScope UI Theme Demo",
+                "Frost Night UI Demo",
                 |ui| {
                     // Buttons
                     ui.label(egui::RichText::new("Buttons").size(13.0).strong());
@@ -428,7 +428,7 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
     eframe::run_native(
-        "SkyScope UI Theme Demo",
+        "Frost Night UI Demo",
         options,
         Box::new(|cc| Ok(Box::new(DemoApp::new(cc)))),
     )

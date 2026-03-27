@@ -1,7 +1,6 @@
-# SkyScope Design Tokens
+# Design Tokens
 
 Extracted from Figma mockups (visual analysis of `interface.png` and `windows.png`).
-Figma project: **SKY SkyScope UI** by Skyguide.
 
 > **Note**: Colors are approximated from screenshots since Figma JSON export was unavailable.
 > The Figma metadata confirmed the canvas background as `r:0.016, g:0.027, b:0.055` = **#04070E**.

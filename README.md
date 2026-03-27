@@ -1,6 +1,6 @@
 # frost-night-egui
 
-A minimal egui theming and component library for dark aviation UIs, extracted from the SkyScope Figma mockups.
+A minimal egui theming and component library for dark aviation UIs, extracted from Figma mockups.
 
 ## Live Demo
 

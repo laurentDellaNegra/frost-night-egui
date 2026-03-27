@@ -241,7 +241,7 @@ impl eframe::App for DemoApp {
 
             let card_response = drag_card(
                 ui, &self.theme, egui::Id::new("demo_card"),
-                &mut self.card_state, "SkyScope UI Theme Demo",
+                &mut self.card_state, "Frost Night UI Demo",
                 |ui| {
                     ui.label(egui::RichText::new("Buttons").size(13.0).strong());
                     ui.add_space(4.0);
@@ -333,7 +333,7 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
     eframe::run_native(
-        "SkyScope UI Theme Demo",
+        "Frost Night UI Demo",
         options,
         Box::new(|cc| Ok(Box::new(DemoApp::new(cc)))),
     )

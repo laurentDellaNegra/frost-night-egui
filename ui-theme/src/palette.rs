@@ -1,4 +1,4 @@
-//! Semantic color palette for the SkyScope dark theme.
+//! Semantic color palette for the Frost Night dark theme.
 
 use egui::Color32;
 
@@ -67,7 +67,7 @@ impl Default for ColorPalette {
 }
 
 impl ColorPalette {
-    /// SkyScope dark theme — extracted from Figma mockups.
+    /// Dark theme — extracted from Figma mockups.
     ///
     /// Background confirmed from Figma metadata (`r:0.016, g:0.027, b:0.055`).
     /// Other values approximated from screenshots.

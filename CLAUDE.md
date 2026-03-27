@@ -2,7 +2,7 @@
 
 ## Project overview
 
-`frost-night-egui` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from the SkyScope aviation UI Figma mockups. Dark mode only. No external theming dependencies.
+`frost-night-egui` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from aviation UI Figma mockups. Dark mode only. No external theming dependencies.
 
 ## Repository structure
 

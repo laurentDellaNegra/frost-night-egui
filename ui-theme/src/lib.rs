@@ -1,6 +1,6 @@
-//! SkyScope UI theme — a minimal egui design system.
+//! Frost Night UI theme — a minimal egui design system.
 //!
-//! Dark theme extracted from the SkyScope Figma mockups.
+//! Dark theme extracted from Figma mockups.
 //! Architecture inspired by shadcn patterns, written from scratch.
 
 pub mod blur;

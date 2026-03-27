@@ -10,7 +10,7 @@ const OUTER_BORDER: Color32 = Color32::from_rgb(0x3C, 0x46, 0x56);
 const INNER_FILL_OFF: Color32 = Color32::from_rgb(0x0E, 0x1A, 0x38);
 const INNER_FILL_ON: Color32 = Color32::from_rgb(0x16, 0x2C, 0x59);
 
-/// A themed toggle switch matching the SkyScope design.
+/// A themed toggle switch matching the Frost Night design.
 ///
 /// Pill-shaped outer border with a sliding rounded-rect thumb inside.
 /// Same border, gap, and inner radius as the checkbox.

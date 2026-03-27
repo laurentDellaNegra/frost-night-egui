@@ -41,7 +41,7 @@ impl Default for Theme {
 }
 
 impl Theme {
-    /// SkyScope dark theme.
+    /// Dark theme.
     pub fn dark() -> Self {
         Self {
             palette: ColorPalette::dark(),

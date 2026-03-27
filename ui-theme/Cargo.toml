@@ -2,7 +2,7 @@
 name = "ui-theme"
 version = "0.1.0"
 edition = "2021"
-description = "SkyScope egui design system — dark theme with glassmorphism support"
+description = "Frost Night egui design system — dark theme with glassmorphism support"
 
 [dependencies]
 egui = "0.34"
