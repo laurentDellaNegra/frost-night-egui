@@ -45,11 +45,14 @@ pub struct ToolbarResponse {
 /// Items are organized in groups separated by thin horizontal dividers.
 /// The active item gets a filled background using `control_fill_on`.
 /// `selected` is `Option<usize>` — `None` means no button is active.
+/// `floating` lists button indices that have detached floating cards —
+/// these get a `ring`-colored icon to indicate the card is open somewhere.
 pub fn toolbar(
     ui: &mut Ui,
     theme: &Theme,
     groups: &[ToolbarGroup],
     selected: Option<usize>,
+    floating: &[usize],
 ) -> ToolbarResponse {
     let icon_size = 18.0;
     let button_size = 36.0;
@@ -112,6 +115,7 @@ pub fn toolbar(
                 result.button_centers_y.push(btn_rect.center().y);
 
                 let is_active = selected == Some(flat_idx);
+                let is_floating = floating.contains(&flat_idx);
 
                 // Interaction
                 let btn_id = ui.id().with(("toolbar_btn", flat_idx));
@@ -123,7 +127,7 @@ pub fn toolbar(
 
                 let hovered = btn_response.hovered();
 
-                // Active / hover background
+                // Active / hover / floating background
                 let inner_cr = CornerRadius::same(theme.radius.md);
                 if is_active {
                     let inset = btn_rect.shrink(theme.control_gap);
@@ -135,8 +139,10 @@ pub fn toolbar(
                         .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
                 }
 
-                // Icon
-                let icon_color = if is_active || hovered {
+                // Icon: ring color for floating, foreground for active/hovered, muted otherwise
+                let icon_color = if is_floating {
+                    theme.palette.ring
+                } else if is_active || hovered {
                     theme.palette.foreground
                 } else {
                     theme.palette.muted_foreground

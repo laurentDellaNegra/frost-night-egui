@@ -13,6 +13,9 @@ pub mod scale;
 pub mod theme;
 pub mod tokens;
 
+#[cfg(feature = "demo")]
+pub mod demo;
+
 // Convenience re-exports
 pub use blur::BlurRect;
 pub use helpers::apply_theme;

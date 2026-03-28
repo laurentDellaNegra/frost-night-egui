@@ -32,6 +32,7 @@ pub fn sidebar_card(
     rect: Rect,
     open_t: f32,
     title: &str,
+    highlight: bool,
     add_contents: impl FnOnce(&mut Ui),
 ) -> SidebarCardResponse {
     let cr = CornerRadius::same(theme.radius.lg);
@@ -62,8 +63,10 @@ pub fn sidebar_card(
     let drag_delta = drag_response.drag_delta();
 
 
-    // --- Drag animation: border glow ---
+    // --- Drag / highlight animation: border glow ---
     let drag_t = ui.ctx().animate_bool_with_time(id.with("drag_anim"), dragging, 0.2);
+    let highlight_t = ui.ctx().animate_bool_with_time(id.with("highlight_anim"), highlight, 0.25);
+    let glow_t = drag_t.max(highlight_t);
 
     // Opacity via alpha modulation
     let alpha = (open_t * 255.0) as u8;
@@ -84,12 +87,12 @@ pub fn sidebar_card(
         theme.palette.border.b(),
         alpha,
     );
-    let border_color = if drag_t > 0.01 {
-        mix(base_border, theme.palette.ring, drag_t)
+    let border_color = if glow_t > 0.01 {
+        mix(base_border, theme.palette.ring, glow_t)
     } else {
         base_border
     };
-    let border_width = egui::lerp(1.0..=1.8, drag_t);
+    let border_width = egui::lerp(1.0..=1.8, glow_t);
     ui.painter().rect_stroke(
         card_rect,
         cr,
@@ -97,16 +100,16 @@ pub fn sidebar_card(
         StrokeKind::Outside,
     );
 
-    // Outer glow halo when dragging
-    if drag_t > 0.01 {
-        let glow_alpha = (drag_t * open_t * 60.0) as u8;
+    // Outer glow halo when dragging or highlighted
+    if glow_t > 0.01 {
+        let glow_alpha = (glow_t * open_t * 60.0) as u8;
         let glow_color = Color32::from_rgba_unmultiplied(
             theme.palette.ring.r(),
             theme.palette.ring.g(),
             theme.palette.ring.b(),
             glow_alpha,
         );
-        let glow_expand = egui::lerp(0.0..=4.0, drag_t);
+        let glow_expand = egui::lerp(0.0..=4.0, glow_t);
         ui.painter().rect_stroke(
             card_rect.expand(glow_expand),
             cr,
