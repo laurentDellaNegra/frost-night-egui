@@ -9,12 +9,12 @@ const canvasId = `story-${story}-${Math.random().toString(36).slice(2, 8)}`;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
+<span class="preview-hint">Rendered in WASM — scroll may behave differently from the rest of the page</span>
 <div class="component-preview">
   {title && <span class="preview-label">{title}</span>}
   <div class="preview-canvas-wrapper" style={`height: ${height}`}>
     <canvas id={canvasId} class="story-canvas" data-story={story} data-base={base}></canvas>
   </div>
-  <span class="preview-hint">Rendered in WASM — scroll may behave differently from the rest of the page</span>
 </div>
 
 <style>
@@ -41,10 +41,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
   .preview-hint {
     display: block;
-    padding: var(--spacing-xs) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
     font-size: 0.7rem;
+    font-style: italic;
     color: var(--muted-foreground);
-    border-top: 1px solid var(--border);
     opacity: 0.7;
   }
 </style>
