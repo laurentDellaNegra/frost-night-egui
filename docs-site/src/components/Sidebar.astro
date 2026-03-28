@@ -25,12 +25,22 @@ const components = [
 ];
 ---
 
-<nav class="sidebar">
+<div class="mobile-bar">
+  <a href={base} class="logo">Frost Night UI</a>
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path class="hamburger" d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path class="close" d="M5 5l10 10M15 5l-10 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
+<nav class="sidebar" id="sidebar-nav">
   <div class="sidebar-header">
     <a href={base} class="logo">Frost Night UI</a>
   </div>
 
-  <a href={`${base}/demo`} class="demo-link">Live Demo</a>
+  <a href={`${base}/demo-fullscreen`} class="demo-link">Live Demo</a>
 
   <div class="nav-section">
     <span class="nav-section-title">Foundations</span>
@@ -60,6 +70,10 @@ const components = [
 </nav>
 
 <style>
+  .mobile-bar {
+    display: none;
+  }
+
   .sidebar {
     width: 240px;
     min-height: 100vh;
@@ -141,13 +155,74 @@ const components = [
     background: var(--accent);
   }
 
+  .menu-toggle {
+    background: none;
+    border: none;
+    color: var(--foreground);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+  }
+
+  .close { display: none; color: white; }
+
   @media (max-width: 768px) {
+    .mobile-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-bottom: 1px solid var(--border);
+      background: var(--background);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
     .sidebar {
+      display: none;
       width: 100%;
       min-height: auto;
-      position: static;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 99;
       border-right: none;
-      border-bottom: 1px solid var(--border);
+      background: var(--background);
+      overflow-y: auto;
+      padding-top: 60px;
+    }
+
+    .sidebar.open {
+      display: block;
+    }
+
+    .sidebar .sidebar-header {
+      display: none;
     }
   }
 </style>
+
+<script is:inline>
+  (function() {
+    const toggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar-nav');
+    const hamburger = toggle.querySelector('.hamburger');
+    const close = toggle.querySelector('.close');
+
+    toggle.addEventListener('click', function() {
+      const open = sidebar.classList.toggle('open');
+      hamburger.style.display = open ? 'none' : 'inline';
+      close.style.display = open ? 'inline' : 'none';
+    });
+
+    sidebar.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        sidebar.classList.remove('open');
+        hamburger.style.display = 'inline';
+        close.style.display = 'none';
+      });
+    });
+  })();
+</script>
