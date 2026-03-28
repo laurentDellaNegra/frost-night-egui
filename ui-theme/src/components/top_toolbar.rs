@@ -34,7 +34,7 @@ pub fn top_toolbar(
     let icon_size = 16.0;
     let sep_margin_v = theme.spacing.sm;
 
-    let title_font = egui::FontId::proportional(18.0);
+    let title_font = egui::FontId::new(18.0, egui::FontFamily::Proportional);
     let clock_font = egui::FontId::monospace(13.0);
     let label_font = egui::FontId::proportional(12.0);
     let value_font = egui::FontId::monospace(12.0);
@@ -42,11 +42,23 @@ pub fn top_toolbar(
 
     // Measure text widths for layout
     let painter = ui.painter();
-    let title_galley = painter.layout_no_wrap(
-        title.to_string(),
-        title_font.clone(),
-        theme.palette.foreground,
+    let snowflake_font = crate::icons::icon_font(18.0);
+    let snowflake_galley = painter.layout_no_wrap(
+        crate::icons::ICON_SNOWFLAKE.to_string(),
+        snowflake_font,
+        theme.palette.ring,
     );
+    let snowflake_gap = theme.spacing.xs + 2.0;
+    let mut title_job = egui::text::LayoutJob::single_section(
+        title.to_string(),
+        egui::TextFormat {
+            font_id: title_font.clone(),
+            color: theme.palette.foreground,
+            ..Default::default()
+        },
+    );
+    title_job.wrap = egui::text::TextWrapping::no_max_width();
+    let title_galley = painter.layout_job(title_job);
     let clock_galley = painter.layout_no_wrap(
         clock.to_string(),
         clock_font.clone(),
@@ -88,7 +100,7 @@ pub fn top_toolbar(
 
     // Total width calculation
     let mut total_w = pad_h; // left padding
-    total_w += title_galley.size().x;
+    total_w += snowflake_galley.size().x + snowflake_gap + title_galley.size().x;
     total_w += section_gap; // gap before separator
     total_w += 1.0; // separator
     total_w += section_gap; // gap after separator
@@ -128,9 +140,17 @@ pub fn top_toolbar(
         let center_y = outer_rect.center().y;
         let mut x = outer_rect.left() + pad_h;
 
-        // --- Title ---
+        // --- Snowflake + Title (vertically centered as a group) ---
+        let group_h = snowflake_galley.size().y.max(title_galley.size().y);
+        let group_top = center_y - group_h / 2.0;
         ui.painter().galley(
-            egui::pos2(x, center_y - title_galley.size().y / 2.0),
+            egui::pos2(x, group_top + (group_h - snowflake_galley.size().y) / 2.0),
+            snowflake_galley.clone(),
+            theme.palette.ring,
+        );
+        x += snowflake_galley.size().x + snowflake_gap;
+        ui.painter().galley(
+            egui::pos2(x, group_top + (group_h - title_galley.size().y) / 2.0),
             title_galley.clone(),
             theme.palette.foreground,
         );

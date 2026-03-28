@@ -26,7 +26,7 @@ const components = [
 ---
 
 <div class="mobile-bar">
-  <a href={base} class="logo">Frost Night UI</a>
+  <a href={base} class="logo"><span class="logo-icon">❄</span> Frost Night UI</a>
   <button class="menu-toggle" aria-label="Toggle menu">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
       <path class="hamburger" d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -37,7 +37,7 @@ const components = [
 
 <nav class="sidebar" id="sidebar-nav">
   <div class="sidebar-header">
-    <a href={base} class="logo">Frost Night UI</a>
+    <a href={base} class="logo"><span class="logo-icon">❄</span> Frost Night UI</a>
   </div>
 
   <a href={`${base}/demo-fullscreen`} class="demo-link">Live Demo</a>
@@ -94,6 +94,10 @@ const components = [
     font-weight: 700;
     color: var(--foreground);
     text-decoration: none;
+  }
+
+  .logo-icon {
+    font-size: 1.4rem;
   }
 
   .demo-link {

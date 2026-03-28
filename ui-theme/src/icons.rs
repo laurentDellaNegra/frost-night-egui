@@ -70,3 +70,4 @@ pub const ICON_LOCATE: char = '\u{E1DA}';
 pub const ICON_ZOOM_IN: char = '\u{E1B6}';
 pub const ICON_ZOOM_OUT: char = '\u{E1B7}';
 pub const ICON_CIRCLE_X: char = '\u{E084}';
+pub const ICON_SNOWFLAKE: char = '\u{E165}';
