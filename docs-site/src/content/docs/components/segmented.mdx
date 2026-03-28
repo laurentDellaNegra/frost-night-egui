@@ -1,0 +1,32 @@
+---
+title: Segmented
+description: A segmented control for selecting between options
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Segmented
+
+A horizontal segmented control for selecting one option from a set.
+
+## Preview
+
+<ComponentPreview story="segmented" height="450px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::segmented;
+
+let mut selected = 0;
+segmented(ui, &theme, &["Map", "Satellite", "Terrain"], &mut selected);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "labels", type: "&[&str]", description: "Segment labels" },
+  { name: "selected", type: "&mut usize", description: "Selected index" },
+]} />

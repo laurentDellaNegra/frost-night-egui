@@ -1,2 +1,13 @@
 target/
 .DS_Store
+
+# Astro / Node
+docs-site/node_modules/
+docs-site/dist/
+docs-site/.astro/
+
+# Trunk WASM build output
+docs-site/public/wasm/*.wasm
+docs-site/public/wasm/*.js
+docs-site/public/demo/*.wasm
+docs-site/public/demo/*.js

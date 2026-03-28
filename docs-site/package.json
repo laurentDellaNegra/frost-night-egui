@@ -1,0 +1,14 @@
+{
+  "name": "docs-site",
+  "version": "1.0.0",
+  "description": "Frost Night UI documentation site",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.3",
+    "astro": "^6.1.1"
+  }
+}

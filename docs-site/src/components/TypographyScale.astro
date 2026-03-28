@@ -1,0 +1,47 @@
+---
+const sizes = [
+  { name: 'Sm', size: '11px', usage: 'Small buttons, captions' },
+  { name: 'Md', size: '13px', usage: 'Default body, buttons' },
+  { name: 'Lg', size: '15px', usage: 'Large buttons, headings' },
+];
+---
+
+<div class="type-scale">
+  {sizes.map(s => (
+    <div class="type-item">
+      <span class="type-sample" style={`font-size: ${s.size}`}>
+        The quick brown fox ({s.size})
+      </span>
+      <div class="type-info">
+        <code>{s.name}</code>
+        <span class="type-usage">{s.usage}</span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .type-scale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  .type-item {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .type-sample {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+  }
+  .type-info {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+  }
+  .type-usage {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+</style>

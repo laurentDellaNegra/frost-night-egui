@@ -1,0 +1,153 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const currentPath = Astro.url.pathname;
+
+const foundations = [
+  { title: 'Colors', href: `${base}/foundations/colors` },
+  { title: 'Typography', href: `${base}/foundations/typography` },
+  { title: 'Spacing', href: `${base}/foundations/spacing` },
+  { title: 'Radius', href: `${base}/foundations/radius` },
+  { title: 'Blur / Surfaces', href: `${base}/foundations/blur` },
+];
+
+const components = [
+  { title: 'Button', href: `${base}/components/button` },
+  { title: 'Text Input', href: `${base}/components/input` },
+  { title: 'Checkbox', href: `${base}/components/checkbox` },
+  { title: 'Toggle', href: `${base}/components/toggle` },
+  { title: 'Segmented', href: `${base}/components/segmented` },
+  { title: 'Badge', href: `${base}/components/badge` },
+  { title: 'Card', href: `${base}/components/card` },
+  { title: 'Drag Card', href: `${base}/components/drag-card` },
+  { title: 'Sidebar Card', href: `${base}/components/sidebar-card` },
+  { title: 'Toolbar', href: `${base}/components/toolbar` },
+  { title: 'Separator', href: `${base}/components/separator` },
+];
+---
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <a href={base} class="logo">Frost Night UI</a>
+  </div>
+
+  <a href={`${base}/demo`} class="demo-link">Live Demo</a>
+
+  <div class="nav-section">
+    <span class="nav-section-title">Foundations</span>
+    <ul>
+      {foundations.map(item => (
+        <li>
+          <a href={item.href} class:list={[{ active: currentPath.includes(item.href) }]}>
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-section-title">Components</span>
+    <ul>
+      {components.map(item => (
+        <li>
+          <a href={item.href} class:list={[{ active: currentPath.includes(item.href) }]}>
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .sidebar {
+    width: 240px;
+    min-height: 100vh;
+    border-right: 1px solid var(--border);
+    padding: var(--spacing-lg);
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  .demo-link {
+    display: block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--accent);
+    border: 1px solid var(--ring);
+    border-radius: var(--radius-md);
+    color: var(--ring);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .demo-link:hover {
+    background: var(--control-fill-on);
+    text-decoration: none;
+  }
+
+  .nav-section {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .nav-section-title {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li a {
+    display: block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  li a:hover {
+    color: var(--foreground);
+    background: var(--muted);
+    text-decoration: none;
+  }
+
+  li a.active {
+    color: var(--ring);
+    background: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      min-height: auto;
+      position: static;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+</style>

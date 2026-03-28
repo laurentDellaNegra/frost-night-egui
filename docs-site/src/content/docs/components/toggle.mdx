@@ -1,0 +1,31 @@
+---
+title: Toggle
+description: An on/off toggle switch
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Toggle
+
+A sliding toggle switch for boolean settings.
+
+## Preview
+
+<ComponentPreview story="toggle" height="300px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::toggle;
+
+let mut on = false;
+toggle(ui, &theme, &mut on);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "on", type: "&mut bool", description: "Mutable toggle state" },
+]} />

@@ -1,0 +1,23 @@
+---
+title: Typography
+description: Font sizes and text styles
+---
+
+import TypographyScale from '../../../components/TypographyScale.astro';
+
+# Typography
+
+Frost Night uses the system font stack for UI text. Font sizes are tied to `ControlSize` variants.
+
+## Scale
+
+<TypographyScale />
+
+## Usage
+
+```rust
+use ui_theme::ControlSize;
+
+let font = ControlSize::Md.font(); // FontId at 13px
+let padding = ControlSize::Md.padding(); // Vec2(12.0, 6.0)
+```

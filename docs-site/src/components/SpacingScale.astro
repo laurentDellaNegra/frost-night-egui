@@ -1,0 +1,46 @@
+---
+const spacings = [
+  { name: 'xs', value: '4px' },
+  { name: 'sm', value: '8px' },
+  { name: 'md', value: '12px' },
+  { name: 'lg', value: '16px' },
+  { name: 'xl', value: '24px' },
+];
+---
+
+<div class="spacing-scale">
+  {spacings.map(s => (
+    <div class="spacing-item">
+      <div class="spacing-bar" style={`width: var(--spacing-${s.name}); height: var(--spacing-${s.name})`}></div>
+      <span class="spacing-label">{s.name}</span>
+      <code class="spacing-value">{s.value}</code>
+    </div>
+  ))}
+</div>
+
+<style>
+  .spacing-scale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .spacing-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  .spacing-bar {
+    background: var(--ring);
+    border-radius: 2px;
+    min-width: 4px;
+  }
+  .spacing-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    width: 24px;
+  }
+  .spacing-value {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+title: Card
+description: A container with surface styling
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Card
+
+A container component with the card background and border styling.
+
+## Preview
+
+<ComponentPreview story="card" height="525px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::card;
+
+card(ui, &theme, |ui| {
+    ui.label("Card content");
+});`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "add_contents", type: "impl FnOnce(&mut Ui)", description: "Card body content" },
+]} />

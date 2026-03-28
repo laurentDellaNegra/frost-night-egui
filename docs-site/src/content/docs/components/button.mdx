@@ -1,0 +1,44 @@
+---
+title: Button
+description: A clickable control with 6 variants and 3 sizes
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Button
+
+A clickable control that triggers an action. Supports Primary, Secondary, Ghost, Outline, Destructive, and Link variants.
+
+## Preview
+
+<ComponentPreview story="button" height="675px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::button;
+use ui_theme::{ControlVariant, ControlSize};
+
+button(ui, &theme, "Click me", ControlVariant::Primary, ControlSize::Md);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "label", type: "impl Into<WidgetText>", description: "Button text" },
+  { name: "variant", type: "ControlVariant", default: "Primary", description: "Visual variant" },
+  { name: "size", type: "ControlSize", default: "Md", description: "Button size" },
+]} />
+
+## Variants
+
+| Variant | Description |
+|---------|-------------|
+| `Primary` | Filled blue — primary actions |
+| `Secondary` | Subtle fill — secondary actions |
+| `Ghost` | Transparent — tertiary actions |
+| `Outline` | Border only — alternative secondary |
+| `Destructive` | Red — dangerous actions |
+| `Link` | Text only — navigation actions |

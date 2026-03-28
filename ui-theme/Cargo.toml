@@ -21,3 +21,6 @@ serde = ["dep:serde"]
 [[example]]
 name = "demo"
 required-features = ["demo"]
+
+[[example]]
+name = "export_css"

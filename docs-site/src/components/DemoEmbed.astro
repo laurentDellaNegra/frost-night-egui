@@ -1,0 +1,53 @@
+---
+interface Props { height?: string; }
+const { height = '85vh' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="demo-embed">
+  <div class="demo-canvas-wrapper" style={`height: ${height}`}>
+    <canvas id="the_canvas_id" class="demo-canvas" data-base={base}></canvas>
+  </div>
+  <div class="demo-bar">
+    <a href={`${base}/demo-fullscreen`} class="fullscreen-link">Open fullscreen</a>
+  </div>
+</div>
+
+<style>
+  .demo-embed {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .demo-canvas-wrapper {
+    position: relative;
+    background: var(--background);
+  }
+  .demo-canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .demo-bar {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-top: 1px solid var(--border);
+    text-align: right;
+  }
+  .fullscreen-link {
+    font-size: 0.8rem;
+    color: var(--ring);
+    text-decoration: none;
+  }
+  .fullscreen-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script is:inline>
+  async function loadDemo() {
+    const canvas = document.getElementById('the_canvas_id');
+    const base = canvas.dataset.base;
+    const wasm = await import(base + '/demo/web-demo.js');
+    await wasm.default();
+  }
+  loadDemo();
+</script>

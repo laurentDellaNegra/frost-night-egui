@@ -1,0 +1,52 @@
+---
+interface Props {
+  name: string;
+  variable: string;
+  hex?: string;
+}
+const { name, variable, hex } = Astro.props;
+---
+
+<div class="swatch">
+  <div class="swatch-color" style={`background: var(${variable})`}></div>
+  <div class="swatch-info">
+    <span class="swatch-name">{name}</span>
+    <code class="swatch-var">{variable}</code>
+    {hex && <span class="swatch-hex">{hex}</span>}
+  </div>
+</div>
+
+<style>
+  .swatch {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .swatch-color {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .swatch-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .swatch-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  .swatch-var {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+  .swatch-hex {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+</style>

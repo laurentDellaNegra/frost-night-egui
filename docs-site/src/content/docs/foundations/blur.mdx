@@ -1,0 +1,38 @@
+---
+title: Blur / Surfaces
+description: Glassmorphism and surface effects
+---
+
+# Blur / Surfaces
+
+Frost Night uses a "surface blur" effect for cards, toolbars, and overlays. Since WebGL2 doesn't support custom shaders, this is implemented as a semi-transparent tint fallback.
+
+## Surface Blur
+
+The `surface_blur` color provides a translucent overlay that simulates frosted glass. Components use `BlurRect` to paint this effect.
+
+```rust
+use ui_theme::{Theme, BlurRect};
+use ui_theme::blur::paint_blur;
+
+let theme = Theme::dark();
+let blur = theme.surface_blur(rect, corner_radius);
+paint_blur(ui, &blur);
+```
+
+## BlurRect
+
+```rust
+pub struct BlurRect {
+    pub rect: Rect,
+    pub radius: f32,        // Blur radius (visual only in native)
+    pub tint: Color32,      // Semi-transparent fill
+    pub corner_radius: CornerRadius,
+}
+```
+
+## Functions
+
+- `blur_shape(blur)` — Returns a `Shape` for the blur fill
+- `blur_shape_with_border(blur, border_color)` — Returns shapes with a border stroke
+- `paint_blur(ui, blur)` — Paints the blur directly to the UI

@@ -1,0 +1,41 @@
+---
+title: Badge
+description: A small status indicator label
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Badge
+
+A small label for status indicators, counts, or categories.
+
+## Preview
+
+<ComponentPreview story="badge" height="375px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::badge::{badge, BadgeVariant};
+
+badge(ui, &theme, "Active", BadgeVariant::Primary);
+badge(ui, &theme, "New", BadgeVariant::Accent);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "label", type: "&str", description: "Badge text" },
+  { name: "variant", type: "BadgeVariant", default: "Primary", description: "Visual variant" },
+]} />
+
+## Variants
+
+| Variant | Description |
+|---------|-------------|
+| `Primary` | Default blue |
+| `Accent` | Uses `ring` color |
+| `Outline` | Border only |
+| `Destructive` | Red for warnings |

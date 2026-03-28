@@ -1,0 +1,37 @@
+---
+title: Frost Night UI
+description: A dark-mode egui component library for aviation UIs
+---
+
+# Frost Night UI
+
+A minimal egui 0.34 theming + component library extracted from aviation UI Figma mockups. Dark mode only.
+
+## Features
+
+- **14 components** — Button, Input, Checkbox, Toggle, Segmented, Badge, Card, Drag Card, Sidebar Card, Toolbar, Top Toolbar, Zoom Toolbar, Separator
+- **Design tokens** — Colors, typography, spacing, and radius scales
+- **Dark theme** — Consistent dark aviation UI aesthetic
+- **egui 0.34** — Built on the latest egui with eframe
+
+## Quick Start
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+ui-theme = { path = "ui-theme" }
+```
+
+Apply the theme in your app:
+
+```rust
+use ui_theme::{Theme, apply_theme};
+
+let theme = Theme::dark();
+apply_theme(&ctx, &theme);
+```
+
+## Browse
+
+Explore the **Foundations** section for design tokens, or jump to **Components** for interactive previews and usage examples.

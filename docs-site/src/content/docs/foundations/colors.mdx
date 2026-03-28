@@ -1,0 +1,81 @@
+---
+title: Colors
+description: The Frost Night color palette
+---
+
+import ColorSwatch from '../../../components/ColorSwatch.astro';
+
+# Colors
+
+All colors are extracted from Figma mockups. The palette is defined in `palette.rs` as the single source of truth.
+
+## Core
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Background" variable="--background" hex="#04070E" />
+  <ColorSwatch name="Foreground" variable="--foreground" hex="#E2E8F0" />
+  <ColorSwatch name="Border" variable="--border" hex="#1E293B" />
+  <ColorSwatch name="Ring" variable="--ring" hex="#4A90CF" />
+</div>
+
+## Primary
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Primary" variable="--primary" hex="#3B82F6" />
+  <ColorSwatch name="Primary Foreground" variable="--primary-foreground" hex="#FFFFFF" />
+</div>
+
+## Secondary
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Secondary" variable="--secondary" hex="#1E293B" />
+  <ColorSwatch name="Secondary Foreground" variable="--secondary-foreground" hex="#E2E8F0" />
+  <ColorSwatch name="Secondary Border" variable="--secondary-border" hex="#334155" />
+</div>
+
+## Muted
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Muted" variable="--muted" hex="#0F172A" />
+  <ColorSwatch name="Muted Foreground" variable="--muted-foreground" hex="#94A3B8" />
+</div>
+
+## Accent
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Accent" variable="--accent" hex="#0F1E3D" />
+  <ColorSwatch name="Accent Foreground" variable="--accent-foreground" hex="#E2E8F0" />
+</div>
+
+## Destructive
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Destructive" variable="--destructive" hex="#EF4444" />
+  <ColorSwatch name="Destructive Foreground" variable="--destructive-foreground" hex="#FFFFFF" />
+</div>
+
+## Surface
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Card" variable="--card" hex="#0A1628" />
+  <ColorSwatch name="Card Foreground" variable="--card-foreground" hex="#E2E8F0" />
+  <ColorSwatch name="Surface Blur" variable="--surface-blur" />
+</div>
+
+## Controls
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-sm);">
+  <ColorSwatch name="Control Border" variable="--control-border" hex="#3C4656" />
+  <ColorSwatch name="Control Fill Off" variable="--control-fill-off" hex="#0E1A38" />
+  <ColorSwatch name="Control Fill On" variable="--control-fill-on" hex="#162C59" />
+</div>
+
+## Usage in Rust
+
+```rust
+use ui_theme::Theme;
+
+let theme = Theme::dark();
+let bg = theme.palette.background;
+let ring = theme.palette.ring;
+```

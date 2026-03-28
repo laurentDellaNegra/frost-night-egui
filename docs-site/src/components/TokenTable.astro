@@ -1,0 +1,25 @@
+---
+interface Props {
+  tokens: Array<{ name: string; variable: string; value: string }>;
+}
+const { tokens } = Astro.props;
+---
+
+<table class="token-table">
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>CSS Variable</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    {tokens.map(t => (
+      <tr>
+        <td><code>{t.name}</code></td>
+        <td><code>{t.variable}</code></td>
+        <td>{t.value}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>

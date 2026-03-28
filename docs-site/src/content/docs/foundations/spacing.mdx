@@ -1,0 +1,36 @@
+---
+title: Spacing
+description: The spacing scale for consistent layout
+---
+
+import SpacingScale from '../../../components/SpacingScale.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+
+# Spacing
+
+All spacing uses `theme.spacing` — never hardcode pixel values.
+
+## Scale
+
+<SpacingScale />
+
+## Tokens
+
+<TokenTable tokens={[
+  { name: 'spacing.xs', variable: '--spacing-xs', value: '4px' },
+  { name: 'spacing.sm', variable: '--spacing-sm', value: '8px' },
+  { name: 'spacing.md', variable: '--spacing-md', value: '12px' },
+  { name: 'spacing.lg', variable: '--spacing-lg', value: '16px' },
+  { name: 'spacing.xl', variable: '--spacing-xl', value: '24px' },
+  { name: 'control_gap', variable: '--control-gap', value: '3px' },
+]} />
+
+## Usage
+
+```rust
+let theme = Theme::dark();
+ui.add_space(theme.spacing.md);
+
+// For non-standard values, compose from the scale:
+let gap = theme.spacing.xs + 2.0; // 6px
+```

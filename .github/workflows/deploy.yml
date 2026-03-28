@@ -1,4 +1,4 @@
-name: Deploy demo to GitHub Pages
+name: Deploy docs + demo to GitHub Pages
 
 on:
   push:
@@ -30,23 +30,47 @@ jobs:
         with:
           version: latest
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Cache cargo
         uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
+            ui-theme/target
             web-demo/target
-          key: wasm-${{ hashFiles('web-demo/Cargo.lock', 'ui-theme/Cargo.toml') }}
+            ui-storybook/target
+          key: wasm-${{ hashFiles('web-demo/Cargo.lock', 'ui-storybook/Cargo.lock', 'ui-theme/Cargo.toml') }}
           restore-keys: wasm-
 
-      - name: Build web demo
-        run: cd web-demo && trunk build --release --public-url ./
+      # 1. Generate CSS tokens from Rust palette
+      - name: Generate CSS tokens
+        run: cd ui-theme && cargo run --example export_css 2>/dev/null > ../docs-site/src/styles/tokens.css
 
+      # 2. Build storybook WASM → docs-site/public/wasm/
+      - name: Build storybook WASM
+        run: cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm --filehash false
+
+      # 3. Build demo WASM → docs-site/public/demo/
+      - name: Build demo WASM
+        run: cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo --filehash false
+
+      # 4. Build Astro site (includes wasm + demo from public/)
+      - name: Build Astro site
+        run: |
+          cd docs-site
+          npm ci
+          npm run build
+
+      # 5. Upload final artifact (Astro output contains everything)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: web-demo/dist
+          path: docs-site/dist
 
   deploy:
     needs: build

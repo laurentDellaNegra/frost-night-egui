@@ -1,0 +1,43 @@
+---
+interface Prop {
+  name: string;
+  type: string;
+  default?: string;
+  description: string;
+}
+interface Props {
+  props: Prop[];
+}
+const { props } = Astro.props;
+---
+
+<table class="props-table">
+  <thead>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {props.map(p => (
+      <tr>
+        <td><code>{p.name}</code></td>
+        <td><code>{p.type}</code></td>
+        <td>{p.default ? <code>{p.default}</code> : <span class="required">required</span>}</td>
+        <td>{p.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<style>
+  .props-table {
+    width: 100%;
+  }
+  .required {
+    color: var(--destructive);
+    font-size: 0.75rem;
+  }
+</style>

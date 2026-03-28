@@ -1,0 +1,12 @@
+---
+interface Props {
+  code: string;
+  lang?: string;
+}
+const { code, lang = 'rust' } = Astro.props;
+---
+
+<div class="code-block">
+  {lang && <span class="code-lang">{lang}</span>}
+  <pre><code>{code.trim()}</code></pre>
+</div>

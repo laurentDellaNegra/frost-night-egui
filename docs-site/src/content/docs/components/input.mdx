@@ -1,0 +1,33 @@
+---
+title: Text Input
+description: A single-line text input field
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Text Input
+
+A single-line text input with consistent styling across sizes.
+
+## Preview
+
+<ComponentPreview story="input" height="450px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::text_input;
+use ui_theme::ControlSize;
+
+let mut text = String::new();
+text_input(ui, &theme, &mut text, ControlSize::Md);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "text", type: "&mut impl TextBuffer", description: "Mutable text buffer" },
+  { name: "size", type: "ControlSize", default: "Md", description: "Input size" },
+]} />

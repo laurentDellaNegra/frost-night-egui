@@ -1,0 +1,29 @@
+---
+title: Separator
+description: A horizontal divider line
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Separator
+
+A themed horizontal line for dividing content sections.
+
+## Preview
+
+<ComponentPreview story="separator" height="375px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::separator;
+
+separator(ui, &theme);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+]} />

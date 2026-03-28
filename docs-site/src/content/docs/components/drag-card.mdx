@@ -1,0 +1,51 @@
+---
+title: Drag Card
+description: A draggable, closable card panel
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Drag Card
+
+A floating card that can be dragged and closed. Used for movable panels.
+
+## Preview
+
+<ComponentPreview story="drag-card" height="675px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::drag_card::{drag_card, DragCardState};
+
+let mut state = DragCardState {
+    pos: egui::pos2(100.0, 100.0),
+    size: egui::vec2(250.0, 200.0),
+};
+
+let response = drag_card(ui, &theme, egui::Id::new("my_card"), &mut state, "Panel", |ui| {
+    ui.label("Drag me around!");
+});
+
+if response.closed {
+    // Handle close
+}`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "id", type: "Id", description: "Unique widget ID" },
+  { name: "state", type: "&mut DragCardState", description: "Position and size state" },
+  { name: "title", type: "&str", description: "Card title" },
+  { name: "add_contents", type: "impl FnOnce(&mut Ui)", description: "Card body content" },
+]} />
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `closed` | `bool` | Close button was clicked |
+| `dragging` | `bool` | Card is being dragged |

@@ -1,0 +1,53 @@
+---
+import DemoLayout from '../layouts/DemoLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<DemoLayout title="Live Demo">
+  <canvas id="the_canvas_id" class="fullscreen-canvas" data-base={base}></canvas>
+  <a href={`${base}/demo`} class="back-link">Back to docs</a>
+</DemoLayout>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #04070e;
+  }
+  .fullscreen-canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .back-link {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    background: var(--surface-blur);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    z-index: 1000;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+  .back-link:hover {
+    opacity: 1;
+    color: var(--foreground);
+  }
+</style>
+
+<script is:inline>
+  async function loadDemo() {
+    const canvas = document.getElementById('the_canvas_id');
+    const base = canvas.dataset.base;
+    const wasm = await import(base + '/demo/web-demo.js');
+    await wasm.default();
+  }
+  loadDemo();
+</script>

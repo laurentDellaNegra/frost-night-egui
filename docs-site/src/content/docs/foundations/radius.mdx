@@ -1,0 +1,33 @@
+---
+title: Radius
+description: Border radius scale
+---
+
+import RadiusScale from '../../../components/RadiusScale.astro';
+import TokenTable from '../../../components/TokenTable.astro';
+
+# Radius
+
+Three radius sizes used consistently across all components.
+
+## Scale
+
+<RadiusScale />
+
+## Tokens
+
+<TokenTable tokens={[
+  { name: 'radius.sm', variable: '--radius-sm', value: '4px' },
+  { name: 'radius.md', variable: '--radius-md', value: '6px' },
+  { name: 'radius.lg', variable: '--radius-lg', value: '8px' },
+]} />
+
+## Usage
+
+```rust
+let theme = Theme::dark();
+let radius = theme.radius.md; // 6
+
+// ControlSize maps to radius:
+let corner_radius = ControlSize::Md.corner_radius(&theme.radius);
+```

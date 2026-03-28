@@ -1,0 +1,48 @@
+---
+title: Sidebar Card
+description: A dockable card that attaches to the toolbar
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Sidebar Card
+
+A card that can be docked to the toolbar or detached as a floating panel. Paints its own backdrop, border glow, and handle animation.
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::sidebar_card::{sidebar_card, SidebarCardResponse};
+
+let response = sidebar_card(
+    ui, &theme,
+    egui::Id::new("my_sidebar"),
+    rect,
+    open_t,
+    "Layers",
+    false, // highlight
+    |ui| {
+        ui.label("Sidebar content");
+    },
+);`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "id", type: "Id", description: "Unique widget ID" },
+  { name: "rect", type: "Rect", description: "Card rectangle" },
+  { name: "open_t", type: "f32", description: "Open animation progress (0..1)" },
+  { name: "title", type: "&str", description: "Card title" },
+  { name: "highlight", type: "bool", description: "Show attention glow" },
+  { name: "add_contents", type: "impl FnOnce(&mut Ui)", description: "Card body content" },
+]} />
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `closed` | `bool` | Close button was clicked |
+| `dragging` | `bool` | Card is being dragged |
+| `drag_delta` | `Vec2` | Drag movement delta |

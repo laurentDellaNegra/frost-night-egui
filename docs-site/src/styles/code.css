@@ -1,0 +1,17 @@
+.code-block {
+  position: relative;
+  margin: var(--spacing-md) 0;
+}
+
+.code-block pre {
+  margin: 0;
+}
+
+.code-lang {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-sm);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
