@@ -232,7 +232,12 @@ pub fn sidebar_card(
     );
 
     if open_t > 0.3 {
-        let mut body_ui = ui.new_child(egui::UiBuilder::new().id_salt(id).max_rect(body_rect));
+        let mut body_ui = ui.new_child(
+            egui::UiBuilder::new()
+                .id_salt(id)
+                .global_scope(true)
+                .max_rect(body_rect),
+        );
         body_ui.set_opacity(ui.opacity() * open_t);
         egui::ScrollArea::vertical().show(&mut body_ui, |ui| {
             egui::Frame::new()

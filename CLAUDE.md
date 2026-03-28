@@ -7,8 +7,9 @@
 ## Repository structure
 
 - `ui-theme/` — The library crate. Palette, tokens, scales, theme, helpers, and component wrappers.
-- `ui-theme/examples/demo.rs` — Native demo showcasing all components with live animated tracks.
-- `web-demo/` — Separate wasm crate for GitHub Pages deployment (mirrors the native demo).
+- `ui-theme/src/demo.rs` — Shared demo module (gated behind `demo` feature). Contains `DemoApp`, tracks, background painting, and all demo logic.
+- `ui-theme/examples/demo.rs` — Native entry point (~10 lines, calls `ui_theme::demo::DemoApp`).
+- `web-demo/` — Wasm entry point for GitHub Pages deployment (~40 lines, same `DemoApp`).
 - `mockups/` — Original Figma screenshots (`interface.png`, `windows.png`) and links.
 - `DESIGN_TOKENS.md` — Extracted color palette, typography, spacing, and component specs.
 
@@ -18,8 +19,8 @@
 # Check the library
 cd ui-theme && cargo check
 
-# Run the native demo
-cd ui-theme && cargo run --example demo
+# Run the native demo (requires demo feature)
+cd ui-theme && cargo run --example demo --features demo
 
 # Build the web demo (requires trunk: cargo install trunk)
 cd web-demo && trunk serve
@@ -60,8 +61,8 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
-- `sidebar_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally. Returns `SidebarCardResponse { closed, dragging, drag_delta }`.
-- `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers. Returns `ToolbarResponse { clicked, rect, button_centers_y }`.
+- `sidebar_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally. Takes `highlight: bool` for attention glow (combined with drag glow via `glow_t = drag_t.max(highlight_t)`). Returns `SidebarCardResponse { closed, dragging, drag_delta }`.
+- `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers. Takes `floating: &[usize]` to show `ring`-colored icons for floating cards. Returns `ToolbarResponse { clicked, rect, button_centers_y }`.
 - `top_toolbar` paints its own backdrop, vertical separators, and icon buttons. Returns `TopToolbarResponse { icon_clicked }`.
 - `zoom_toolbar` takes a `rect` parameter (no child UI needed) and paints its own backdrop with +/− icon buttons, separator, and Reset text button. Returns `ZoomToolbarResponse { zoom_in, zoom_out, reset }`. Uses absolute `Id::new(...)` for all widget IDs.
 - All control colors come from `theme.palette` — never hardcode hex colors in component files.
@@ -76,11 +77,31 @@ The demo supports docked cards (attached to toolbar) and floating cards (detache
 - Docked and floating cards for the same button share `Id::new(("sidebar_card", button_idx))` to avoid egui "widget rect changed id between passes" warnings on transitions.
 - Drag-while-docked: card accumulates `docked_drag_offset` during drag (stays docked with stable ID), converts to floating only on drag release.
 - Deferred push: newly detached floating cards are pushed after the floating card render loop to avoid duplicate rendering in the same frame.
+- Toolbar shows `ring`-colored icons for buttons that have floating cards (via `floating` parameter).
+- Clicking a toolbar button for an already-parked card triggers a highlight flash (timestamp-based, 0.3s) and brings the card to front.
+- Z-ordering: click or drag on any floating card moves it to end of Vec (renders on top). Uses pointer position detection (not `ui.interact()`) to avoid adding extra widget IDs.
 
 ### egui widget ID hygiene
-- Child UIs created with `ui.new_child()` should use `.id_salt(...)` for stable IDs that don't depend on auto-ID counters.
-- Components rendered after conditionally-present widgets (like sidebar cards) are especially vulnerable to ID instability — prefer absolute `Id::new(...)` or explicit `id_salt`.
-- `zoom_toolbar` takes a `Rect` directly and uses absolute IDs — no child UI wrapper needed.
+
+**Core rule**: egui's "Widget rect changed id between passes" warnings mean the same screen rect has different widget IDs between layout passes. This happens when widget rendering order or presence changes between passes in a single frame.
+
+**`new_child` auto-counter trap**: `ui.new_child(UiBuilder::new().id_salt(id))` does NOT fully determine the child's ID. egui mixes the parent's `next_auto_id_salt` counter into the child's `unique_id`. So if widgets before it conditionally appear/disappear, or if rendering order changes (e.g. Vec reorder), the auto-counter shifts and the child gets a different ID.
+
+**Fix — `global_scope(true)`**: For components rendered in variable order (e.g. iterated from a Vec that may reorder), use:
+```rust
+ui.new_child(UiBuilder::new().id_salt(id).global_scope(true).max_rect(rect))
+```
+With `global_scope(true)`, both `stable_id` and `unique_id` equal the provided `id_salt` directly — no parent auto-counter mixed in. The child's entire widget subtree becomes order-independent.
+
+**Fix — `push_id` for section isolation**: Wrap independent UI sections in `ui.push_id("section_name", |ui| { ... })` to give each section its own auto-ID counter. This prevents one section's conditional rendering from shifting IDs in another section.
+
+**Fix — absolute IDs for interactions**: Use `Id::new(...)` (not `ui.id().with(...)`) for `ui.interact()` calls in components that may render in variable contexts. Absolute IDs don't depend on the parent UI scope.
+
+**Patterns applied in this project**:
+- `sidebar_card` body uses `.global_scope(true)` so card content IDs are stable regardless of rendering order.
+- Demo wraps docked and floating card sections in separate `push_id` scopes.
+- `zoom_toolbar` takes a `Rect` directly and uses absolute `Id::new(...)` — no child UI wrapper needed.
+- Docked and floating cards for the same button share `Id::new(("sidebar_card", button_idx))` for smooth transitions.
 
 ### Icons
 - Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
@@ -89,8 +110,10 @@ The demo supports docked cards (attached to toolbar) and floating cards (detache
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app
-- `demo.rs` and `web-demo/src/main.rs` should stay in sync — they are the same demo with different entry points.
+- All demo logic lives in `ui-theme/src/demo.rs` (gated behind `demo` feature).
+- `ui-theme/examples/demo.rs` and `web-demo/src/main.rs` are thin entry points — both call `ui_theme::demo::DemoApp::new(cc)`.
 - Tracks animate continuously along velocity vectors (frame-rate independent with `dt`).
+- Floating card z-ordering: last in `Vec<FloatingCard>` renders on top. Dragging or clicking a card moves it to end. Toolbar click for a parked card highlights it and brings to front.
 
 ## Deployment
 - GitHub Pages via `.github/workflows/deploy.yml` — triggers on push to `main`.

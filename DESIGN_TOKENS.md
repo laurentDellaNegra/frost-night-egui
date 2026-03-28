@@ -163,9 +163,12 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - 1px border, rounded ~8px. Open/close animation: slide from left + fade in (0.15s).
 - Top handle zone: 3 dots animate into a grab bar on hover (0.15s transition).
 - Title row with close button (X). Drag handle excludes close button area.
-- On drag: border glows to `ring` color (1.0→1.8px width), outer halo expands 4px.
+- On drag or highlight: border glows to `ring` color (1.0→1.8px width), outer halo expands 4px. Glow driven by `max(drag_t, highlight_t)`.
 - Scrollable body content area with inner margin.
 - Can be docked (attached to toolbar) or floating (detached via drag).
+- Floating cards have z-ordering: last in Vec renders on top. Click/drag brings to front.
+- Toolbar icons show `ring` color for buttons with floating cards.
+- Clicking toolbar button for already-parked card: highlight flash (0.3s) + bring to front.
 - Global drag fade: all UI elements (toolbar, card) fade to 15% opacity (0.15s).
 
 ### Toolbar (Left Sidebar)

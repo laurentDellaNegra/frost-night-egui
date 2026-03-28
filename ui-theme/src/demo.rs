@@ -456,8 +456,11 @@ impl eframe::App for DemoApp {
 
         // Handle toolbar button clicks
         if let Some(clicked) = tb_response.clicked {
-            if let Some(fc) = self.floating_cards.iter_mut().find(|f| f.from_button == clicked) {
-                fc.highlight_time = ui.input(|i| i.time);
+            if let Some(idx) = self.floating_cards.iter().position(|f| f.from_button == clicked) {
+                self.floating_cards[idx].highlight_time = ui.input(|i| i.time);
+                // Bring to front (move to end of Vec)
+                let card = self.floating_cards.remove(idx);
+                self.floating_cards.push(card);
             } else if self.docked_button == Some(clicked) {
                 let btn_y = tb_response.button_centers_y.get(clicked).copied().unwrap_or(tb_y);
                 self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), clicked));
@@ -474,6 +477,7 @@ impl eframe::App for DemoApp {
         ];
 
         // --- Docked card (with open/close animation) ---
+        // Wrapped in push_id to isolate auto-ID counters from floating section.
         let mut pending_float: Option<FloatingCard> = None;
         let is_docked_open = self.docked_button.is_some();
         let docked_open_t = ui.ctx().animate_bool_with_time(
@@ -482,141 +486,162 @@ impl eframe::App for DemoApp {
             0.15,
         );
 
-        if docked_open_t > 0.01 && !self.docked_detached {
-            let (base_pos, button_idx) = if let Some(idx) = self.docked_button {
-                let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
-                let card_top = btn_y - self.theme.spacing.md;
-                let pos = egui::pos2(dock_x, card_top);
-                self.last_docked_pos = Some((pos, idx));
-                (pos, idx)
-            } else {
-                self.last_docked_pos.unwrap_or((egui::pos2(dock_x, tb_y), 0))
-            };
+        ui.push_id("docked_section", |ui| {
+            if docked_open_t > 0.01 && !self.docked_detached {
+                let (base_pos, button_idx) = if let Some(idx) = self.docked_button {
+                    let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
+                    let card_top = btn_y - self.theme.spacing.md;
+                    let pos = egui::pos2(dock_x, card_top);
+                    self.last_docked_pos = Some((pos, idx));
+                    (pos, idx)
+                } else {
+                    self.last_docked_pos.unwrap_or((egui::pos2(dock_x, tb_y), 0))
+                };
 
-            let card_rect = egui::Rect::from_min_size(
-                base_pos + self.docked_drag_offset,
-                egui::vec2(sidebar_card_width, sidebar_card_height),
-            );
-            let title = panel_titles.get(button_idx).copied().unwrap_or("Panel");
+                let card_rect = egui::Rect::from_min_size(
+                    base_pos + self.docked_drag_offset,
+                    egui::vec2(sidebar_card_width, sidebar_card_height),
+                );
+                let title = panel_titles.get(button_idx).copied().unwrap_or("Panel");
 
-            let card_resp = if button_idx == 0 {
-                let theme = &self.theme;
-                let input_text = &mut self.input_text;
-                let toggle_on = &mut self.toggle_on;
-                let check_a = &mut self.check_a;
-                let check_b = &mut self.check_b;
-                let check_c = &mut self.check_c;
-                let segment_idx = &mut self.segment_idx;
-                sidebar_card(
-                    ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                    card_rect, docked_open_t, title, false,
-                    |ui| {
-                        demo_card_content(
-                            ui, theme, 0, input_text, toggle_on,
-                            check_a, check_b, check_c, segment_idx,
-                        );
-                    },
-                )
-            } else {
-                let theme = &self.theme;
-                sidebar_card(
-                    ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                    card_rect, docked_open_t, title, false,
-                    |ui| {
-                        ui.label(
-                            egui::RichText::new(format!("{title} panel content"))
-                                .size(13.0)
-                                .color(theme.palette.muted_foreground),
-                        );
-                    },
-                )
-            };
+                let card_resp = if button_idx == 0 {
+                    let theme = &self.theme;
+                    let input_text = &mut self.input_text;
+                    let toggle_on = &mut self.toggle_on;
+                    let check_a = &mut self.check_a;
+                    let check_b = &mut self.check_b;
+                    let check_c = &mut self.check_c;
+                    let segment_idx = &mut self.segment_idx;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                        card_rect, docked_open_t, title, false,
+                        |ui| {
+                            demo_card_content(
+                                ui, theme, 0, input_text, toggle_on,
+                                check_a, check_b, check_c, segment_idx,
+                            );
+                        },
+                    )
+                } else {
+                    let theme = &self.theme;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                        card_rect, docked_open_t, title, false,
+                        |ui| {
+                            ui.label(
+                                egui::RichText::new(format!("{title} panel content"))
+                                    .size(13.0)
+                                    .color(theme.palette.muted_foreground),
+                            );
+                        },
+                    )
+                };
 
-            if card_resp.dragging {
-                self.docked_drag_offset += card_resp.drag_delta;
-                any_dragging_this_frame = true;
-            } else if self.docked_drag_offset.length() > 1.0 {
-                if let Some(idx) = self.docked_button.take() {
-                    pending_float = Some(FloatingCard {
-                        pos: card_rect.min,
-                        from_button: idx,
-                        highlight_time: 0.0,
-                    });
-                    self.docked_detached = true;
-                }
-                self.docked_drag_offset = egui::Vec2::ZERO;
-            } else {
-                self.docked_drag_offset = egui::Vec2::ZERO;
-                if card_resp.closed {
-                    if let Some(idx) = self.docked_button {
-                        let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
-                        self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), idx));
+                if card_resp.dragging {
+                    self.docked_drag_offset += card_resp.drag_delta;
+                    any_dragging_this_frame = true;
+                } else if self.docked_drag_offset.length() > 1.0 {
+                    if let Some(idx) = self.docked_button.take() {
+                        pending_float = Some(FloatingCard {
+                            pos: card_rect.min,
+                            from_button: idx,
+                            highlight_time: 0.0,
+                        });
+                        self.docked_detached = true;
                     }
-                    self.docked_button = None;
+                    self.docked_drag_offset = egui::Vec2::ZERO;
+                } else {
+                    self.docked_drag_offset = egui::Vec2::ZERO;
+                    if card_resp.closed {
+                        if let Some(idx) = self.docked_button {
+                            let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
+                            self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), idx));
+                        }
+                        self.docked_button = None;
+                    }
                 }
             }
-        }
+        });
 
         if docked_open_t <= 0.01 {
             self.docked_detached = false;
         }
 
         // --- Floating (parked) cards ---
+        // Wrapped in push_id to isolate auto-ID counters from docked section.
+        // Rendered in Vec order: last = on top (highest z-index).
         let mut floating_to_remove = vec![];
-        for i in 0..self.floating_cards.len() {
-            let pos = self.floating_cards[i].pos;
-            let from_button = self.floating_cards[i].from_button;
-            let now = ui.input(|i| i.time);
-            let hl = (now - self.floating_cards[i].highlight_time) < 0.3;
-            let card_rect = egui::Rect::from_min_size(
-                pos,
-                egui::vec2(sidebar_card_width, sidebar_card_height),
-            );
-            let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
+        let mut bring_to_front: Option<usize> = None;
+        ui.push_id("floating_section", |ui| {
+            for i in 0..self.floating_cards.len() {
+                let pos = self.floating_cards[i].pos;
+                let from_button = self.floating_cards[i].from_button;
+                let now = ui.input(|i| i.time);
+                let hl = (now - self.floating_cards[i].highlight_time) < 0.3;
+                let card_rect = egui::Rect::from_min_size(
+                    pos,
+                    egui::vec2(sidebar_card_width, sidebar_card_height),
+                );
+                let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
 
-            let card_resp = if from_button == 0 {
-                let theme = &self.theme;
-                let input_text = &mut self.input_text;
-                let toggle_on = &mut self.toggle_on;
-                let check_a = &mut self.check_a;
-                let check_b = &mut self.check_b;
-                let check_c = &mut self.check_c;
-                let segment_idx = &mut self.segment_idx;
-                sidebar_card(
-                    ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                    card_rect, 1.0, title, hl,
-                    |ui| {
-                        demo_card_content(
-                            ui, theme, from_button, input_text, toggle_on,
-                            check_a, check_b, check_c, segment_idx,
-                        );
-                    },
-                )
-            } else {
-                let theme = &self.theme;
-                sidebar_card(
-                    ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                    card_rect, 1.0, title, hl,
-                    |ui| {
-                        ui.label(
-                            egui::RichText::new(format!("{title} panel content"))
-                                .size(13.0)
-                                .color(theme.palette.muted_foreground),
-                        );
-                    },
-                )
-            };
+                let card_resp = if from_button == 0 {
+                    let theme = &self.theme;
+                    let input_text = &mut self.input_text;
+                    let toggle_on = &mut self.toggle_on;
+                    let check_a = &mut self.check_a;
+                    let check_b = &mut self.check_b;
+                    let check_c = &mut self.check_c;
+                    let segment_idx = &mut self.segment_idx;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                        card_rect, 1.0, title, hl,
+                        |ui| {
+                            demo_card_content(
+                                ui, theme, from_button, input_text, toggle_on,
+                                check_a, check_b, check_c, segment_idx,
+                            );
+                        },
+                    )
+                } else {
+                    let theme = &self.theme;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                        card_rect, 1.0, title, hl,
+                        |ui| {
+                            ui.label(
+                                egui::RichText::new(format!("{title} panel content"))
+                                    .size(13.0)
+                                    .color(theme.palette.muted_foreground),
+                            );
+                        },
+                    )
+                };
 
-            if card_resp.dragging {
-                self.floating_cards[i].pos = pos + card_resp.drag_delta;
-                any_dragging_this_frame = true;
+                if card_resp.dragging {
+                    self.floating_cards[i].pos = pos + card_resp.drag_delta;
+                    any_dragging_this_frame = true;
+                    bring_to_front = Some(i);
+                } else if ui.input(|i| i.pointer.any_pressed())
+                    && card_rect.contains(
+                        ui.input(|i| i.pointer.interact_pos().unwrap_or_default()),
+                    )
+                {
+                    bring_to_front = Some(i);
+                }
+                if card_resp.closed {
+                    floating_to_remove.push(i);
+                }
             }
-            if card_resp.closed {
-                floating_to_remove.push(i);
-            }
-        }
+        });
         for idx in floating_to_remove.into_iter().rev() {
             self.floating_cards.remove(idx);
+        }
+        // Bring interacted card to front (move to end of Vec)
+        if let Some(idx) = bring_to_front {
+            if idx < self.floating_cards.len() {
+                let card = self.floating_cards.remove(idx);
+                self.floating_cards.push(card);
+            }
         }
 
         if let Some(fc) = pending_float {
