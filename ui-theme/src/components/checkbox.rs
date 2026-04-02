@@ -10,9 +10,18 @@ use crate::tokens::mix;
 /// Checked: dark navy fill with accent-colored checkmark.
 /// Unchecked: border-only rounded square.
 pub fn checkbox(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> Response {
+    checkbox_with_font(ui, theme, checked, label, 13.0)
+}
+
+/// Checkbox with a smaller label font.
+pub fn checkbox_small(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str) -> Response {
+    checkbox_with_font(ui, theme, checked, label, 11.0)
+}
+
+fn checkbox_with_font(ui: &mut Ui, theme: &Theme, checked: &mut bool, label: &str, font_size: f32) -> Response {
     let box_size = 22.0;
     let spacing = theme.spacing.xs + 2.0;
-    let font = egui::FontId::proportional(13.0);
+    let font = egui::FontId::proportional(font_size);
 
     let text = egui::WidgetText::from(
         egui::RichText::new(label)

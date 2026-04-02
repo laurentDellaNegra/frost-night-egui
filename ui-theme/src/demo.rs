@@ -6,6 +6,7 @@ use eframe::egui;
 
 use crate::components::*;
 use crate::icons::*;
+use crate::widgets::MapsMenuState;
 use crate::{apply_theme, ControlSize, ControlVariant, Theme};
 
 // ---------------------------------------------------------------------------
@@ -389,6 +390,7 @@ pub struct DemoApp {
     map_tab: usize,
     accordion_open: Vec<bool>,
     accordion_nested: [Vec<bool>; 4],
+    maps_menu: MapsMenuState,
 }
 
 impl DemoApp {
@@ -434,6 +436,7 @@ impl DemoApp {
                 vec![false, false, false],
                 vec![false, false],
             ],
+            maps_menu: MapsMenuState::default(),
         }
     }
 }
@@ -556,7 +559,7 @@ impl eframe::App for DemoApp {
         }
 
         let panel_titles = [
-            "Panel", "Map", "Layers", "Globe", "Add", "Radar", "Navigation",
+            "Panel", "", "Map", "Globe", "Add", "Radar", "Navigation",
             "Crosshair", "Filter", "Settings",
         ];
 
@@ -607,6 +610,16 @@ impl eframe::App for DemoApp {
                         },
                     )
                 } else if button_idx == 1 {
+                    let theme = &self.theme;
+                    let maps_menu = &mut self.maps_menu;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                        card_rect, docked_open_t, title, false,
+                        |ui| {
+                            crate::widgets::maps_menu(ui, theme, maps_menu);
+                        },
+                    )
+                } else if button_idx == 2 {
                     let theme = &self.theme;
                     let map_tab = &mut self.map_tab;
                     let acc_open = &mut self.accordion_open;
@@ -699,6 +712,16 @@ impl eframe::App for DemoApp {
                         },
                     )
                 } else if from_button == 1 {
+                    let theme = &self.theme;
+                    let maps_menu = &mut self.maps_menu;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                        card_rect, 1.0, title, hl,
+                        |ui| {
+                            crate::widgets::maps_menu(ui, theme, maps_menu);
+                        },
+                    )
+                } else if from_button == 2 {
                     let theme = &self.theme;
                     let map_tab = &mut self.map_tab;
                     let acc_open = &mut self.accordion_open;

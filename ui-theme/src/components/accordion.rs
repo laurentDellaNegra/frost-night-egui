@@ -75,11 +75,15 @@ pub fn accordion(
                 // Paint header
                 if ui.is_rect_visible(header_rect) {
                     if header_response.hovered() {
-                        ui.painter().rect_filled(
-                            header_rect,
-                            egui::CornerRadius::same(theme.radius.md),
-                            theme.palette.muted,
-                        );
+                        let clip = ui.clip_rect();
+                        let hover_rect = header_rect.intersect(clip);
+                        if hover_rect.is_positive() {
+                            ui.painter().rect_filled(
+                                hover_rect,
+                                egui::CornerRadius::same(theme.radius.md),
+                                theme.palette.muted,
+                            );
+                        }
                     }
 
                     // Animated triangle (rotates right → down)

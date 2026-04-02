@@ -72,4 +72,5 @@ pub const ICON_ZOOM_OUT: char = '\u{E1B7}';
 pub const ICON_CIRCLE_X: char = '\u{E084}';
 pub const ICON_CHEVRON_RIGHT: char = '\u{E06F}';
 pub const ICON_CHEVRON_DOWN: char = '\u{E06D}';
+pub const ICON_STAR: char = '\u{E176}';
 pub const ICON_SNOWFLAKE: char = '\u{E165}';

@@ -20,7 +20,7 @@ pub use accordion::accordion;
 pub use badge::{badge, BadgeVariant};
 pub use button::button;
 pub use card::card;
-pub use checkbox::checkbox;
+pub use checkbox::{checkbox, checkbox_small};
 pub use drag_card::{drag_card, DragCardResponse, DragCardState};
 pub use input::text_input;
 pub use segmented::segmented;

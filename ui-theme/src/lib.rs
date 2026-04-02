@@ -12,6 +12,7 @@ pub mod palette;
 pub mod scale;
 pub mod theme;
 pub mod tokens;
+pub mod widgets;
 
 #[cfg(feature = "demo")]
 pub mod demo;
