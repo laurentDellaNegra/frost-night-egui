@@ -1,5 +1,6 @@
 //! Thin component wrappers that use the theme for styling.
 
+mod accordion;
 mod badge;
 mod button;
 mod card;
@@ -14,6 +15,7 @@ mod toolbar;
 mod top_toolbar;
 mod zoom_toolbar;
 
+pub use accordion::accordion;
 pub use badge::{badge, BadgeVariant};
 pub use button::button;
 pub use card::card;

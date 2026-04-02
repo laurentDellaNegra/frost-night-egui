@@ -1,3 +1,4 @@
+mod accordion;
 mod badge;
 mod button;
 mod card;
@@ -10,6 +11,7 @@ mod separator;
 mod toggle;
 mod toolbar;
 
+pub use accordion::{accordion_story, AccordionStoryState};
 pub use badge::{badge_story, BadgeStoryState};
 pub use button::{button_story, ButtonStoryState};
 pub use card::{card_story, CardStoryState};

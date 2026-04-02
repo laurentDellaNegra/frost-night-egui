@@ -1,0 +1,55 @@
+---
+title: Accordion
+description: Collapsible sections with optional exclusive mode
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Accordion
+
+Collapsible content sections grouped together. Supports exclusive mode where only one section can be open at a time, or multi-open mode where any combination is allowed.
+
+## Preview
+
+<ComponentPreview story="accordion" height="900px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::accordion;
+
+let titles = &["Flight Info", "Weather", "Navigation"];
+let mut open = vec![true, false, false];
+
+accordion(ui, &theme, titles, &mut open, false, |ui, index| {
+    match index {
+        0 => { ui.label("Flight: SWR 1234"); }
+        1 => { ui.label("QNH: 1016 hPa"); }
+        2 => { ui.label("Waypoint: DEGES"); }
+        _ => {}
+    }
+});
+
+// Exclusive mode — only one section open at a time
+accordion(ui, &theme, titles, &mut open, true, |ui, index| {
+    ui.label(format!("Section {}", index));
+});
+
+// Nested — accordion inside accordion
+accordion(ui, &theme, &["Layers", "Filters"], &mut outer_open, false, |ui, i| {
+    accordion(ui, &theme, &["Sub A", "Sub B"], &mut inner_open[i], true, |ui, j| {
+        ui.label(format!("Nested content {}.{}", i, j));
+    });
+});`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "items", type: "&[&str]", description: "Section header titles" },
+  { name: "open", type: "&mut Vec<bool>", description: "Which sections are expanded (must match items length)" },
+  { name: "exclusive", type: "bool", default: "false", description: "When true, opening one section closes all others" },
+  { name: "add_body", type: "impl FnMut(&mut Ui, usize)", description: "Renders content for each section by index (FnMut allows nested accordions)" },
+]} />

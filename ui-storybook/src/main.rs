@@ -42,6 +42,7 @@ use ui_theme::{apply_theme, Theme};
 struct StoryApp {
     theme: Theme,
     story: String,
+    accordion_state: stories::AccordionStoryState,
     button_state: stories::ButtonStoryState,
     input_state: stories::InputStoryState,
     checkbox_state: stories::CheckboxStoryState,
@@ -61,6 +62,7 @@ impl StoryApp {
         Self {
             theme,
             story,
+            accordion_state: Default::default(),
             button_state: Default::default(),
             input_state: Default::default(),
             checkbox_state: Default::default(),
@@ -91,6 +93,7 @@ impl eframe::App for StoryApp {
             ui.vertical(|ui| {
                 ui.set_width(available - padding * 2.0);
         match self.story.as_str() {
+            "accordion" => stories::accordion_story(ui, &self.theme, &mut self.accordion_state),
             "button" => stories::button_story(ui, &self.theme, &mut self.button_state),
             "input" => stories::input_story(ui, &self.theme, &mut self.input_state),
             "checkbox" => stories::checkbox_story(ui, &self.theme, &mut self.checkbox_state),

@@ -201,10 +201,21 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - Pill-shaped container with `control_border` border.
 - Active segment: `control_gap` inset with `control_fill_on` fill.
 
+### Accordion
+- Borderless collapsible sections — no outer card, no borders, no dividers.
+- Animated triangle indicator: rotates right → down. Color transitions `muted_foreground` → `ring`.
+- Title color transitions `muted_foreground` → `foreground` on open.
+- Body height is animated (clipped during transition). Content fades in/out with opacity.
+- Hover highlight: `muted` fill with `md` border radius.
+- Header height: `sm * 2 + 16px`. Body margin: `md` horizontal, `sm` vertical.
+- `exclusive` mode: only one section open at a time.
+- Supports nesting (accordion inside accordion) via `FnMut` body callback.
+- Animation duration: 0.15s.
+
 ### Icons
 - Lucide icon font v1.7.0 (TTF, embedded via `include_bytes!`).
 - Registered as custom `FontFamily::Name("lucide")` in egui.
-- Named codepoint constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, etc.
+- Named codepoint constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, `ICON_SNOWFLAKE`, etc.
 
 ---
 

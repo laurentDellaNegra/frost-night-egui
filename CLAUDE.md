@@ -109,6 +109,13 @@ All spacing (padding, margins, gaps) uses `theme.spacing` (`SpacingScale` in `sc
 ### Component API pattern
 Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response` (or a custom response struct like `DragCardResponse`).
 
+### Accordion
+- `accordion(ui, theme, items, open, exclusive, add_body)` — collapsible sections, always borderless.
+- `open: &mut Vec<bool>` tracks which sections are expanded. `exclusive: bool` allows only one open at a time.
+- `add_body: impl FnMut(&mut Ui, usize)` — `FnMut` (not `Fn`) so nested accordions can mutate their own state.
+- Body height is animated via stored measurements in egui temp data. Content is clipped during the transition.
+- Supports nesting — accordion inside accordion works out of the box.
+
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
 - `sidebar_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally. Takes `highlight: bool` for attention glow (combined with drag glow via `glow_t = drag_t.max(highlight_t)`). Returns `SidebarCardResponse { closed, dragging, drag_delta }`.

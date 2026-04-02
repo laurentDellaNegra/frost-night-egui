@@ -287,6 +287,75 @@ fn demo_card_content(
     });
 }
 
+fn demo_accordion_content(
+    ui: &mut egui::Ui,
+    theme: &Theme,
+    acc_open: &mut Vec<bool>,
+    nested: &mut [Vec<bool>; 4],
+) {
+    accordion(
+        ui,
+        theme,
+        &["Base Maps", "Overlays", "Airspace", "Weather"],
+        acc_open,
+        false,
+        |ui, i| match i {
+            0 => {
+                accordion(
+                    ui, theme,
+                    &["Standard", "Satellite", "Terrain"],
+                    &mut nested[0], true,
+                    |ui, j| match j {
+                        0 => { ui.label("OpenStreetMap tiles"); ui.label("Light/dark variants"); }
+                        1 => { ui.label("High-res imagery"); ui.label("Cloud-free composite"); }
+                        2 => { ui.label("Elevation contours"); ui.label("Hillshade overlay"); }
+                        _ => {}
+                    },
+                );
+            }
+            1 => {
+                accordion(
+                    ui, theme,
+                    &["Airways", "Waypoints", "Navaids"],
+                    &mut nested[1], true,
+                    |ui, j| match j {
+                        0 => { ui.label("Upper: UL/UT routes"); ui.label("Lower: L routes"); }
+                        1 => { ui.label("RNAV fixes"); ui.label("Conventional intersections"); }
+                        2 => { ui.label("VOR/DME stations"); ui.label("NDB beacons"); }
+                        _ => {}
+                    },
+                );
+            }
+            2 => {
+                accordion(
+                    ui, theme,
+                    &["TMA", "CTR", "FIR"],
+                    &mut nested[2], true,
+                    |ui, j| match j {
+                        0 => { ui.label("TMA Zurich"); ui.label("TMA Geneva"); }
+                        1 => { ui.label("CTR Zurich 1/2"); ui.label("CTR Geneva"); }
+                        2 => { ui.label("LSAS Switzerland"); ui.label("Adjacent FIRs"); }
+                        _ => {}
+                    },
+                );
+            }
+            3 => {
+                accordion(
+                    ui, theme,
+                    &["Surface", "Upper air"],
+                    &mut nested[3], true,
+                    |ui, j| match j {
+                        0 => { ui.label("METAR / SPECI"); ui.label("TAF forecasts"); }
+                        1 => { ui.label("SIGMET / AIRMET"); ui.label("Winds & temps aloft"); }
+                        _ => {}
+                    },
+                );
+            }
+            _ => {}
+        },
+    );
+}
+
 // ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
@@ -313,6 +382,8 @@ pub struct DemoApp {
     docked_drag_offset: egui::Vec2,
     any_card_dragging: bool,
     live_tracks: Vec<LiveTrack>,
+    accordion_open: Vec<bool>,
+    accordion_nested: [Vec<bool>; 4],
 }
 
 impl DemoApp {
@@ -350,6 +421,13 @@ impl DemoApp {
             docked_drag_offset: egui::Vec2::ZERO,
             any_card_dragging: false,
             live_tracks,
+            accordion_open: vec![true, false, false, false],
+            accordion_nested: [
+                vec![true, false, false],
+                vec![false, false, false],
+                vec![false, false, false],
+                vec![false, false],
+            ],
         }
     }
 }
@@ -522,6 +600,17 @@ impl eframe::App for DemoApp {
                             );
                         },
                     )
+                } else if button_idx == 1 {
+                    let theme = &self.theme;
+                    let acc_open = &mut self.accordion_open;
+                    let acc_nested = &mut self.accordion_nested;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
+                        card_rect, docked_open_t, title, false,
+                        |ui| {
+                            demo_accordion_content(ui, theme, acc_open, acc_nested);
+                        },
+                    )
                 } else {
                     let theme = &self.theme;
                     sidebar_card(
@@ -600,6 +689,17 @@ impl eframe::App for DemoApp {
                                 ui, theme, from_button, input_text, toggle_on,
                                 check_a, check_b, check_c, segment_idx,
                             );
+                        },
+                    )
+                } else if from_button == 1 {
+                    let theme = &self.theme;
+                    let acc_open = &mut self.accordion_open;
+                    let acc_nested = &mut self.accordion_nested;
+                    sidebar_card(
+                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
+                        card_rect, 1.0, title, hl,
+                        |ui| {
+                            demo_accordion_content(ui, theme, acc_open, acc_nested);
                         },
                     )
                 } else {
