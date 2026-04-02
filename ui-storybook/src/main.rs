@@ -52,6 +52,7 @@ struct StoryApp {
     card_state: stories::CardStoryState,
     toolbar_state: stories::ToolbarStoryState,
     separator_state: stories::SeparatorStoryState,
+    tabs_state: stories::TabsStoryState,
     drag_card_state: stories::DragCardStoryState,
 }
 
@@ -72,6 +73,7 @@ impl StoryApp {
             card_state: Default::default(),
             toolbar_state: Default::default(),
             separator_state: Default::default(),
+            tabs_state: Default::default(),
             drag_card_state: Default::default(),
         }
     }
@@ -103,6 +105,7 @@ impl eframe::App for StoryApp {
             "card" => stories::card_story(ui, &self.theme, &mut self.card_state),
             "toolbar" => stories::toolbar_story(ui, &self.theme, &mut self.toolbar_state),
             "separator" => stories::separator_story(ui, &self.theme, &mut self.separator_state),
+            "tabs" => stories::tabs_story(ui, &self.theme, &mut self.tabs_state),
             "drag-card" => stories::drag_card_story(ui, &self.theme, &mut self.drag_card_state),
             _ => {
                 ui.label("Unknown story");

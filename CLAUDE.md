@@ -116,6 +116,12 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 - Body height is animated via stored measurements in egui temp data. Content is clipped during the transition.
 - Supports nesting — accordion inside accordion works out of the box.
 
+### Tabs
+- `tabs(ui, theme, labels, selected)` — horizontal underline-style tab bar.
+- Active tab: `foreground` text + `ring`-colored underline animating from center.
+- Inactive: `muted_foreground` text, no underline. Hover brightens text.
+- Animation duration: 0.12s. Underline thickness: 1.5px.
+
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
 - `sidebar_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally. Takes `highlight: bool` for attention glow (combined with drag glow via `glow_t = drag_t.max(highlight_t)`). Returns `SidebarCardResponse { closed, dragging, drag_delta }`.

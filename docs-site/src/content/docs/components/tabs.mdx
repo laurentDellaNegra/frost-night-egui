@@ -1,0 +1,44 @@
+---
+title: Tabs
+description: Underline-style tab bar for switching between views
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import PropsTable from '../../../components/PropsTable.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+
+# Tabs
+
+A horizontal tab bar with an animated underline indicator. The active tab has bright text and a `ring`-colored underline that expands from center. Inactive tabs show muted text.
+
+## Figma Mockup
+
+![Card with tabs](/frost-night-egui/mockups/card.png)
+
+## Preview
+
+<ComponentPreview story="tabs" height="450px" />
+
+## Usage
+
+<CodeBlock code={`use ui_theme::components::tabs;
+
+let mut selected = 0;
+tabs(ui, &theme, &["Layers", "Filters", "Settings"], &mut selected);
+
+// Use selected index to switch content
+match selected {
+    0 => { ui.label("Layers content"); }
+    1 => { ui.label("Filters content"); }
+    2 => { ui.label("Settings content"); }
+    _ => {}
+}`} />
+
+## Props
+
+<PropsTable props={[
+  { name: "ui", type: "&mut Ui", description: "The egui UI context" },
+  { name: "theme", type: "&Theme", description: "Theme instance" },
+  { name: "labels", type: "&[&str]", description: "Tab labels" },
+  { name: "selected", type: "&mut usize", description: "Currently selected tab index" },
+]} />

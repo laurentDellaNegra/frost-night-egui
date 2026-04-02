@@ -8,6 +8,7 @@ mod drag_card;
 mod input;
 mod segmented;
 mod separator;
+mod tabs;
 mod toggle;
 mod toolbar;
 
@@ -20,5 +21,6 @@ pub use drag_card::{drag_card_story, DragCardStoryState};
 pub use input::{input_story, InputStoryState};
 pub use segmented::{segmented_story, SegmentedStoryState};
 pub use separator::{separator_story, SeparatorStoryState};
+pub use tabs::{tabs_story, TabsStoryState};
 pub use toggle::{toggle_story, ToggleStoryState};
 pub use toolbar::{toolbar_story, ToolbarStoryState};

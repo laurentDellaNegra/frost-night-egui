@@ -212,6 +212,15 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - Supports nesting (accordion inside accordion) via `FnMut` body callback.
 - Animation duration: 0.15s.
 
+### Tabs
+- Horizontal underline-style tab bar matching the Figma card mockup.
+- Active tab: `foreground` text, `ring`-colored underline (1.5px) animating from center outward.
+- Inactive tab: `muted_foreground` text, no underline. Hover brightens to 50% towards `foreground`.
+- Bottom border: 1px `border` color across full width.
+- Tab padding: `md` horizontal, `sm` vertical. Gap between tabs: `xs`.
+- Font: proportional 13px.
+- Animation duration: 0.12s.
+
 ### Icons
 - Lucide icon font v1.7.0 (TTF, embedded via `include_bytes!`).
 - Registered as custom `FontFamily::Name("lucide")` in egui.

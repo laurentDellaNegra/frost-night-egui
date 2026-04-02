@@ -1,6 +1,6 @@
 //! Themed accordion — collapsible sections with animated open/close.
 
-use egui::{Response, Sense, Stroke, Ui, Vec2};
+use egui::{Response, Sense, Ui, Vec2};
 
 use crate::theme::Theme;
 use crate::tokens::mix;
@@ -114,7 +114,7 @@ pub fn accordion(
                     ui.painter().add(egui::Shape::convex_polygon(
                         points,
                         indicator_color,
-                        Stroke::NONE,
+                        egui::Stroke::NONE,
                     ));
 
                     // Title

@@ -36,7 +36,9 @@ pub fn sidebar_card(
     add_contents: impl FnOnce(&mut Ui),
 ) -> SidebarCardResponse {
     let cr = CornerRadius::same(theme.radius.lg);
-    let padding = theme.spacing.md;
+    let pad = theme.spacing.lg;
+    // Extra inset so title aligns with tab/accordion text inside the body
+    let title_inset = theme.spacing.md;
     let dots_zone_h = theme.spacing.md;
     let title_h = theme.spacing.xl;
     let header_gap = theme.spacing.sm;
@@ -53,7 +55,7 @@ pub fn sidebar_card(
 
     // --- Drag interaction on the handle zone ---
     // Exclude the close button area on the right to avoid overlapping interactions.
-    let close_zone_w = theme.spacing.lg + theme.spacing.sm + padding;
+    let close_zone_w = title_inset;
     let handle_rect = Rect::from_min_max(
         card_rect.min,
         egui::pos2(card_rect.right() - close_zone_w, card_rect.top() + handle_h),
@@ -62,10 +64,13 @@ pub fn sidebar_card(
     let dragging = drag_response.dragged();
     let drag_delta = drag_response.drag_delta();
 
-
     // --- Drag / highlight animation: border glow ---
-    let drag_t = ui.ctx().animate_bool_with_time(id.with("drag_anim"), dragging, 0.2);
-    let highlight_t = ui.ctx().animate_bool_with_time(id.with("highlight_anim"), highlight, 0.25);
+    let drag_t = ui
+        .ctx()
+        .animate_bool_with_time(id.with("drag_anim"), dragging, 0.2);
+    let highlight_t = ui
+        .ctx()
+        .animate_bool_with_time(id.with("highlight_anim"), highlight, 0.25);
     let glow_t = drag_t.max(highlight_t);
 
     // Opacity via alpha modulation
@@ -120,9 +125,11 @@ pub fn sidebar_card(
 
     // --- Handle indicator: 3 dots → grab bar ---
     let hovered = drag_response.hovered() || dragging;
-    let hover_t = ui.ctx().animate_bool_with_time(id.with("handle_hover"), hovered, 0.15);
+    let hover_t = ui
+        .ctx()
+        .animate_bool_with_time(id.with("handle_hover"), hovered, 0.15);
 
-    let dots_center_y = card_rect.top() + padding + dots_zone_h / 2.0;
+    let dots_center_y = card_rect.top() + pad + dots_zone_h / 2.0;
     let dots_center_x = card_rect.center().x;
     let dot_radius = 2.0;
     let dot_spacing = 6.0;
@@ -168,7 +175,7 @@ pub fn sidebar_card(
     }
 
     // --- Title row (below dots zone + gap) ---
-    let title_center_y = card_rect.top() + padding + dots_zone_h + header_gap + title_h / 2.0;
+    let title_center_y = card_rect.top() + pad + dots_zone_h + header_gap + title_h / 2.0;
 
     let title_color = Color32::from_rgba_unmultiplied(
         theme.palette.foreground.r(),
@@ -177,7 +184,7 @@ pub fn sidebar_card(
         alpha,
     );
     ui.painter().text(
-        egui::pos2(card_rect.left() + padding, title_center_y),
+        egui::pos2(card_rect.left() + pad + title_inset, title_center_y),
         egui::Align2::LEFT_CENTER,
         title,
         egui::FontId::proportional(13.0),
@@ -187,7 +194,7 @@ pub fn sidebar_card(
     // Close button (X)
     let close_size = theme.spacing.lg;
     let close_center = egui::pos2(
-        card_rect.right() - padding - close_size / 2.0,
+        card_rect.right() - pad - title_inset - close_size / 2.0,
         title_center_y,
     );
     let close_rect =
@@ -225,10 +232,10 @@ pub fn sidebar_card(
     }
 
     // --- Body content ---
-    let body_top = card_rect.top() + padding + handle_h + theme.spacing.xs;
+    let body_top = card_rect.top() + pad + handle_h + theme.spacing.xs;
     let body_rect = Rect::from_min_max(
-        egui::pos2(card_rect.left() + padding, body_top),
-        egui::pos2(card_rect.right() - padding, card_rect.bottom() - padding),
+        egui::pos2(card_rect.left() + pad, body_top),
+        egui::pos2(card_rect.right() - pad, card_rect.bottom() - pad),
     );
 
     if open_t > 0.3 {
@@ -240,9 +247,7 @@ pub fn sidebar_card(
         );
         body_ui.set_opacity(ui.opacity() * open_t);
         egui::ScrollArea::vertical().show(&mut body_ui, |ui| {
-            egui::Frame::new()
-                .inner_margin(egui::Margin::symmetric(theme.spacing.xs as i8, 2))
-                .show(ui, |ui| add_contents(ui));
+            add_contents(ui);
         });
     }
 

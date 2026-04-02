@@ -290,9 +290,13 @@ fn demo_card_content(
 fn demo_accordion_content(
     ui: &mut egui::Ui,
     theme: &Theme,
+    map_tab: &mut usize,
     acc_open: &mut Vec<bool>,
     nested: &mut [Vec<bool>; 4],
 ) {
+    tabs(ui, theme, &["Layers", "Filters", "Settings"], map_tab);
+    ui.add_space(theme.spacing.sm);
+
     accordion(
         ui,
         theme,
@@ -382,6 +386,7 @@ pub struct DemoApp {
     docked_drag_offset: egui::Vec2,
     any_card_dragging: bool,
     live_tracks: Vec<LiveTrack>,
+    map_tab: usize,
     accordion_open: Vec<bool>,
     accordion_nested: [Vec<bool>; 4],
 }
@@ -421,6 +426,7 @@ impl DemoApp {
             docked_drag_offset: egui::Vec2::ZERO,
             any_card_dragging: false,
             live_tracks,
+            map_tab: 0,
             accordion_open: vec![true, false, false, false],
             accordion_nested: [
                 vec![true, false, false],
@@ -602,13 +608,14 @@ impl eframe::App for DemoApp {
                     )
                 } else if button_idx == 1 {
                     let theme = &self.theme;
+                    let map_tab = &mut self.map_tab;
                     let acc_open = &mut self.accordion_open;
                     let acc_nested = &mut self.accordion_nested;
                     sidebar_card(
                         ui, theme, egui::Id::new(("sidebar_card", button_idx)),
                         card_rect, docked_open_t, title, false,
                         |ui| {
-                            demo_accordion_content(ui, theme, acc_open, acc_nested);
+                            demo_accordion_content(ui, theme, map_tab, acc_open, acc_nested);
                         },
                     )
                 } else {
@@ -693,13 +700,14 @@ impl eframe::App for DemoApp {
                     )
                 } else if from_button == 1 {
                     let theme = &self.theme;
+                    let map_tab = &mut self.map_tab;
                     let acc_open = &mut self.accordion_open;
                     let acc_nested = &mut self.accordion_nested;
                     sidebar_card(
                         ui, theme, egui::Id::new(("sidebar_card", from_button)),
                         card_rect, 1.0, title, hl,
                         |ui| {
-                            demo_accordion_content(ui, theme, acc_open, acc_nested);
+                            demo_accordion_content(ui, theme, map_tab, acc_open, acc_nested);
                         },
                     )
                 } else {
