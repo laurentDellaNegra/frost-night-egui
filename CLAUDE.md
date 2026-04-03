@@ -146,7 +146,7 @@ When a card is being dragged, the demo applies `ui.set_opacity(0.15)` to all UI 
 The demo supports docked cards (attached to toolbar) and floating cards (detached via drag):
 - `docked_button: Option<usize>` — which toolbar button has the docked card open.
 - `floating_cards: Vec<FloatingCard>` — cards detached and parked freely.
-- Docked and floating cards for the same button share `Id::new(("sidebar_card", button_idx))` to avoid egui "widget rect changed id between passes" warnings on transitions.
+- Docked card uses a fixed `Id::new("docked_sidebar_card")` since only one is visible at a time (avoids ID changes when switching toolbar buttons). Floating cards use `Id::new(("sidebar_card", from_button))` since multiple can coexist.
 - Drag-while-docked: card accumulates `docked_drag_offset` during drag (stays docked with stable ID), converts to floating only on drag release.
 - Deferred push: newly detached floating cards are pushed after the floating card render loop to avoid duplicate rendering in the same frame.
 - Toolbar shows `ring`-colored icons for buttons that have floating cards (via `floating` parameter).
@@ -178,7 +178,8 @@ With `global_scope(true)`, both `stable_id` and `unique_id` equal the provided `
 - Demo wraps docked and floating card sections in separate `push_id` scopes.
 - Demo snapshots `docked_button` before handling toolbar clicks for stable rendering.
 - `zoom_toolbar` takes a `Rect` directly and uses absolute `Id::new(...)` — no child UI wrapper needed.
-- Docked and floating cards for the same button share `Id::new(("sidebar_card", button_idx))` for smooth transitions.
+- Docked card uses fixed `Id::new("docked_sidebar_card")` — avoids ID instability when switching toolbar buttons.
+- Sidebar card position is fixed (no slide animation) — animating the rect between passes causes "widget rect changed id" warnings.
 - `maps_menu` wraps each tab in `push_id` so both scopes always exist in the widget tree regardless of active tab.
 
 ### Icons

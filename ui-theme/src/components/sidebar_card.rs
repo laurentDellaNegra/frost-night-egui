@@ -44,14 +44,9 @@ pub fn sidebar_card(
     let header_gap = theme.spacing.sm;
     let handle_h = dots_zone_h + header_gap + title_h;
 
-    // Apply animation: slide from left + fade in
-    let card_rect = Rect::from_min_size(
-        egui::pos2(
-            egui::lerp(rect.left() - 20.0..=rect.left(), open_t),
-            rect.top(),
-        ),
-        rect.size(),
-    );
+    // Card position is fixed — animation only affects opacity, not position.
+    // (Moving the rect between passes causes egui "widget rect changed id" warnings.)
+    let card_rect = rect;
 
     // --- Drag interaction on the handle zone ---
     // Exclude the close button area on the right to avoid overlapping interactions.

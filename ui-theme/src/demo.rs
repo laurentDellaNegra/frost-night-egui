@@ -288,6 +288,7 @@ fn demo_card_content(
     });
 }
 
+
 fn demo_accordion_content(
     ui: &mut egui::Ui,
     theme: &Theme,
@@ -541,26 +542,22 @@ impl eframe::App for DemoApp {
         let sidebar_card_height = 560.0;
         let dock_x = tb_x + left_tb_width + self.theme.spacing.xs;
 
-        // Snapshot docked_button before handling clicks so both passes
-        // render the same card content this frame.
-        let docked_button_this_frame = self.docked_button;
-
-        // Handle toolbar button clicks (takes effect next frame for rendering)
+        // Handle toolbar button clicks
         if let Some(clicked) = tb_response.clicked {
             if let Some(idx) = self.floating_cards.iter().position(|f| f.from_button == clicked) {
                 self.floating_cards[idx].highlight_time = ui.input(|i| i.time);
-                // Bring to front (move to end of Vec)
                 let card = self.floating_cards.remove(idx);
                 self.floating_cards.push(card);
             } else if self.docked_button == Some(clicked) {
-                let btn_y = tb_response.button_centers_y.get(clicked).copied().unwrap_or(tb_y);
-                self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), clicked));
+                self.last_docked_pos = Some((egui::pos2(dock_x, tb_y), clicked));
                 self.docked_button = None;
             } else {
                 self.docked_button = Some(clicked);
                 self.docked_detached = false;
             }
         }
+
+        let docked_button_this_frame = self.docked_button;
 
         let panel_titles = [
             "Panel", "", "Map", "Globe", "Add", "Radar", "Navigation",
@@ -580,9 +577,7 @@ impl eframe::App for DemoApp {
         ui.push_id("docked_section", |ui| {
             if docked_open_t > 0.01 && !self.docked_detached {
                 let (base_pos, button_idx) = if let Some(idx) = docked_button_this_frame {
-                    let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
-                    let card_top = btn_y - self.theme.spacing.md;
-                    let pos = egui::pos2(dock_x, card_top);
+                    let pos = egui::pos2(dock_x, tb_y);
                     self.last_docked_pos = Some((pos, idx));
                     (pos, idx)
                 } else {
@@ -595,66 +590,43 @@ impl eframe::App for DemoApp {
                 );
                 let title = panel_titles.get(button_idx).copied().unwrap_or("Panel");
 
-                let card_resp = if button_idx == 0 {
-                    let theme = &self.theme;
-                    let input_text = &mut self.input_text;
-                    let toggle_on = &mut self.toggle_on;
-                    let check_a = &mut self.check_a;
-                    let check_b = &mut self.check_b;
-                    let check_c = &mut self.check_c;
-                    let segment_idx = &mut self.segment_idx;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                        card_rect, docked_open_t, title, false,
-                        |ui| {
-                            demo_card_content(
-                                ui, theme, 0, input_text, toggle_on,
-                                check_a, check_b, check_c, segment_idx,
-                            );
-                        },
-                    )
-                } else if button_idx == 1 {
-                    let theme = &self.theme;
-                    let maps_menu = &mut self.maps_menu;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                        card_rect, docked_open_t, title, false,
-                        |ui| {
-                            crate::widgets::maps_menu(ui, theme, maps_menu);
-                        },
-                    )
-                } else if button_idx == 2 {
-                    let theme = &self.theme;
-                    let map_tab = &mut self.map_tab;
-                    let acc_open = &mut self.accordion_open;
-                    let acc_nested = &mut self.accordion_nested;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                        card_rect, docked_open_t, title, false,
-                        |ui| {
-                            demo_accordion_content(ui, theme, map_tab, acc_open, acc_nested);
-                        },
-                    )
-                } else {
-                    let theme = &self.theme;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", button_idx)),
-                        card_rect, docked_open_t, title, false,
-                        |ui| {
-                            ui.label(
-                                egui::RichText::new(format!("{title} panel content"))
-                                    .size(13.0)
-                                    .color(theme.palette.muted_foreground),
-                            );
-                        },
-                    )
+                let theme = &self.theme;
+                let card_resp = match button_idx {
+                    0 => {
+                        let (it, to, ca, cb, cc, si) = (
+                            &mut self.input_text, &mut self.toggle_on,
+                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
+                            &mut self.segment_idx,
+                        );
+                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
+                            card_rect, docked_open_t, title, false,
+                            |ui| demo_card_content(ui, theme, 0, it, to, ca, cb, cc, si))
+                    }
+                    1 => {
+                        let mm = &mut self.maps_menu;
+                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
+                            card_rect, docked_open_t, title, false,
+                            |ui| crate::widgets::maps_menu(ui, theme, mm))
+                    }
+                    2 => {
+                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
+                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
+                            card_rect, docked_open_t, title, false,
+                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
+                    }
+                    _ => {
+                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
+                            card_rect, docked_open_t, title, false,
+                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
+                    }
                 };
 
                 if card_resp.dragging {
                     self.docked_drag_offset += card_resp.drag_delta;
                     any_dragging_this_frame = true;
                 } else if self.docked_drag_offset.length() > 1.0 {
-                    if let Some(idx) = self.docked_button.take() {
+                    if let Some(idx) = docked_button_this_frame {
+                        self.docked_button = None;
                         pending_float = Some(FloatingCard {
                             pos: card_rect.min,
                             from_button: idx,
@@ -666,9 +638,8 @@ impl eframe::App for DemoApp {
                 } else {
                     self.docked_drag_offset = egui::Vec2::ZERO;
                     if card_resp.closed {
-                        if let Some(idx) = self.docked_button {
-                            let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
-                            self.last_docked_pos = Some((egui::pos2(dock_x, btn_y - self.theme.spacing.md), idx));
+                        if let Some(idx) = docked_button_this_frame {
+                            self.last_docked_pos = Some((egui::pos2(dock_x, tb_y), idx));
                         }
                         self.docked_button = None;
                     }
@@ -697,59 +668,32 @@ impl eframe::App for DemoApp {
                 );
                 let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
 
-                let card_resp = if from_button == 0 {
-                    let theme = &self.theme;
-                    let input_text = &mut self.input_text;
-                    let toggle_on = &mut self.toggle_on;
-                    let check_a = &mut self.check_a;
-                    let check_b = &mut self.check_b;
-                    let check_c = &mut self.check_c;
-                    let segment_idx = &mut self.segment_idx;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                        card_rect, 1.0, title, hl,
-                        |ui| {
-                            demo_card_content(
-                                ui, theme, from_button, input_text, toggle_on,
-                                check_a, check_b, check_c, segment_idx,
-                            );
-                        },
-                    )
-                } else if from_button == 1 {
-                    let theme = &self.theme;
-                    let maps_menu = &mut self.maps_menu;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                        card_rect, 1.0, title, hl,
-                        |ui| {
-                            crate::widgets::maps_menu(ui, theme, maps_menu);
-                        },
-                    )
-                } else if from_button == 2 {
-                    let theme = &self.theme;
-                    let map_tab = &mut self.map_tab;
-                    let acc_open = &mut self.accordion_open;
-                    let acc_nested = &mut self.accordion_nested;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                        card_rect, 1.0, title, hl,
-                        |ui| {
-                            demo_accordion_content(ui, theme, map_tab, acc_open, acc_nested);
-                        },
-                    )
-                } else {
-                    let theme = &self.theme;
-                    sidebar_card(
-                        ui, theme, egui::Id::new(("sidebar_card", from_button)),
-                        card_rect, 1.0, title, hl,
-                        |ui| {
-                            ui.label(
-                                egui::RichText::new(format!("{title} panel content"))
-                                    .size(13.0)
-                                    .color(theme.palette.muted_foreground),
-                            );
-                        },
-                    )
+                let theme = &self.theme;
+                let card_id = egui::Id::new(("sidebar_card", from_button));
+                let card_resp = match from_button {
+                    0 => {
+                        let (it, to, ca, cb, cc, si) = (
+                            &mut self.input_text, &mut self.toggle_on,
+                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
+                            &mut self.segment_idx,
+                        );
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| demo_card_content(ui, theme, from_button, it, to, ca, cb, cc, si))
+                    }
+                    1 => {
+                        let mm = &mut self.maps_menu;
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| crate::widgets::maps_menu(ui, theme, mm))
+                    }
+                    2 => {
+                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
+                    }
+                    _ => {
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
+                    }
                 };
 
                 if card_resp.dragging {
