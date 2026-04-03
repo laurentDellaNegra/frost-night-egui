@@ -295,7 +295,7 @@ fn demo_accordion_content(
     acc_open: &mut Vec<bool>,
     nested: &mut [Vec<bool>; 4],
 ) {
-    tabs(ui, theme, &["Layers", "Filters", "Settings"], map_tab);
+    tabs(ui, theme, map_tab, &["Layers", "Filters", "Settings"]);
     ui.add_space(theme.spacing.sm);
 
     accordion(
@@ -541,7 +541,11 @@ impl eframe::App for DemoApp {
         let sidebar_card_height = 560.0;
         let dock_x = tb_x + left_tb_width + self.theme.spacing.xs;
 
-        // Handle toolbar button clicks
+        // Snapshot docked_button before handling clicks so both passes
+        // render the same card content this frame.
+        let docked_button_this_frame = self.docked_button;
+
+        // Handle toolbar button clicks (takes effect next frame for rendering)
         if let Some(clicked) = tb_response.clicked {
             if let Some(idx) = self.floating_cards.iter().position(|f| f.from_button == clicked) {
                 self.floating_cards[idx].highlight_time = ui.input(|i| i.time);
@@ -566,7 +570,7 @@ impl eframe::App for DemoApp {
         // --- Docked card (with open/close animation) ---
         // Wrapped in push_id to isolate auto-ID counters from floating section.
         let mut pending_float: Option<FloatingCard> = None;
-        let is_docked_open = self.docked_button.is_some();
+        let is_docked_open = docked_button_this_frame.is_some();
         let docked_open_t = ui.ctx().animate_bool_with_time(
             egui::Id::new("sidebar_card_anim"),
             is_docked_open,
@@ -575,7 +579,7 @@ impl eframe::App for DemoApp {
 
         ui.push_id("docked_section", |ui| {
             if docked_open_t > 0.01 && !self.docked_detached {
-                let (base_pos, button_idx) = if let Some(idx) = self.docked_button {
+                let (base_pos, button_idx) = if let Some(idx) = docked_button_this_frame {
                     let btn_y = tb_response.button_centers_y.get(idx).copied().unwrap_or(tb_y);
                     let card_top = btn_y - self.theme.spacing.md;
                     let pos = egui::pos2(dock_x, card_top);

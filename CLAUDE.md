@@ -117,10 +117,19 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 - Supports nesting — accordion inside accordion works out of the box.
 
 ### Tabs
-- `tabs(ui, theme, labels, selected)` — horizontal underline-style tab bar.
+- `tabs(ui, theme, selected, labels)` — horizontal underline-style tab bar.
+- `tabs_with_icons(ui, theme, selected, labels, icons)` — variant with optional per-tab Lucide icons.
 - Active tab: `foreground` text + `ring`-colored underline animating from center.
 - Inactive: `muted_foreground` text, no underline. Hover brightens text.
 - Animation duration: 0.12s. Underline thickness: 1.5px.
+- Click is deferred: `selected` is mutated at the end of the function to avoid ID instability between egui passes. Callers should snapshot the value before `tabs()` if using it for conditional rendering below.
+
+### Widgets (`ui-theme/src/widgets/`)
+Composed UI patterns built from components — used in the demo but not standalone library exports.
+- `maps_menu(ui, theme, state)` — full maps browser: tabs (Favorites / All Maps), search bar, checkbox grid, nested accordions with star-toggle favorites.
+- `MapsMenuState` holds tab, search text, category tree with per-map `favorite`/`selected` state.
+- Tab switching uses deferred mutation via `cumulative_pass_nr()` to avoid ID instability.
+- Search (3+ chars) collapses the grid with height animation and shows filtered results with auto-opened accordions.
 
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
@@ -160,16 +169,22 @@ With `global_scope(true)`, both `stable_id` and `unique_id` equal the provided `
 
 **Fix — absolute IDs for interactions**: Use `Id::new(...)` (not `ui.id().with(...)`) for `ui.interact()` calls in components that may render in variable contexts. Absolute IDs don't depend on the parent UI scope.
 
+**Fix — deferred state mutation**: egui runs two layout passes per frame. If a click changes state (e.g. tab selection) during pass 1, pass 2 sees different content → ID mismatch. Fix: snapshot state before rendering, defer mutation to next frame. Use `ctx.cumulative_pass_nr()` to detect frame boundaries. Example: `maps_menu` stores pending tab clicks in temp data keyed by pass number, applies only when `pass_nr >= stored + 2`.
+
+**Fix — use `ui.id().with()` not `ui.auto_id_with()`**: `auto_id_with` depends on the parent's widget counter which shifts when siblings change. Use `ui.id().with("name")` for stable scope-based IDs. Applied in `accordion` component.
+
 **Patterns applied in this project**:
 - `sidebar_card` body uses `.global_scope(true)` so card content IDs are stable regardless of rendering order.
 - Demo wraps docked and floating card sections in separate `push_id` scopes.
+- Demo snapshots `docked_button` before handling toolbar clicks for stable rendering.
 - `zoom_toolbar` takes a `Rect` directly and uses absolute `Id::new(...)` — no child UI wrapper needed.
 - Docked and floating cards for the same button share `Id::new(("sidebar_card", button_idx))` for smooth transitions.
+- `maps_menu` wraps each tab in `push_id` so both scopes always exist in the widget tree regardless of active tab.
 
 ### Icons
 - Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
 - `load_icon_font(ctx)` is called automatically by `apply_theme()`.
-- Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, etc.
+- Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, `ICON_SNOWFLAKE`, `ICON_STAR`, `ICON_CHEVRON_RIGHT`, `ICON_CHEVRON_DOWN`, `ICON_SEARCH`, etc.
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app

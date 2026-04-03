@@ -214,12 +214,19 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 
 ### Tabs
 - Horizontal underline-style tab bar matching the Figma card mockup.
+- `tabs(ui, theme, selected, labels)` — basic variant.
+- `tabs_with_icons(ui, theme, selected, labels, icons)` — optional per-tab Lucide icons (rendered in icon font, `sm` gap to text, color transitions `muted_foreground` → `ring`).
 - Active tab: `foreground` text, `ring`-colored underline (1.5px) animating from center outward.
 - Inactive tab: `muted_foreground` text, no underline. Hover brightens to 50% towards `foreground`.
 - Bottom border: 1px `border` color across full width.
 - Tab padding: `md` horizontal, `sm` vertical. Gap between tabs: `xs`.
-- Font: proportional 13px.
+- Font: proportional 13px. Icon font: 13px.
 - Animation duration: 0.12s.
+- Click mutation is deferred to avoid ID instability between egui layout passes.
+
+### Checkbox
+- `checkbox(ui, theme, checked, label)` — default size (22px box, 13px font).
+- `checkbox_small(ui, theme, checked, label)` — compact variant (22px box, 11px font).
 
 ### Icons
 - Lucide icon font v1.7.0 (TTF, embedded via `include_bytes!`).

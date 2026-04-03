@@ -44,7 +44,7 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
     // Playground
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
-        tabs(ui, theme, &labels, &mut state.selected);
+        tabs(ui, theme, &mut state.selected, &labels);
         ui.add_space(theme.spacing.md);
         ui.label(
             egui::RichText::new(format!("Selected tab: {} (index {})", labels[state.selected], state.selected))
@@ -62,7 +62,7 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(ui, theme, &["Active", "Inactive"], &mut state.variant_selected_a);
+        tabs(ui, theme, &mut state.variant_selected_a, &["Active", "Inactive"]);
 
         ui.add_space(theme.spacing.lg);
         ui.label(
@@ -71,6 +71,6 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(ui, theme, &["Maps", "Data", "Tools", "History", "Export"], &mut state.variant_selected_b);
+        tabs(ui, theme, &mut state.variant_selected_b, &["Maps", "Data", "Tools", "History", "Export"]);
     });
 }

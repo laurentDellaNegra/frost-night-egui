@@ -24,7 +24,7 @@ A horizontal tab bar with an animated underline indicator. The active tab has br
 <CodeBlock code={`use ui_theme::components::tabs;
 
 let mut selected = 0;
-tabs(ui, &theme, &["Layers", "Filters", "Settings"], &mut selected);
+tabs(ui, &theme, &mut selected, &["Layers", "Filters", "Settings"]);
 
 // Use selected index to switch content
 match selected {
@@ -34,11 +34,24 @@ match selected {
     _ => {}
 }`} />
 
+## With Icons
+
+<CodeBlock code={`use ui_theme::components::tabs_with_icons;
+use ui_theme::icons::{ICON_STAR, ICON_SEARCH};
+
+let mut selected = 0;
+tabs_with_icons(
+    ui, &theme, &mut selected,
+    &["Favorites", "Search", "All"],
+    &[Some(ICON_STAR), Some(ICON_SEARCH), None],
+);`} />
+
 ## Props
 
 <PropsTable props={[
   { name: "ui", type: "&mut Ui", description: "The egui UI context" },
   { name: "theme", type: "&Theme", description: "Theme instance" },
-  { name: "labels", type: "&[&str]", description: "Tab labels" },
   { name: "selected", type: "&mut usize", description: "Currently selected tab index" },
+  { name: "labels", type: "&[&str]", description: "Tab labels" },
+  { name: "icons", type: "&[Option<char>]", default: "&[]", description: "Optional per-tab Lucide icon (tabs_with_icons only)" },
 ]} />

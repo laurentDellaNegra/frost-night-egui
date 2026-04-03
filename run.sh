@@ -10,6 +10,7 @@ Usage: ./run.sh <command>
 Commands:
   check             Check all Rust crates
   demo              Run native demo
+  demo-debug        Run native demo with debug assertions + backtraces
   tokens            Generate CSS tokens from Rust palette
   wasm-storybook    Build storybook WASM
   wasm-demo         Build demo WASM
@@ -30,6 +31,10 @@ cmd_check() {
 
 cmd_demo() {
   (cd "$ROOT/ui-theme" && cargo run --example demo --features demo)
+}
+
+cmd_demo_debug() {
+  (cd "$ROOT/ui-theme" && RUST_BACKTRACE=1 RUST_LOG=warn cargo run --example demo --features demo)
 }
 
 cmd_tokens() {
@@ -79,6 +84,7 @@ cmd_clean() {
 case "${1:-}" in
   check)          cmd_check ;;
   demo)           cmd_demo ;;
+  demo-debug)     cmd_demo_debug ;;
   tokens)         cmd_tokens ;;
   wasm-storybook) cmd_wasm_storybook ;;
   wasm-demo)      cmd_wasm_demo ;;

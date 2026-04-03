@@ -23,7 +23,8 @@ pub fn accordion(
     assert_eq!(items.len(), open.len(), "items and open must have same length");
 
     let anim_duration = 0.15;
-    let accordion_id = ui.auto_id_with("accordion");
+    // Use the parent scope's stable ID (not auto_id which depends on widget counter).
+    let accordion_id = ui.id().with("accordion");
 
     egui::Frame::new()
         .inner_margin(egui::Margin::ZERO)
@@ -164,7 +165,7 @@ pub fn accordion(
                                 Vec2::new(width, f32::INFINITY),
                             ))
                     );
-                    body_ui.set_clip_rect(body_max_rect);
+                    body_ui.set_clip_rect(body_max_rect.intersect(ui.clip_rect()));
 
                     let body_margin = egui::Margin::symmetric(
                         theme.spacing.md as i8,

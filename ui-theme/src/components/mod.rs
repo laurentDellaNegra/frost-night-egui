@@ -25,7 +25,7 @@ pub use drag_card::{drag_card, DragCardResponse, DragCardState};
 pub use input::text_input;
 pub use segmented::segmented;
 pub use separator::separator;
-pub use tabs::tabs;
+pub use tabs::{tabs, tabs_with_icons};
 pub use toggle::toggle;
 pub use sidebar_card::{sidebar_card, SidebarCardResponse};
 pub use toolbar::{toolbar, ToolbarGroup, ToolbarItem, ToolbarResponse};
