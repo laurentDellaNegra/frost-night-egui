@@ -6,6 +6,7 @@ description = "Frost Night egui design system — dark theme with glassmorphism 
 
 [dependencies]
 egui = "0.34"
+egui_flex = "0.6"
 eframe = { version = "0.34", optional = true }
 serde = { version = "1", features = ["derive"], optional = true }
 

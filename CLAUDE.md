@@ -86,6 +86,19 @@ cd docs-site && npm run dev
 - Wasm: `WebRunner::new().start()` takes `HtmlCanvasElement`, not a string ID.
 - Web demo uses `wgpu` backend (WebGPU) — requires a modern browser (Chrome 113+, Edge 113+, Safari 18+). Firefox support is still behind a flag.
 
+### egui_flex for layout
+**Always prefer `egui_flex` over manual `x += ...` / `y += ...` cursor tracking or manual `Rect::from_min_size` positioning.** egui_flex eliminates manual coordinate math and handles alignment automatically.
+
+Usage rules:
+- Use `Flex::horizontal()` or `Flex::vertical()` for any sequential layout (rows, columns, stacks).
+- Use `flex.add_ui(item(), |ui| { ... })` for custom-painted items (icon buttons, separators) with `allocate_exact_size` inside the closure.
+- Use `flex.add(item(), widget)` for standard egui widgets (Label, Button, etc.).
+- Use nested flex containers for varying gap sizes (e.g. `section_gap` between sections, `label_value_gap` within a label-value pair).
+- Use `.align_items(FlexAlign::Center)` for vertical centering in horizontal layouts — never manually compute `center_y - h/2`.
+- Paint backdrops on the outer rect BEFORE the flex layout, then run flex inside a child UI.
+- Do NOT use manual `x += ...` / `y += ...` cursor tracking in new code. Refactor to egui_flex if modifying existing code that uses this pattern.
+- Exceptions where flex is not appropriate: components with animated height/clip (accordion), absolute-positioned overlays (floating cards), or trivial two-element layouts (toggle thumb).
+
 ### Component pattern
 All interactive controls (checkbox, toggle, segmented) share a consistent visual structure:
 - Outer border: `theme.palette.control_border` (`#3C4656`) with `theme.radius.lg`
@@ -134,9 +147,9 @@ Composed UI patterns built from components — used in the demo but not standalo
 ### Self-contained components
 Components should be self-contained and not rely on the demo to define styles:
 - `sidebar_card` paints its own `surface_blur` backdrop, border glow, outer halo, and handle animation (3 dots → grab bar) internally. Takes `highlight: bool` for attention glow (combined with drag glow via `glow_t = drag_t.max(highlight_t)`). Returns `SidebarCardResponse { closed, dragging, drag_delta }`.
-- `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers. Takes `floating: &[usize]` to show `ring`-colored icons for floating cards. Returns `ToolbarResponse { clicked, rect, button_centers_y }`.
-- `top_toolbar` paints its own backdrop, vertical separators, and icon buttons. Returns `TopToolbarResponse { icon_clicked }`.
-- `zoom_toolbar` takes a `rect` parameter (no child UI needed) and paints its own backdrop with +/− icon buttons, separator, and Reset text button. Returns `ZoomToolbarResponse { zoom_in, zoom_out, reset }`. Uses absolute `Id::new(...)` for all widget IDs.
+- `toolbar` paints its own `surface_blur` backdrop, active/hover highlights, and dividers. Uses `egui_flex` for vertical button layout. Takes `floating: &[usize]` to show `ring`-colored icons for floating cards. Returns `ToolbarResponse { clicked, rect, button_centers_y }`.
+- `top_toolbar` paints its own backdrop, uses `egui_flex` for horizontal section layout (title, clock, QNH/TL, error, icons) with nested flex for sub-groups. Returns `TopToolbarResponse { icon_clicked }`.
+- `zoom_toolbar` takes a `rect` parameter and paints its own backdrop. Uses `egui_flex` for vertical button layout (+/−/Reset). Returns `ZoomToolbarResponse { zoom_in, zoom_out, reset }`.
 - All control colors come from `theme.palette` — never hardcode hex colors in component files.
 
 ### Global drag fade

@@ -931,6 +931,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui_flex"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "40530bc9a699c04ad642aba993660ba71980a93e691e588f90df57a20c01341b"
+dependencies = [
+ "egui",
+]
+
+[[package]]
 name = "egui_glow"
 version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3006,7 +3015,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rustix 1.1.4",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3192,7 +3201,7 @@ checksum = "f2f6fb2847f6742cd76af783a2a2c49e9375d0a111c7bef6f71cd9e738c72d6e"
 dependencies = [
  "memoffset",
  "tempfile",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3201,6 +3210,7 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "egui",
+ "egui_flex",
 ]
 
 [[package]]

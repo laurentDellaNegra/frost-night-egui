@@ -4,6 +4,7 @@
 //! and a "Reset" text button. Same glassmorphism backdrop as the main toolbar.
 
 use egui::{CornerRadius, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
+use egui_flex::{Flex, FlexAlignContent, item};
 
 use crate::icons::icon_font;
 use crate::theme::Theme;
@@ -16,6 +17,30 @@ pub struct ZoomToolbarResponse {
     pub zoom_out: bool,
     /// The reset button was clicked.
     pub reset: bool,
+}
+
+/// Paint an icon button and return true if clicked.
+fn icon_button(ui: &mut Ui, theme: &Theme, icon: char, size: f32, icon_size: f32) -> bool {
+    let (rect, response) = ui.allocate_exact_size(Vec2::splat(size), Sense::click());
+    let inner_cr = CornerRadius::same(theme.radius.md);
+    if response.hovered() {
+        let inset = rect.shrink(theme.control_gap);
+        ui.painter()
+            .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
+    }
+    let color = if response.hovered() {
+        theme.palette.foreground
+    } else {
+        theme.palette.muted_foreground
+    };
+    ui.painter().text(
+        rect.center(),
+        egui::Align2::CENTER_CENTER,
+        icon.to_string(),
+        icon_font(icon_size),
+        color,
+    );
+    response.clicked()
 }
 
 /// A vertical zoom control toolbar with +, −, and Reset buttons.
@@ -32,11 +57,7 @@ pub fn zoom_toolbar(
     let icon_size = 18.0;
     let button_size = 36.0;
     let padding = theme.spacing.xs;
-    let separator_margin = theme.spacing.xs;
     let reset_height = 28.0;
-    let font = egui::FontId::proportional(10.0);
-
-    let outer_rect = rect;
 
     let mut result = ZoomToolbarResponse {
         zoom_in: false,
@@ -44,126 +65,78 @@ pub fn zoom_toolbar(
         reset: false,
     };
 
-    if ui.is_rect_visible(outer_rect) {
+    if ui.is_rect_visible(rect) {
         let cr = CornerRadius::same(theme.radius.lg);
 
         // Backdrop
         ui.painter()
-            .rect_filled(outer_rect, cr, theme.palette.surface_blur);
+            .rect_filled(rect, cr, theme.palette.surface_blur);
         ui.painter().rect_stroke(
-            outer_rect,
+            rect,
             cr,
             Stroke::new(1.0, theme.palette.border),
             StrokeKind::Inside,
         );
 
-        let center_x = outer_rect.center().x;
-        let mut y = outer_rect.top() + padding;
-
-        // --- Plus button ---
-        let plus_rect = Rect::from_min_size(
-            egui::pos2(center_x - button_size / 2.0, y),
-            Vec2::splat(button_size),
-        );
-        let plus_id = ui.id().with("zoom_plus");
-        let plus_response = ui.interact(plus_rect, plus_id, Sense::click());
-        if plus_response.clicked() {
-            result.zoom_in = true;
-        }
-
-        let inner_cr = CornerRadius::same(theme.radius.md);
-        if plus_response.hovered() {
-            let inset = plus_rect.shrink(theme.control_gap);
-            ui.painter()
-                .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
-        }
-
-        let plus_color = if plus_response.hovered() {
-            theme.palette.foreground
-        } else {
-            theme.palette.muted_foreground
-        };
-        ui.painter().text(
-            plus_rect.center(),
-            egui::Align2::CENTER_CENTER,
-            plus_icon.to_string(),
-            icon_font(icon_size),
-            plus_color,
+        let inner_rect = rect.shrink(padding);
+        let mut inner_ui = ui.new_child(
+            egui::UiBuilder::new()
+                .id_salt("zoom_toolbar")
+                .max_rect(inner_rect),
         );
 
-        y += button_size;
+        Flex::vertical()
+            .gap(Vec2::ZERO)
+            .align_content(FlexAlignContent::Center)
+            .show(&mut inner_ui, |flex| {
+                // Plus button
+                flex.add_ui(item(), |ui| {
+                    result.zoom_in = icon_button(ui, theme, plus_icon, button_size, icon_size);
+                });
 
-        // --- Minus button ---
-        let minus_rect = Rect::from_min_size(
-            egui::pos2(center_x - button_size / 2.0, y),
-            Vec2::splat(button_size),
-        );
-        let minus_id = ui.id().with("zoom_minus");
-        let minus_response = ui.interact(minus_rect, minus_id, Sense::click());
-        if minus_response.clicked() {
-            result.zoom_out = true;
-        }
+                // Minus button
+                flex.add_ui(item(), |ui| {
+                    result.zoom_out = icon_button(ui, theme, minus_icon, button_size, icon_size);
+                });
 
-        if minus_response.hovered() {
-            let inset = minus_rect.shrink(theme.control_gap);
-            ui.painter()
-                .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
-        }
+                // Separator
+                flex.add_ui(item(), |ui| {
+                    let sep_w = button_size - theme.spacing.xs * 2.0;
+                    let (rect, _) = ui.allocate_exact_size(
+                        Vec2::new(sep_w, 1.0 + theme.spacing.xs * 2.0),
+                        Sense::hover(),
+                    );
+                    ui.painter().line_segment(
+                        [rect.left_center(), rect.right_center()],
+                        Stroke::new(1.0, theme.palette.border),
+                    );
+                });
 
-        let minus_color = if minus_response.hovered() {
-            theme.palette.foreground
-        } else {
-            theme.palette.muted_foreground
-        };
-        ui.painter().text(
-            minus_rect.center(),
-            egui::Align2::CENTER_CENTER,
-            minus_icon.to_string(),
-            icon_font(icon_size),
-            minus_color,
-        );
-
-        y += button_size;
-
-        // --- Separator ---
-        y += separator_margin;
-        let sep_x0 = outer_rect.left() + padding + theme.spacing.xs;
-        let sep_x1 = outer_rect.right() - padding - theme.spacing.xs;
-        ui.painter().line_segment(
-            [egui::pos2(sep_x0, y), egui::pos2(sep_x1, y)],
-            Stroke::new(1.0, theme.palette.border),
-        );
-        y += 1.0 + separator_margin;
-
-        // --- Reset button ---
-        let reset_rect = Rect::from_min_size(
-            egui::pos2(outer_rect.left() + padding, y),
-            Vec2::new(button_size, reset_height),
-        );
-        let reset_id = ui.id().with("zoom_reset");
-        let reset_response = ui.interact(reset_rect, reset_id, Sense::click());
-        if reset_response.clicked() {
-            result.reset = true;
-        }
-
-        if reset_response.hovered() {
-            let inset = reset_rect.shrink(theme.control_gap);
-            ui.painter()
-                .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
-        }
-
-        let reset_color = if reset_response.hovered() {
-            theme.palette.foreground
-        } else {
-            theme.palette.muted_foreground
-        };
-        ui.painter().text(
-            reset_rect.center(),
-            egui::Align2::CENTER_CENTER,
-            "Reset",
-            font,
-            reset_color,
-        );
+                // Reset button
+                flex.add_ui(item(), |ui| {
+                    let (rect, response) =
+                        ui.allocate_exact_size(Vec2::new(button_size, reset_height), Sense::click());
+                    let inner_cr = CornerRadius::same(theme.radius.md);
+                    if response.hovered() {
+                        let inset = rect.shrink(theme.control_gap);
+                        ui.painter()
+                            .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
+                    }
+                    let color = if response.hovered() {
+                        theme.palette.foreground
+                    } else {
+                        theme.palette.muted_foreground
+                    };
+                    ui.painter().text(
+                        rect.center(),
+                        egui::Align2::CENTER_CENTER,
+                        "Reset",
+                        egui::FontId::proportional(10.0),
+                        color,
+                    );
+                    result.reset = response.clicked();
+                });
+            });
     }
 
     result

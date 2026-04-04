@@ -3,15 +3,28 @@
 //! Paints its own semi-transparent backdrop. Positioned at the top of the screen,
 //! to the right of the left sidebar toolbar.
 
-use egui::{CornerRadius, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
+use egui::{CornerRadius, Sense, Stroke, StrokeKind, Ui, Vec2};
+use egui_flex::{Flex, FlexAlign, item};
 
-use crate::icons::{icon_font, ICON_CIRCLE_X};
+use crate::icons::{icon_font, ICON_CIRCLE_X, ICON_SNOWFLAKE};
 use crate::theme::Theme;
 
 /// Response from the top toolbar.
 pub struct TopToolbarResponse {
     /// Index of the icon button that was clicked, if any.
     pub icon_clicked: Option<usize>,
+}
+
+/// Paint a vertical separator line (1px wide, with vertical margins).
+fn separator(ui: &mut Ui, theme: &Theme, height: f32, margin_v: f32) {
+    let (rect, _) = ui.allocate_exact_size(Vec2::new(1.0, height), Sense::hover());
+    ui.painter().line_segment(
+        [
+            rect.center_top() + egui::vec2(0.0, margin_v),
+            rect.center_bottom() - egui::vec2(0.0, margin_v),
+        ],
+        Stroke::new(1.0, theme.palette.border),
+    );
 }
 
 /// A horizontal top toolbar with app title, clock, QNH/TL data, error indicator, and icon buttons.
@@ -34,93 +47,100 @@ pub fn top_toolbar(
     let icon_size = 16.0;
     let sep_margin_v = theme.spacing.sm;
 
-    let title_font = egui::FontId::new(18.0, egui::FontFamily::Proportional);
-    let clock_font = egui::FontId::monospace(13.0);
-    let label_font = egui::FontId::proportional(12.0);
-    let value_font = egui::FontId::monospace(12.0);
-    let error_font = egui::FontId::proportional(12.0);
-
-    // Measure text widths for layout
-    let painter = ui.painter();
-    let snowflake_font = crate::icons::icon_font(18.0);
-    let snowflake_galley = painter.layout_no_wrap(
-        crate::icons::ICON_SNOWFLAKE.to_string(),
-        snowflake_font,
-        theme.palette.ring,
-    );
+    let label_value_gap = theme.spacing.xs;
+    let pair_gap = theme.spacing.md;
     let snowflake_gap = theme.spacing.xs + 2.0;
-    let mut title_job = egui::text::LayoutJob::single_section(
-        title.to_string(),
-        egui::TextFormat {
-            font_id: title_font.clone(),
-            color: theme.palette.foreground,
-            ..Default::default()
-        },
-    );
-    title_job.wrap = egui::text::TextWrapping::no_max_width();
-    let title_galley = painter.layout_job(title_job);
-    let clock_galley = painter.layout_no_wrap(
-        clock.to_string(),
-        clock_font.clone(),
-        theme.palette.foreground,
-    );
-    let qnh_label_galley = painter.layout_no_wrap(
-        "QNH".to_string(),
-        label_font.clone(),
-        theme.palette.muted_foreground,
-    );
-    let qnh_val_galley = painter.layout_no_wrap(
-        qnh.to_string(),
-        value_font.clone(),
-        theme.palette.foreground,
-    );
-    let tl_label_galley = painter.layout_no_wrap(
-        "TL".to_string(),
-        label_font.clone(),
-        theme.palette.muted_foreground,
-    );
-    let tl_val_galley =
-        painter.layout_no_wrap(tl.to_string(), value_font.clone(), theme.palette.foreground);
-
     let error_icon_size = 14.0;
-    let error_width = if let Some(err_text) = error {
-        let err_galley = painter.layout_no_wrap(
-            err_text.to_string(),
-            error_font.clone(),
-            theme.palette.destructive,
-        );
-        // circle-x icon + gap + text
-        error_icon_size + theme.spacing.xs + err_galley.size().x
+
+    // Pre-compute width so backdrop is content-sized
+    let painter = ui.painter();
+    let snowflake_w = painter
+        .layout_no_wrap(
+            ICON_SNOWFLAKE.to_string(),
+            icon_font(18.0),
+            theme.palette.ring,
+        )
+        .size()
+        .x;
+    let title_w = painter
+        .layout_no_wrap(
+            title.to_string(),
+            egui::FontId::new(18.0, egui::FontFamily::Proportional),
+            theme.palette.foreground,
+        )
+        .size()
+        .x;
+    let clock_w = painter
+        .layout_no_wrap(
+            clock.to_string(),
+            egui::FontId::monospace(13.0),
+            theme.palette.foreground,
+        )
+        .size()
+        .x;
+    let qnh_label_w = painter
+        .layout_no_wrap(
+            "QNH".to_string(),
+            egui::FontId::proportional(12.0),
+            theme.palette.muted_foreground,
+        )
+        .size()
+        .x;
+    let qnh_val_w = painter
+        .layout_no_wrap(
+            qnh.to_string(),
+            egui::FontId::monospace(12.0),
+            theme.palette.foreground,
+        )
+        .size()
+        .x;
+    let tl_label_w = painter
+        .layout_no_wrap(
+            "TL".to_string(),
+            egui::FontId::proportional(12.0),
+            theme.palette.muted_foreground,
+        )
+        .size()
+        .x;
+    let tl_val_w = painter
+        .layout_no_wrap(
+            tl.to_string(),
+            egui::FontId::monospace(12.0),
+            theme.palette.foreground,
+        )
+        .size()
+        .x;
+    let error_w = if let Some(err_text) = error {
+        let err_w = painter
+            .layout_no_wrap(
+                err_text.to_string(),
+                egui::FontId::proportional(12.0),
+                theme.palette.destructive,
+            )
+            .size()
+            .x;
+        section_gap + 1.0 + section_gap + error_icon_size + theme.spacing.xs + err_w
+    } else {
+        0.0
+    };
+    let icons_w = if !icons.is_empty() {
+        section_gap + 1.0 + section_gap + icons.len() as f32 * icon_btn_size
     } else {
         0.0
     };
 
-    let label_value_gap = theme.spacing.xs;
-    let pair_gap = theme.spacing.md;
+    let total_w = pad_h
+        + snowflake_w + snowflake_gap + title_w
+        + section_gap + 1.0 + section_gap  // separator
+        + clock_w
+        + section_gap + 1.0 + section_gap  // separator
+        + qnh_label_w + label_value_gap + qnh_val_w + pair_gap + tl_label_w + label_value_gap + tl_val_w
+        + section_gap + 1.0 + section_gap  // separator
+        + error_w
+        + icons_w
+        + pad_h;
 
-    // Total width calculation
-    let mut total_w = pad_h; // left padding
-    total_w += snowflake_galley.size().x + snowflake_gap + title_galley.size().x;
-    total_w += section_gap; // gap before separator
-    total_w += 1.0; // separator
-    total_w += section_gap; // gap after separator
-    total_w += clock_galley.size().x;
-    total_w += section_gap + 1.0 + section_gap; // separator
-    total_w += qnh_label_galley.size().x + label_value_gap + qnh_val_galley.size().x;
-    total_w += pair_gap;
-    total_w += tl_label_galley.size().x + label_value_gap + tl_val_galley.size().x;
-    total_w += section_gap + 1.0 + section_gap; // separator after TL
-    if error.is_some() {
-        total_w += error_width;
-    }
-    if !icons.is_empty() {
-        total_w += section_gap + 1.0 + section_gap; // separator
-        total_w += icons.len() as f32 * icon_btn_size;
-    }
-    total_w += pad_h; // right padding
-
-    let (outer_rect, _response) =
-        ui.allocate_exact_size(Vec2::new(total_w, height), Sense::hover());
+    let (outer_rect, _) = ui.allocate_exact_size(Vec2::new(total_w, height), Sense::hover());
 
     let mut result = TopToolbarResponse { icon_clicked: None };
 
@@ -137,156 +157,192 @@ pub fn top_toolbar(
             StrokeKind::Inside,
         );
 
-        let center_y = outer_rect.center().y;
-        let mut x = outer_rect.left() + pad_h;
-
-        // --- Snowflake + Title (vertically centered as a group) ---
-        let group_h = snowflake_galley.size().y.max(title_galley.size().y);
-        let group_top = center_y - group_h / 2.0;
-        ui.painter().galley(
-            egui::pos2(x, group_top + (group_h - snowflake_galley.size().y) / 2.0),
-            snowflake_galley.clone(),
-            theme.palette.ring,
+        let inner_rect = outer_rect.shrink2(Vec2::new(pad_h, 0.0));
+        let mut inner_ui = ui.new_child(
+            egui::UiBuilder::new()
+                .id_salt("top_tb_inner")
+                .max_rect(inner_rect),
         );
-        x += snowflake_galley.size().x + snowflake_gap;
-        ui.painter().galley(
-            egui::pos2(x, group_top + (group_h - title_galley.size().y) / 2.0),
-            title_galley.clone(),
-            theme.palette.foreground,
-        );
-        x += title_galley.size().x + section_gap;
 
-        // --- Vertical separator ---
-        let sep_top = outer_rect.top() + sep_margin_v;
-        let sep_bot = outer_rect.bottom() - sep_margin_v;
-        ui.painter().line_segment(
-            [egui::pos2(x, sep_top), egui::pos2(x, sep_bot)],
-            Stroke::new(1.0, theme.palette.border),
-        );
-        x += 1.0 + section_gap;
+        Flex::horizontal()
+            .gap(Vec2::new(section_gap, 0.0))
+            .align_items(FlexAlign::Center)
+            .show(&mut inner_ui, |flex| {
+                // --- Snowflake + Title ---
+                flex.add_ui(item(), |ui| {
+                    Flex::horizontal()
+                        .gap(Vec2::new(snowflake_gap, 0.0))
+                        .align_items(FlexAlign::Center)
+                        .show(ui, |flex| {
+                            flex.add_ui(item(), |ui| {
+                                let (rect, _) = ui.allocate_exact_size(
+                                    Vec2::new(snowflake_w, height),
+                                    Sense::hover(),
+                                );
+                                ui.painter().text(
+                                    rect.center(),
+                                    egui::Align2::CENTER_CENTER,
+                                    ICON_SNOWFLAKE.to_string(),
+                                    icon_font(18.0),
+                                    theme.palette.ring,
+                                );
+                            });
+                            flex.add_ui(item(), |ui| {
+                                let (rect, _) = ui.allocate_exact_size(
+                                    Vec2::new(title_w, height),
+                                    Sense::hover(),
+                                );
+                                ui.painter().text(
+                                    rect.center(),
+                                    egui::Align2::CENTER_CENTER,
+                                    title,
+                                    egui::FontId::new(18.0, egui::FontFamily::Proportional),
+                                    theme.palette.foreground,
+                                );
+                            });
+                        });
+                });
 
-        // --- Clock ---
-        ui.painter().galley(
-            egui::pos2(x, center_y - clock_galley.size().y / 2.0),
-            clock_galley.clone(),
-            theme.palette.foreground,
-        );
-        x += clock_galley.size().x + section_gap;
+                // Separator
+                flex.add_ui(item(), |ui| separator(ui, theme, height, sep_margin_v));
 
-        // --- Vertical separator ---
-        ui.painter().line_segment(
-            [egui::pos2(x, sep_top), egui::pos2(x, sep_bot)],
-            Stroke::new(1.0, theme.palette.border),
-        );
-        x += 1.0 + section_gap;
+                // --- Clock ---
+                flex.add_ui(item(), |ui| {
+                    ui.label(
+                        egui::RichText::new(clock)
+                            .font(egui::FontId::monospace(13.0))
+                            .color(theme.palette.foreground),
+                    );
+                });
 
-        // --- QNH label + value ---
-        ui.painter().galley(
-            egui::pos2(x, center_y - qnh_label_galley.size().y / 2.0),
-            qnh_label_galley.clone(),
-            theme.palette.muted_foreground,
-        );
-        x += qnh_label_galley.size().x + label_value_gap;
-        ui.painter().galley(
-            egui::pos2(x, center_y - qnh_val_galley.size().y / 2.0),
-            qnh_val_galley.clone(),
-            theme.palette.foreground,
-        );
-        x += qnh_val_galley.size().x + pair_gap;
+                // Separator
+                flex.add_ui(item(), |ui| separator(ui, theme, height, sep_margin_v));
 
-        // --- TL label + value ---
-        ui.painter().galley(
-            egui::pos2(x, center_y - tl_label_galley.size().y / 2.0),
-            tl_label_galley.clone(),
-            theme.palette.muted_foreground,
-        );
-        x += tl_label_galley.size().x + label_value_gap;
-        ui.painter().galley(
-            egui::pos2(x, center_y - tl_val_galley.size().y / 2.0),
-            tl_val_galley.clone(),
-            theme.palette.foreground,
-        );
-        x += tl_val_galley.size().x + section_gap;
+                // --- QNH + TL ---
+                flex.add_ui(item(), |ui| {
+                    Flex::horizontal()
+                        .gap(Vec2::new(pair_gap, 0.0))
+                        .align_items(FlexAlign::Center)
+                        .show(ui, |flex| {
+                            // QNH pair
+                            flex.add_ui(item(), |ui| {
+                                Flex::horizontal()
+                                    .gap(Vec2::new(label_value_gap, 0.0))
+                                    .align_items(FlexAlign::Center)
+                                    .show(ui, |flex| {
+                                        flex.add_ui(item(), |ui| {
+                                            ui.label(
+                                                egui::RichText::new("QNH")
+                                                    .font(egui::FontId::proportional(12.0))
+                                                    .color(theme.palette.muted_foreground),
+                                            );
+                                        });
+                                        flex.add_ui(item(), |ui| {
+                                            ui.label(
+                                                egui::RichText::new(qnh)
+                                                    .font(egui::FontId::monospace(12.0))
+                                                    .color(theme.palette.foreground),
+                                            );
+                                        });
+                                    });
+                            });
 
-        // --- Vertical separator after TL ---
-        ui.painter().line_segment(
-            [egui::pos2(x, sep_top), egui::pos2(x, sep_bot)],
-            Stroke::new(1.0, theme.palette.border),
-        );
-        x += 1.0 + section_gap;
+                            // TL pair
+                            flex.add_ui(item(), |ui| {
+                                Flex::horizontal()
+                                    .gap(Vec2::new(label_value_gap, 0.0))
+                                    .align_items(FlexAlign::Center)
+                                    .show(ui, |flex| {
+                                        flex.add_ui(item(), |ui| {
+                                            ui.label(
+                                                egui::RichText::new("TL")
+                                                    .font(egui::FontId::proportional(12.0))
+                                                    .color(theme.palette.muted_foreground),
+                                            );
+                                        });
+                                        flex.add_ui(item(), |ui| {
+                                            ui.label(
+                                                egui::RichText::new(tl)
+                                                    .font(egui::FontId::monospace(12.0))
+                                                    .color(theme.palette.foreground),
+                                            );
+                                        });
+                                    });
+                            });
+                        });
+                });
 
-        // --- Error indicator ---
-        if let Some(err_text) = error {
-            // Lucide circle-x icon
-            ui.painter().text(
-                egui::pos2(x + error_icon_size / 2.0, center_y),
-                egui::Align2::CENTER_CENTER,
-                ICON_CIRCLE_X.to_string(),
-                icon_font(error_icon_size),
-                theme.palette.destructive,
-            );
-            x += error_icon_size + theme.spacing.xs;
+                // Separator
+                flex.add_ui(item(), |ui| separator(ui, theme, height, sep_margin_v));
 
-            // Error text
-            let err_galley = ui.painter().layout_no_wrap(
-                err_text.to_string(),
-                error_font,
-                theme.palette.destructive,
-            );
-            ui.painter().galley(
-                egui::pos2(x, center_y - err_galley.size().y / 2.0),
-                err_galley.clone(),
-                theme.palette.destructive,
-            );
-            x += err_galley.size().x;
-        }
-
-        // --- Icon buttons ---
-        if !icons.is_empty() {
-            x += section_gap;
-
-            // Vertical separator before icons
-            ui.painter().line_segment(
-                [egui::pos2(x, sep_top), egui::pos2(x, sep_bot)],
-                Stroke::new(1.0, theme.palette.border),
-            );
-            x += 1.0 + section_gap;
-
-            let inner_cr = CornerRadius::same(theme.radius.md);
-            for (i, &icon) in icons.iter().enumerate() {
-                let btn_rect = Rect::from_min_size(
-                    egui::pos2(x, center_y - icon_btn_size / 2.0),
-                    Vec2::splat(icon_btn_size),
-                );
-                let btn_id = ui.id().with(("top_tb_icon", i));
-                let btn_response = ui.interact(btn_rect, btn_id, Sense::click());
-
-                if btn_response.clicked() {
-                    result.icon_clicked = Some(i);
+                // --- Error indicator (optional) ---
+                if let Some(err_text) = error {
+                    flex.add_ui(item(), |ui| {
+                        Flex::horizontal()
+                            .gap(Vec2::new(theme.spacing.xs, 0.0))
+                            .align_items(FlexAlign::Center)
+                            .show(ui, |flex| {
+                                flex.add_ui(item(), |ui| {
+                                    ui.label(
+                                        egui::RichText::new(ICON_CIRCLE_X.to_string())
+                                            .font(icon_font(error_icon_size))
+                                            .color(theme.palette.destructive),
+                                    );
+                                });
+                                flex.add_ui(item(), |ui| {
+                                    ui.label(
+                                        egui::RichText::new(err_text)
+                                            .font(egui::FontId::proportional(12.0))
+                                            .color(theme.palette.destructive),
+                                    );
+                                });
+                            });
+                    });
                 }
 
-                if btn_response.hovered() {
-                    let inset = btn_rect.shrink(theme.control_gap);
-                    ui.painter()
-                        .rect_filled(inset, inner_cr, theme.palette.control_fill_off);
+                // --- Icon buttons (optional) ---
+                if !icons.is_empty() {
+                    // Separator before icons
+                    flex.add_ui(item(), |ui| separator(ui, theme, height, sep_margin_v));
+
+                    let inner_cr = CornerRadius::same(theme.radius.md);
+                    for (i, &icon) in icons.iter().enumerate() {
+                        let idx = i;
+                        flex.add_ui(item(), |ui| {
+                            let (rect, response) = ui.allocate_exact_size(
+                                Vec2::splat(icon_btn_size),
+                                Sense::click(),
+                            );
+
+                            if response.clicked() {
+                                result.icon_clicked = Some(idx);
+                            }
+
+                            if response.hovered() {
+                                let inset = rect.shrink(theme.control_gap);
+                                ui.painter().rect_filled(
+                                    inset,
+                                    inner_cr,
+                                    theme.palette.control_fill_off,
+                                );
+                            }
+
+                            let icon_color = if response.hovered() {
+                                theme.palette.foreground
+                            } else {
+                                theme.palette.muted_foreground
+                            };
+                            ui.painter().text(
+                                rect.center(),
+                                egui::Align2::CENTER_CENTER,
+                                icon.to_string(),
+                                icon_font(icon_size),
+                                icon_color,
+                            );
+                        });
+                    }
                 }
-
-                let icon_color = if btn_response.hovered() {
-                    theme.palette.foreground
-                } else {
-                    theme.palette.muted_foreground
-                };
-                ui.painter().text(
-                    btn_rect.center(),
-                    egui::Align2::CENTER_CENTER,
-                    icon.to_string(),
-                    icon_font(icon_size),
-                    icon_color,
-                );
-
-                x += icon_btn_size;
-            }
-        }
+            });
     }
 
     result

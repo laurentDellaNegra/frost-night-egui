@@ -564,7 +564,81 @@ impl eframe::App for DemoApp {
             "Crosshair", "Filter", "Settings",
         ];
 
+        // --- Floating (parked) cards ---
+        // Rendered FIRST so docked card paints on top (higher z-index).
+        // Wrapped in push_id to isolate auto-ID counters from docked section.
+        // Rendered in Vec order: last = on top (highest z-index).
+        let mut floating_to_remove = vec![];
+        let mut bring_to_front: Option<usize> = None;
+        ui.push_id("floating_section", |ui| {
+            for i in 0..self.floating_cards.len() {
+                let pos = self.floating_cards[i].pos;
+                let from_button = self.floating_cards[i].from_button;
+                let now = ui.input(|i| i.time);
+                let hl = (now - self.floating_cards[i].highlight_time) < 0.3;
+                let card_rect = egui::Rect::from_min_size(
+                    pos,
+                    egui::vec2(sidebar_card_width, sidebar_card_height),
+                );
+                let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
+
+                let theme = &self.theme;
+                let card_id = egui::Id::new(("sidebar_card", from_button));
+                let card_resp = match from_button {
+                    0 => {
+                        let (it, to, ca, cb, cc, si) = (
+                            &mut self.input_text, &mut self.toggle_on,
+                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
+                            &mut self.segment_idx,
+                        );
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| demo_card_content(ui, theme, from_button, it, to, ca, cb, cc, si))
+                    }
+                    1 => {
+                        let mm = &mut self.maps_menu;
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| crate::widgets::maps_menu(ui, theme, mm))
+                    }
+                    2 => {
+                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
+                    }
+                    _ => {
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
+                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
+                    }
+                };
+
+                if card_resp.dragging {
+                    self.floating_cards[i].pos = pos + card_resp.drag_delta;
+                    any_dragging_this_frame = true;
+                    bring_to_front = Some(i);
+                } else if ui.input(|i| i.pointer.any_pressed())
+                    && card_rect.contains(
+                        ui.input(|i| i.pointer.interact_pos().unwrap_or_default()),
+                    )
+                {
+                    bring_to_front = Some(i);
+                }
+                if card_resp.closed {
+                    floating_to_remove.push(i);
+                }
+            }
+        });
+        for idx in floating_to_remove.into_iter().rev() {
+            self.floating_cards.remove(idx);
+        }
+        // Bring interacted card to front (move to end of Vec)
+        if let Some(idx) = bring_to_front {
+            if idx < self.floating_cards.len() {
+                let card = self.floating_cards.remove(idx);
+                self.floating_cards.push(card);
+            }
+        }
+
         // --- Docked card (with open/close animation) ---
+        // Rendered AFTER floating cards so it always paints on top.
         // Wrapped in push_id to isolate auto-ID counters from floating section.
         let mut pending_float: Option<FloatingCard> = None;
         let is_docked_open = docked_button_this_frame.is_some();
@@ -649,78 +723,6 @@ impl eframe::App for DemoApp {
 
         if docked_open_t <= 0.01 {
             self.docked_detached = false;
-        }
-
-        // --- Floating (parked) cards ---
-        // Wrapped in push_id to isolate auto-ID counters from docked section.
-        // Rendered in Vec order: last = on top (highest z-index).
-        let mut floating_to_remove = vec![];
-        let mut bring_to_front: Option<usize> = None;
-        ui.push_id("floating_section", |ui| {
-            for i in 0..self.floating_cards.len() {
-                let pos = self.floating_cards[i].pos;
-                let from_button = self.floating_cards[i].from_button;
-                let now = ui.input(|i| i.time);
-                let hl = (now - self.floating_cards[i].highlight_time) < 0.3;
-                let card_rect = egui::Rect::from_min_size(
-                    pos,
-                    egui::vec2(sidebar_card_width, sidebar_card_height),
-                );
-                let title = panel_titles.get(from_button).copied().unwrap_or("Panel");
-
-                let theme = &self.theme;
-                let card_id = egui::Id::new(("sidebar_card", from_button));
-                let card_resp = match from_button {
-                    0 => {
-                        let (it, to, ca, cb, cc, si) = (
-                            &mut self.input_text, &mut self.toggle_on,
-                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
-                            &mut self.segment_idx,
-                        );
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| demo_card_content(ui, theme, from_button, it, to, ca, cb, cc, si))
-                    }
-                    1 => {
-                        let mm = &mut self.maps_menu;
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| crate::widgets::maps_menu(ui, theme, mm))
-                    }
-                    2 => {
-                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
-                    }
-                    _ => {
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
-                    }
-                };
-
-                if card_resp.dragging {
-                    self.floating_cards[i].pos = pos + card_resp.drag_delta;
-                    any_dragging_this_frame = true;
-                    bring_to_front = Some(i);
-                } else if ui.input(|i| i.pointer.any_pressed())
-                    && card_rect.contains(
-                        ui.input(|i| i.pointer.interact_pos().unwrap_or_default()),
-                    )
-                {
-                    bring_to_front = Some(i);
-                }
-                if card_resp.closed {
-                    floating_to_remove.push(i);
-                }
-            }
-        });
-        for idx in floating_to_remove.into_iter().rev() {
-            self.floating_cards.remove(idx);
-        }
-        // Bring interacted card to front (move to end of Vec)
-        if let Some(idx) = bring_to_front {
-            if idx < self.floating_cards.len() {
-                let card = self.floating_cards.remove(idx);
-                self.floating_cards.push(card);
-            }
         }
 
         if let Some(fc) = pending_float {
