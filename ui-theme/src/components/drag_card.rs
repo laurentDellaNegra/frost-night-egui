@@ -1,7 +1,8 @@
 //! Draggable card with a title bar handle.
 //!
-//! Paints its own semi-transparent backdrop (`surface_blur`) and handles
-//! drag-to-fade opacity animation internally.
+//! A simplified draggable card for documentation purposes. The demo uses
+//! `sidebar_card` which adds glow effects, highlight animation, and
+//! toolbar integration on top of the same drag mechanics.
 
 use egui::{Color32, CornerRadius, Id, Pos2, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
 

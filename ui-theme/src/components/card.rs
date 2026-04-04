@@ -1,4 +1,7 @@
-//! Themed card container.
+//! Basic themed card container.
+//!
+//! A simplified card for documentation purposes. The demo uses
+//! `sidebar_card` which adds drag, glow, and toolbar integration.
 
 use egui::{Response, Ui};
 
