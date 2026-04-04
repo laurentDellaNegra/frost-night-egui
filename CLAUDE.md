@@ -84,7 +84,7 @@ cd docs-site && npm run dev
 ### eframe 0.34 API
 - `App` trait uses `fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame)` — NOT `fn update()`.
 - Wasm: `WebRunner::new().start()` takes `HtmlCanvasElement`, not a string ID.
-- Web demo uses `glow` backend (not wgpu) for broad WebGL2 compatibility.
+- Web demo uses `wgpu` backend (WebGPU) — requires a modern browser (Chrome 113+, Edge 113+, Safari 18+). Firefox support is still behind a flag.
 
 ### Component pattern
 All interactive controls (checkbox, toggle, segmented) share a consistent visual structure:

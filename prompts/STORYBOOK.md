@@ -47,7 +47,7 @@ frost-night-egui/
 │   └── examples/
 │       └── demo.rs                 # Native entry (~10 lines, calls DemoApp)
 └── web-demo/                       # WASM entry for the demo
-    ├── Cargo.toml                  # depends on ui-theme with demo feature, eframe glow backend
+    ├── Cargo.toml                  # depends on ui-theme with demo feature, eframe wgpu backend
     ├── index.html                  # Canvas with id="the_canvas_id"
     └── src/main.rs                 # ~40 lines, starts DemoApp on canvas
 ```
@@ -55,7 +55,7 @@ frost-night-egui/
 ### Critical technical details
 
 - **eframe 0.34**: `App` trait uses `fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame)`, NOT `fn update()`.
-- **glow backend** for WASM (not wgpu): `eframe = { features = ["glow"] }`. No custom shaders possible in WASM. Blur is a semi-transparent tint fallback.
+- **wgpu backend** for WASM: `eframe = { features = ["wgpu"] }`. WebGPU required (Chrome 113+, Safari 18+). Blur is a semi-transparent tint fallback (shader possible in future).
 - **WebRunner takes HtmlCanvasElement** directly, not a string ID. You must `get_element_by_id().dyn_into::<HtmlCanvasElement>()`.
 - **No Cargo workspace** — `ui-theme` and `web-demo` are independent crates. `web-demo` depends on `ui-theme` via `path = "../ui-theme"`.
 - **`DemoApp::new(cc)` takes `&eframe::CreationContext`**, calls `apply_theme()` and `load_icon_font()` internally.
@@ -199,7 +199,7 @@ publish = false
 ui-theme = { path = "../ui-theme", features = ["demo"] }
 eframe = { version = "0.34", default-features = false, features = [
     "default_fonts",
-    "glow",
+    "wgpu",
 ] }
 log = "0.4"
 
@@ -757,7 +757,7 @@ For local dev without the base path issue, you can temporarily set `base: '/'` i
 
 - **Do NOT modify existing crates** (`ui-theme/`, `web-demo/`) unless strictly necessary (e.g. adding the `export_css` example to ui-theme).
 - **Two WASM bundles**: `ui-storybook.wasm` (stories) + `web-demo.wasm` (full demo). No more.
-- **eframe 0.34 + glow backend** for both WASM crates. No wgpu.
+- **eframe 0.34 + wgpu backend** for both WASM crates (WebGPU).
 - **`fn ui()` not `fn update()`** — this is eframe 0.34 API.
 - **`WebRunner::start()` takes `HtmlCanvasElement`**, not a string ID.
 - **No frontend framework** — Astro components + vanilla JS only.
@@ -771,7 +771,7 @@ For local dev without the base path issue, you can temporarily set `base: '/'` i
 ## What NOT to do
 
 - Do NOT rewrite `demo.rs` — the DemoApp stays as-is.
-- Do NOT use wgpu backend — stick with glow for WebGL2 compatibility.
+- Do NOT switch back to glow — wgpu/WebGPU is the chosen backend.
 - Do NOT use `fn update()` — eframe 0.34 uses `fn ui()`.
 - Do NOT pass string canvas IDs to `WebRunner::start()` — pass `HtmlCanvasElement`.
 - Do NOT use Storybook.js or any JS storybook framework.

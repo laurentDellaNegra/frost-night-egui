@@ -522,7 +522,7 @@ impl eframe::App for DemoApp {
 
         // Left toolbar (below top toolbar)
         let tb_x = full_rect.left() + toolbar_margin;
-        let tb_y = top_tb_y + top_tb_height + toolbar_margin;
+        let tb_y = top_tb_y + top_tb_height + self.theme.spacing.xl;
         let mut toolbar_ui = ui.new_child(
             egui::UiBuilder::new()
                 .id_salt("left_toolbar")
@@ -540,7 +540,7 @@ impl eframe::App for DemoApp {
         let left_tb_width = 36.0 + self.theme.spacing.xs * 2.0;
         let sidebar_card_width = 420.0;
         let sidebar_card_height = 560.0;
-        let dock_x = tb_x + left_tb_width + self.theme.spacing.xs;
+        let dock_x = tb_x + left_tb_width + self.theme.spacing.lg;
 
         // Handle toolbar button clicks
         if let Some(clicked) = tb_response.clicked {
