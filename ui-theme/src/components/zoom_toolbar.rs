@@ -65,7 +65,7 @@ pub fn zoom_toolbar(
             egui::pos2(center_x - button_size / 2.0, y),
             Vec2::splat(button_size),
         );
-        let plus_id = egui::Id::new("zoom_plus");
+        let plus_id = ui.id().with("zoom_plus");
         let plus_response = ui.interact(plus_rect, plus_id, Sense::click());
         if plus_response.clicked() {
             result.zoom_in = true;
@@ -98,7 +98,7 @@ pub fn zoom_toolbar(
             egui::pos2(center_x - button_size / 2.0, y),
             Vec2::splat(button_size),
         );
-        let minus_id = egui::Id::new("zoom_minus");
+        let minus_id = ui.id().with("zoom_minus");
         let minus_response = ui.interact(minus_rect, minus_id, Sense::click());
         if minus_response.clicked() {
             result.zoom_out = true;
@@ -140,7 +140,7 @@ pub fn zoom_toolbar(
             egui::pos2(outer_rect.left() + padding, y),
             Vec2::new(button_size, reset_height),
         );
-        let reset_id = egui::Id::new("zoom_reset");
+        let reset_id = ui.id().with("zoom_reset");
         let reset_response = ui.interact(reset_rect, reset_id, Sense::click());
         if reset_response.clicked() {
             result.reset = true;

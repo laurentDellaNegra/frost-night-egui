@@ -153,34 +153,16 @@ The demo supports docked cards (attached to toolbar) and floating cards (detache
 - Clicking a toolbar button for an already-parked card triggers a highlight flash (timestamp-based, 0.3s) and brings the card to front.
 - Z-ordering: click or drag on any floating card moves it to end of Vec (renders on top). Uses pointer position detection (not `ui.interact()`) to avoid adding extra widget IDs.
 
-### egui widget ID hygiene
+### egui widget ID guidelines
 
-**Core rule**: egui's "Widget rect changed id between passes" warnings mean the same screen rect has different widget IDs between layout passes. This happens when widget rendering order or presence changes between passes in a single frame.
+egui runs two layout passes per frame. The main pitfall is "Widget rect changed id between passes" — caused by state mutations or conditional rendering that changes widget structure between passes.
 
-**`new_child` auto-counter trap**: `ui.new_child(UiBuilder::new().id_salt(id))` does NOT fully determine the child's ID. egui mixes the parent's `next_auto_id_salt` counter into the child's `unique_id`. So if widgets before it conditionally appear/disappear, or if rendering order changes (e.g. Vec reorder), the auto-counter shifts and the child gets a different ID.
-
-**Fix — `global_scope(true)`**: For components rendered in variable order (e.g. iterated from a Vec that may reorder), use:
-```rust
-ui.new_child(UiBuilder::new().id_salt(id).global_scope(true).max_rect(rect))
-```
-With `global_scope(true)`, both `stable_id` and `unique_id` equal the provided `id_salt` directly — no parent auto-counter mixed in. The child's entire widget subtree becomes order-independent.
-
-**Fix — `push_id` for section isolation**: Wrap independent UI sections in `ui.push_id("section_name", |ui| { ... })` to give each section its own auto-ID counter. This prevents one section's conditional rendering from shifting IDs in another section.
-
-**Fix — absolute IDs for interactions**: Use `Id::new(...)` (not `ui.id().with(...)`) for `ui.interact()` calls in components that may render in variable contexts. Absolute IDs don't depend on the parent UI scope.
-
-**Fix — deferred state mutation**: egui runs two layout passes per frame. If a click changes state (e.g. tab selection) during pass 1, pass 2 sees different content → ID mismatch. Fix: snapshot state before rendering, defer mutation to next frame. Use `ctx.cumulative_pass_nr()` to detect frame boundaries. Example: `maps_menu` stores pending tab clicks in temp data keyed by pass number, applies only when `pass_nr >= stored + 2`.
-
-**Fix — use `ui.id().with()` not `ui.auto_id_with()`**: `auto_id_with` depends on the parent's widget counter which shifts when siblings change. Use `ui.id().with("name")` for stable scope-based IDs. Applied in `accordion` component.
-
-**Patterns applied in this project**:
-- `sidebar_card` body uses `.global_scope(true)` so card content IDs are stable regardless of rendering order.
-- Demo wraps docked and floating card sections in separate `push_id` scopes.
-- Demo snapshots `docked_button` before handling toolbar clicks for stable rendering.
-- `zoom_toolbar` takes a `Rect` directly and uses absolute `Id::new(...)` — no child UI wrapper needed.
-- Docked card uses fixed `Id::new("docked_sidebar_card")` — avoids ID instability when switching toolbar buttons.
-- Sidebar card position is fixed (no slide animation) — animating the rect between passes causes "widget rect changed id" warnings.
-- `maps_menu` wraps each tab in `push_id` so both scopes always exist in the widget tree regardless of active tab.
+**Key rules:**
+- Use `ui.id().with("name")` for stable IDs (not `ui.auto_id_with()` which depends on sibling count).
+- Use `push_id("section", |ui| { ... })` to isolate sections with conditional content.
+- Use `global_scope(true)` on `new_child` when rendering items from a reorderable collection (e.g. floating cards in a Vec).
+- Defer state mutations that change widget structure (e.g. tab switches) to the next frame via `cumulative_pass_nr()` to avoid mid-frame ID mismatches.
+- Don't animate widget position between passes — keep rects stable.
 
 ### Icons
 - Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
