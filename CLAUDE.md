@@ -2,7 +2,7 @@
 
 ## Project overview
 
-`frost-night-egui` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from aviation UI Figma mockups. Dark mode only. No external theming dependencies. Includes a design system documentation site (`docs-site`) with interactive WASM component playgrounds (`ui-storybook`).
+`frost-night-egui` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from aviation UI Figma mockups. Dark mode only. No external theming dependencies. The full demo and its sample aviation data live in a separate private workspace crate (`frost-night-demo`). Includes a design system documentation site (`docs-site`) with interactive WASM component playgrounds (`ui-storybook`).
 
 ## Repository structure
 
@@ -11,19 +11,16 @@ frost-night-egui/
 ├── ui-theme/                    # The library crate
 │   ├── src/
 │   │   ├── lib.rs
-│   │   ├── palette.rs           # ColorPalette — single source of truth for colors
-│   │   ├── tokens.rs            # StateColors, VariantTokens, ControlVariant
-│   │   ├── scale.rs             # RadiusScale, SpacingScale, ControlSize
-│   │   ├── theme.rs             # Theme struct
+│   │   ├── theme/               # Theme, palette, tokens, scales, visuals/style integration
 │   │   ├── theme/style.rs       # install_theme(), apply_visuals()
-│   │   ├── blur.rs              # BlurRect (fallback, no shader)
-│   │   ├── oklch.rs             # OKLCH utilities
-│   │   ├── icons.rs             # Lucide font embed + constants
-│   │   ├── demo.rs              # DemoApp (behind "demo" feature)
-│   │   └── components/          # All component wrappers
+│   │   ├── effects/             # BlurRect (fallback, no shader)
+│   │   ├── icons/               # Lucide font embed + constants
+│   │   ├── components/          # Generic component wrappers
+│   │   ├── containers/          # Cards, tabs, accordion, surfaces
+│   │   └── composites/          # Optional composed tool surfaces
 │   └── examples/
-│       ├── demo.rs              # Native demo entry
 │       └── export_css.rs        # Dumps ColorPalette as CSS custom properties
+├── frost-night-demo/            # Private native DemoApp crate with sample/domain data
 ├── web-demo/                    # WASM entry for the full interactive demo
 ├── ui-storybook/                # WASM crate for component story playgrounds
 │   ├── src/
@@ -58,6 +55,10 @@ All commands can be run from the project root via `./run.sh`:
 
 ```sh
 ./run.sh check             # Check all Rust crates
+./run.sh wasm-check        # Check web crates for wasm32
+./run.sh fmt               # Check Rust formatting
+./run.sh clippy            # Run clippy for the workspace
+./run.sh ci                # Run the same Rust checks as CI
 ./run.sh demo              # Run native demo
 ./run.sh tokens            # Generate CSS tokens from Rust palette
 ./run.sh wasm-storybook    # Build storybook WASM into docs-site/public/wasm
@@ -72,8 +73,8 @@ Or manually:
 
 ```sh
 cd ui-theme && cargo check
-cd ui-theme && cargo run --example demo --features demo
-cd ui-theme && cargo run --example export_css 2>/dev/null > ../docs-site/src/styles/tokens.css
+cargo run -p frost-night-demo
+cargo run -p frost-night-egui --example export_css 2>/dev/null > docs-site/src/styles/tokens.css
 cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm --filehash false
 cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo --filehash false
 cd docs-site && npm run dev
@@ -137,8 +138,8 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 - Animation duration: 0.12s. Underline thickness: 1.5px.
 - Click is deferred: `selected` is mutated at the end of the function to avoid ID instability between egui passes. Callers should snapshot the value before `tabs()` if using it for conditional rendering below.
 
-### Widgets (`ui-theme/src/widgets/`)
-Composed UI patterns built from components — used in the demo but not standalone library exports.
+### Demo-only widgets (`frost-night-demo/src/`)
+Composed UI patterns and sample aviation data used by the demo. They are not exported by the reusable `frost-night-egui` crate.
 - `maps_menu(ui, theme, state)` — full maps browser: tabs (Favorites / All Maps), search bar, checkbox grid, nested accordions with star-toggle favorites.
 - `MapsMenuState` holds tab, search text, category tree with per-map `favorite`/`selected` state.
 - Tab switching uses deferred mutation via `cumulative_pass_nr()` to avoid ID instability.
@@ -184,8 +185,9 @@ egui runs two layout passes per frame. The main pitfall is "Widget rect changed 
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app
-- All demo logic lives in `ui-theme/src/demo.rs` (gated behind `demo` feature).
-- `ui-theme/examples/demo.rs` and `web-demo/src/main.rs` are thin entry points — both call `frost_night_egui::demo::DemoApp::new(cc)`.
+- Demo logic lives in `frost-night-demo/src/lib.rs`.
+- Sample map/menu data lives in `frost-night-demo/src/maps_menu.rs`.
+- `frost-night-demo/src/main.rs` and `web-demo/src/main.rs` are thin entry points — both call `frost_night_demo::DemoApp::new(cc)`.
 - Tracks animate continuously along velocity vectors (frame-rate independent with `dt`).
 - Floating card z-ordering: last in `Vec<FloatingCard>` renders on top. Dragging or clicking a card moves it to end. Toolbar click for a parked card highlights it and brings to front.
 

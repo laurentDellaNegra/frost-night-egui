@@ -1,14 +1,16 @@
-//! Shared demo app used by both the native example and the web-demo crate.
+//! Shared demo app used by the native demo binary and the web-demo crate.
 //!
-//! Gated behind the `demo` feature (requires `eframe`).
+//! This crate is intentionally private to the workspace. It owns the sample
+//! aviation/domain data so the reusable `frost-night-egui` crate stays focused
+//! on the design system.
 
 use eframe::egui;
 
-use crate::components::*;
-use crate::composites::*;
-use crate::containers::*;
-use crate::icons::*;
-use crate::{install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme};
+use frost_night_egui::components::*;
+use frost_night_egui::composites::*;
+use frost_night_egui::containers::*;
+use frost_night_egui::icons::*;
+use frost_night_egui::{install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme};
 
 mod maps_menu;
 

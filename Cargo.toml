@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
   "ui-theme",
+  "frost-night-demo",
   "web-demo",
   "ui-storybook",
 ]

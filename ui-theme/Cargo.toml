@@ -7,31 +7,13 @@ description = "Frost Night egui design system — dark theme with glassmorphism 
 [dependencies]
 egui = { workspace = true }
 egui_flex = { workspace = true, optional = true }
-eframe = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
-
-[dev-dependencies]
-eframe = { workspace = true, features = ["default_fonts", "wayland", "wgpu", "x11"] }
-env_logger = { workspace = true }
 
 [features]
 default = ["icons"]
 icons = []
 composites = ["dep:egui_flex", "icons"]
-demo = [
-    "dep:eframe",
-    "eframe/default_fonts",
-    "eframe/wayland",
-    "eframe/wgpu",
-    "eframe/x11",
-    "composites",
-    "icons",
-]
 serde = ["dep:serde", "egui/serde"]
-
-[[example]]
-name = "demo"
-required-features = ["demo"]
 
 [[example]]
 name = "export_css"
