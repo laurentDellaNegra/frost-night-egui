@@ -2,7 +2,7 @@
 
 use egui::{Color32, Stroke};
 
-use crate::palette::ColorPalette;
+use super::palette::ColorPalette;
 
 /// Atomic visual state for one interaction state of a widget.
 #[derive(Clone, Copy, Debug)]
@@ -61,32 +61,24 @@ const WHITE: Color32 = Color32::WHITE;
 /// Derive all interaction state colors for a given control variant.
 pub fn variant_tokens(palette: &ColorPalette, variant: ControlVariant) -> VariantTokens {
     match variant {
-        ControlVariant::Primary => filled_tokens(
-            palette.primary,
-            palette.primary_foreground,
-            palette,
-        ),
+        ControlVariant::Primary => {
+            filled_tokens(palette.primary, palette.primary_foreground, palette)
+        }
         ControlVariant::Secondary => bordered_tokens(
             palette.secondary,
             palette.secondary_foreground,
             Stroke::new(1.0, palette.secondary_border),
             palette,
         ),
-        ControlVariant::Ghost => ghost_tokens(
-            palette.foreground,
-            Stroke::NONE,
-            palette,
-        ),
+        ControlVariant::Ghost => ghost_tokens(palette.foreground, Stroke::NONE, palette),
         ControlVariant::Outline => ghost_tokens(
             palette.foreground,
             Stroke::new(1.0, palette.border),
             palette,
         ),
-        ControlVariant::Destructive => filled_tokens(
-            palette.destructive,
-            palette.destructive_foreground,
-            palette,
-        ),
+        ControlVariant::Destructive => {
+            filled_tokens(palette.destructive, palette.destructive_foreground, palette)
+        }
         ControlVariant::Link => VariantTokens {
             idle: StateColors {
                 bg_fill: Color32::TRANSPARENT,
@@ -139,7 +131,12 @@ pub(crate) fn filled_tokens(bg: Color32, fg: Color32, palette: &ColorPalette) ->
 }
 
 /// Tokens for a bordered control (opaque bg with visible border).
-fn bordered_tokens(bg: Color32, fg: Color32, border: Stroke, palette: &ColorPalette) -> VariantTokens {
+fn bordered_tokens(
+    bg: Color32,
+    fg: Color32,
+    border: Stroke,
+    palette: &ColorPalette,
+) -> VariantTokens {
     VariantTokens {
         idle: StateColors {
             bg_fill: bg,

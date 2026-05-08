@@ -1,7 +1,7 @@
 //! Lucide icon font integration.
 //!
 //! Embeds the Lucide icon font (TTF) and provides named constants for
-//! icon codepoints. Call [`load_icon_font`] once at startup to register
+//! icon codepoints. Call [`install_icon_font`] once at startup to register
 //! the font with egui, then use the constants with [`icon_text`] to
 //! render icons.
 
@@ -11,13 +11,19 @@ use egui::{Context, FontData, FontDefinitions, FontFamily, FontId, RichText};
 pub const ICON_FONT_FAMILY: &str = "lucide";
 
 /// Embedded Lucide TTF font data.
-const LUCIDE_TTF: &[u8] = include_bytes!("fonts/lucide.ttf");
+const LUCIDE_TTF: &[u8] = include_bytes!("../fonts/lucide.ttf");
 
-/// Register the Lucide icon font with an egui context.
+/// Return the embedded Lucide TTF bytes.
+pub fn lucide_ttf_bytes() -> &'static [u8] {
+    LUCIDE_TTF
+}
+
+/// Add the Lucide icon font to caller-owned font definitions.
 ///
-/// Call this once during app initialization (e.g. in `CreationContext`).
-pub fn load_icon_font(ctx: &Context) {
-    let mut fonts = FontDefinitions::default();
+/// Host applications with custom fonts should call this on their own
+/// [`FontDefinitions`] before `ctx.set_fonts(fonts)` so existing font
+/// families are preserved.
+pub fn add_icon_font_to(fonts: &mut FontDefinitions) {
     fonts.font_data.insert(
         ICON_FONT_FAMILY.to_owned(),
         FontData::from_static(LUCIDE_TTF).into(),
@@ -27,7 +33,23 @@ pub fn load_icon_font(ctx: &Context) {
         .entry(FontFamily::Name(ICON_FONT_FAMILY.into()))
         .or_default()
         .push(ICON_FONT_FAMILY.to_owned());
+}
+
+/// Register the Lucide icon font with an egui context.
+///
+/// egui does not expose the context's current [`FontDefinitions`], so this
+/// installs into `FontDefinitions::default()` and then calls `ctx.set_fonts`.
+/// Host applications with custom fonts should prefer [`add_icon_font_to`].
+pub fn install_icon_font(ctx: &Context) {
+    let mut fonts = FontDefinitions::default();
+    add_icon_font_to(&mut fonts);
     ctx.set_fonts(fonts);
+}
+
+/// Register the Lucide icon font with an egui context.
+#[deprecated(note = "Use install_icon_font or add_icon_font_to instead")]
+pub fn load_icon_font(ctx: &Context) {
+    install_icon_font(ctx);
 }
 
 /// Create a [`FontId`] for the icon font at a given size.

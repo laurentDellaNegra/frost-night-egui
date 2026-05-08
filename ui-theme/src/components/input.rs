@@ -2,8 +2,7 @@
 
 use egui::{Response, TextBuffer, TextEdit, Ui};
 
-use crate::scale::ControlSize;
-use crate::theme::Theme;
+use crate::theme::{ControlSize, Theme};
 
 /// A themed single-line text input.
 pub fn text_input<S: TextBuffer>(
@@ -18,10 +17,8 @@ pub fn text_input<S: TextBuffer>(
         let style = ui.style_mut();
         style.visuals.extreme_bg_color = vis.bg;
         style.visuals.widgets.inactive.bg_stroke = vis.border;
-        style.visuals.widgets.hovered.bg_stroke =
-            egui::Stroke::new(1.0, theme.palette.ring);
-        style.visuals.widgets.active.bg_stroke =
-            egui::Stroke::new(1.0, theme.palette.ring);
+        style.visuals.widgets.hovered.bg_stroke = egui::Stroke::new(1.0, theme.palette.ring);
+        style.visuals.widgets.active.bg_stroke = egui::Stroke::new(1.0, theme.palette.ring);
 
         ui.add(
             TextEdit::singleline(text)

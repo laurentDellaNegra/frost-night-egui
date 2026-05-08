@@ -21,7 +21,7 @@ A horizontal tab bar with an animated underline indicator. The active tab has br
 
 ## Usage
 
-<CodeBlock code={`use ui_theme::components::tabs;
+<CodeBlock code={`use ui_theme::containers::tabs;
 
 let mut selected = 0;
 tabs(ui, &theme, &mut selected, &["Layers", "Filters", "Settings"]);
@@ -36,7 +36,7 @@ match selected {
 
 ## With Icons
 
-<CodeBlock code={`use ui_theme::components::tabs_with_icons;
+<CodeBlock code={`use ui_theme::containers::tabs_with_icons;
 use ui_theme::icons::{ICON_STAR, ICON_SEARCH};
 
 let mut selected = 0;

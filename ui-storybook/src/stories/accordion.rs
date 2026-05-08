@@ -1,4 +1,4 @@
-use ui_theme::components::accordion;
+use ui_theme::containers::accordion;
 use ui_theme::Theme;
 
 pub struct AccordionStoryState {
@@ -20,11 +20,7 @@ impl Default for AccordionStoryState {
             exclusive_demo_open: vec![true, false, false],
             multi_demo_open: vec![true, true, false],
             nested_outer: vec![true, false, false],
-            nested_inner: [
-                vec![true, false],
-                vec![false, false],
-                vec![false, false],
-            ],
+            nested_inner: [vec![true, false], vec![false, false], vec![false, false]],
         }
     }
 }
@@ -67,8 +63,13 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
     // Playground
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
-        accordion(ui, theme, &titles, &mut state.open, state.exclusive, |ui, i| {
-            match i {
+        accordion(
+            ui,
+            theme,
+            &titles,
+            &mut state.open,
+            state.exclusive,
+            |ui, i| match i {
                 0 => {
                     ui.label("Flight: SWR 1234");
                     ui.label("Route: LSZH → LFPG");
@@ -96,8 +97,8 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
                 _ => {
                     ui.label(format!("Content for section {}", i + 1));
                 }
-            }
-        });
+            },
+        );
     });
 
     // All Variants
@@ -160,36 +161,59 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
                 match i {
                     0 => {
                         accordion(
-                            ui, theme,
+                            ui,
+                            theme,
                             &["Base maps", "Overlays"],
-                            inner, true,
+                            inner,
+                            true,
                             |ui, j| match j {
-                                0 => { ui.label("Standard"); ui.label("Satellite"); }
-                                1 => { ui.label("Airways"); ui.label("Weather"); }
+                                0 => {
+                                    ui.label("Standard");
+                                    ui.label("Satellite");
+                                }
+                                1 => {
+                                    ui.label("Airways");
+                                    ui.label("Weather");
+                                }
                                 _ => {}
                             },
                         );
                     }
                     1 => {
                         accordion(
-                            ui, theme,
+                            ui,
+                            theme,
                             &["Altitude", "Type"],
-                            inner, true,
+                            inner,
+                            true,
                             |ui, j| match j {
-                                0 => { ui.label("FL100 – FL450"); }
-                                1 => { ui.label("Commercial"); ui.label("Military"); }
+                                0 => {
+                                    ui.label("FL100 – FL450");
+                                }
+                                1 => {
+                                    ui.label("Commercial");
+                                    ui.label("Military");
+                                }
                                 _ => {}
                             },
                         );
                     }
                     2 => {
                         accordion(
-                            ui, theme,
+                            ui,
+                            theme,
                             &["Display", "Units"],
-                            inner, true,
+                            inner,
+                            true,
                             |ui, j| match j {
-                                0 => { ui.label("Label size: Medium"); ui.label("Trail length: 5 min"); }
-                                1 => { ui.label("Altitude: Flight Level"); ui.label("Speed: Knots"); }
+                                0 => {
+                                    ui.label("Label size: Medium");
+                                    ui.label("Trail length: 5 min");
+                                }
+                                1 => {
+                                    ui.label("Altitude: Flight Level");
+                                    ui.label("Speed: Knots");
+                                }
                                 _ => {}
                             },
                         );

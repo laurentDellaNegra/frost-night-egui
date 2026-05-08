@@ -36,7 +36,10 @@ fn main() {
     println!("  --accent: {};", c(p.accent));
     println!("  --accent-foreground: {};", c(p.accent_foreground));
     println!("  --destructive: {};", c(p.destructive));
-    println!("  --destructive-foreground: {};", c(p.destructive_foreground));
+    println!(
+        "  --destructive-foreground: {};",
+        c(p.destructive_foreground)
+    );
     println!("  --border: {};", c(p.border));
     println!("  --input: {};", c(p.input));
     println!("  --ring: {};", c(p.ring));

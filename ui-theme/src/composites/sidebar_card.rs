@@ -6,8 +6,7 @@
 
 use egui::{Color32, CornerRadius, Id, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
 
-use crate::theme::Theme;
-use crate::tokens::mix;
+use crate::theme::{mix, Theme};
 
 /// Response from a sidebar card.
 pub struct SidebarCardResponse {
@@ -25,6 +24,7 @@ pub struct SidebarCardResponse {
 /// The card renders at `rect` and includes a drag handle zone at the top.
 /// When dragged, returns `dragging: true` and `drag_delta` so the caller
 /// can switch to floating mode.
+#[allow(clippy::too_many_arguments)]
 pub fn sidebar_card(
     ui: &mut Ui,
     theme: &Theme,

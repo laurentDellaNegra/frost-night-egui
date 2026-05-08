@@ -99,6 +99,11 @@ pub fn segmented_story(ui: &mut egui::Ui, theme: &Theme, state: &mut SegmentedSt
         );
         ui.add_space(theme.spacing.xs);
         let mut sel4 = 2;
-        segmented(ui, theme, &["All", "Active", "Pending", "Closed"], &mut sel4);
+        segmented(
+            ui,
+            theme,
+            &["All", "Active", "Pending", "Closed"],
+            &mut sel4,
+        );
     });
 }

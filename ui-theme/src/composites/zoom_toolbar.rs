@@ -3,8 +3,10 @@
 //! A small vertical strip with plus/minus icon buttons, a separator,
 //! and a "Reset" text button. Same glassmorphism backdrop as the main toolbar.
 
+use std::hash::Hash;
+
 use egui::{CornerRadius, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
-use egui_flex::{Flex, FlexAlignContent, item};
+use egui_flex::{item, Flex, FlexAlignContent};
 
 use crate::icons::icon_font;
 use crate::theme::Theme;
@@ -54,6 +56,18 @@ pub fn zoom_toolbar(
     plus_icon: char,
     minus_icon: char,
 ) -> ZoomToolbarResponse {
+    zoom_toolbar_with_id(ui, theme, "zoom_toolbar", rect, plus_icon, minus_icon)
+}
+
+/// A vertical zoom control toolbar with a caller-provided ID salt.
+pub fn zoom_toolbar_with_id(
+    ui: &mut Ui,
+    theme: &Theme,
+    id_salt: impl Hash,
+    rect: Rect,
+    plus_icon: char,
+    minus_icon: char,
+) -> ZoomToolbarResponse {
     let icon_size = 18.0;
     let button_size = 36.0;
     let padding = theme.spacing.xs;
@@ -79,11 +93,8 @@ pub fn zoom_toolbar(
         );
 
         let inner_rect = rect.shrink(padding);
-        let mut inner_ui = ui.new_child(
-            egui::UiBuilder::new()
-                .id_salt("zoom_toolbar")
-                .max_rect(inner_rect),
-        );
+        let mut inner_ui =
+            ui.new_child(egui::UiBuilder::new().id_salt(id_salt).max_rect(inner_rect));
 
         Flex::vertical()
             .gap(Vec2::ZERO)
@@ -114,8 +125,8 @@ pub fn zoom_toolbar(
 
                 // Reset button
                 flex.add_ui(item(), |ui| {
-                    let (rect, response) =
-                        ui.allocate_exact_size(Vec2::new(button_size, reset_height), Sense::click());
+                    let (rect, response) = ui
+                        .allocate_exact_size(Vec2::new(button_size, reset_height), Sense::click());
                     let inner_cr = CornerRadius::same(theme.radius.md);
                     if response.hovered() {
                         let inset = rect.shrink(theme.control_gap);

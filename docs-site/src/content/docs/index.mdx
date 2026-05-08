@@ -26,10 +26,10 @@ ui-theme = { path = "ui-theme" }
 Apply the theme in your app:
 
 ```rust
-use ui_theme::{Theme, apply_theme};
+use ui_theme::{install_theme, InstallThemeOptions, Theme};
 
 let theme = Theme::dark();
-apply_theme(&ctx, &theme);
+install_theme(&ctx, &theme, InstallThemeOptions::default());
 ```
 
 ## Figma Mockups

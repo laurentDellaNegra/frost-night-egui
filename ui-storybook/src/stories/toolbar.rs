@@ -1,4 +1,7 @@
-use ui_theme::components::{toolbar, top_toolbar, zoom_toolbar, ToolbarGroup, ToolbarItem};
+use ui_theme::composites::{
+    toolbar, top_toolbar, zoom_toolbar, StatusField, StatusFieldKind, ToolbarAction, ToolbarGroup,
+    ToolbarItem,
+};
 use ui_theme::icons::*;
 use ui_theme::Theme;
 
@@ -72,11 +75,40 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                 ui,
                 theme,
                 "Frost Night",
-                "14:32:05",
-                "1013",
-                "FL60",
-                Some("GPS degraded"),
-                &[ICON_GRID, ICON_GLOBE, ICON_SETTINGS],
+                &[
+                    StatusField {
+                        label: "UTC",
+                        value: "14:32:05",
+                        kind: StatusFieldKind::Normal,
+                    },
+                    StatusField {
+                        label: "QNH",
+                        value: "1013",
+                        kind: StatusFieldKind::Normal,
+                    },
+                    StatusField {
+                        label: "STATUS",
+                        value: "GPS degraded",
+                        kind: StatusFieldKind::Warning,
+                    },
+                ],
+                &[
+                    ToolbarAction {
+                        icon: ICON_GRID,
+                        selected: false,
+                        disabled: false,
+                    },
+                    ToolbarAction {
+                        icon: ICON_GLOBE,
+                        selected: false,
+                        disabled: false,
+                    },
+                    ToolbarAction {
+                        icon: ICON_SETTINGS,
+                        selected: false,
+                        disabled: false,
+                    },
+                ],
             );
         }
 
@@ -121,11 +153,40 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                 ui,
                 theme,
                 "Frost Night",
-                "14:32:05",
-                "1013",
-                "FL60",
-                None,
-                &[ICON_GRID, ICON_GLOBE, ICON_SETTINGS],
+                &[
+                    StatusField {
+                        label: "UTC",
+                        value: "14:32:05",
+                        kind: StatusFieldKind::Normal,
+                    },
+                    StatusField {
+                        label: "QNH",
+                        value: "1013",
+                        kind: StatusFieldKind::Normal,
+                    },
+                    StatusField {
+                        label: "TL",
+                        value: "FL60",
+                        kind: StatusFieldKind::Normal,
+                    },
+                ],
+                &[
+                    ToolbarAction {
+                        icon: ICON_GRID,
+                        selected: false,
+                        disabled: false,
+                    },
+                    ToolbarAction {
+                        icon: ICON_GLOBE,
+                        selected: false,
+                        disabled: false,
+                    },
+                    ToolbarAction {
+                        icon: ICON_SETTINGS,
+                        selected: false,
+                        disabled: false,
+                    },
+                ],
             );
         }
 

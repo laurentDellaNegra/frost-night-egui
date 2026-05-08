@@ -1,4 +1,4 @@
-use ui_theme::components::card;
+use ui_theme::containers::card;
 use ui_theme::Theme;
 
 pub struct CardStoryState {
