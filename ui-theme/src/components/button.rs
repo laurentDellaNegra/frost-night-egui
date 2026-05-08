@@ -2,10 +2,7 @@
 
 use egui::{Response, Ui, WidgetText};
 
-use crate::helpers::to_egui_widgets;
-use crate::scale::ControlSize;
-use crate::theme::Theme;
-use crate::tokens::{variant_tokens, ControlVariant};
+use crate::theme::{to_egui_widgets, variant_tokens, ControlSize, ControlVariant, Theme};
 
 /// A themed button with variant styling and size control.
 pub fn button(

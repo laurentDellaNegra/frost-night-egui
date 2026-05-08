@@ -1,23 +1,33 @@
 [package]
-name = "ui-theme"
+name = "frost-night-egui"
 version = "0.1.0"
 edition = "2021"
 description = "Frost Night egui design system — dark theme with glassmorphism support"
 
 [dependencies]
-egui = "0.34"
-egui_flex = "0.6"
-eframe = { version = "0.34", optional = true }
-serde = { version = "1", features = ["derive"], optional = true }
+egui = { workspace = true }
+egui_flex = { workspace = true, optional = true }
+eframe = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
 
 [dev-dependencies]
-eframe = "0.34"
-env_logger = "0.11"
+eframe = { workspace = true, features = ["default_fonts", "wayland", "wgpu", "x11"] }
+env_logger = { workspace = true }
 
 [features]
-default = []
-demo = ["dep:eframe"]
-serde = ["dep:serde"]
+default = ["icons"]
+icons = []
+composites = ["dep:egui_flex", "icons"]
+demo = [
+    "dep:eframe",
+    "eframe/default_fonts",
+    "eframe/wayland",
+    "eframe/wgpu",
+    "eframe/x11",
+    "composites",
+    "icons",
+]
+serde = ["dep:serde", "egui/serde"]
 
 [[example]]
 name = "demo"

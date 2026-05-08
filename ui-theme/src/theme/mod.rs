@@ -1,10 +1,22 @@
-//! Main theme struct and control/input visual resolvers.
+//! Frost Night theme tokens and egui integration.
 
 use egui::CornerRadius;
 
-use crate::palette::ColorPalette;
-use crate::scale::{ControlSize, RadiusScale, SpacingScale};
-use crate::tokens::{variant_tokens, ControlVariant, VariantTokens};
+pub mod oklch;
+pub mod palette;
+pub mod scale;
+pub mod style;
+pub mod tokens;
+pub mod typography;
+
+pub use palette::ColorPalette;
+pub use scale::{ControlSize, RadiusScale, SpacingScale};
+#[allow(deprecated)]
+pub use style::apply_theme;
+pub(crate) use style::to_egui_widgets;
+pub use style::{apply_visuals, install_theme, InstallThemeOptions};
+pub(crate) use tokens::variant_tokens;
+pub use tokens::{mix, ControlVariant, StateColors, VariantTokens};
 
 /// Resolved visual properties for rendering a control.
 #[derive(Clone, Debug)]
@@ -76,9 +88,13 @@ impl Theme {
         }
     }
 
-    /// Create a [`BlurRect`](crate::blur::BlurRect) for a glassmorphism surface.
-    pub fn surface_blur(&self, rect: egui::Rect, corner_radius: CornerRadius) -> crate::blur::BlurRect {
-        crate::blur::BlurRect {
+    /// Create a [`BlurRect`](crate::effects::BlurRect) for a glassmorphism surface.
+    pub fn surface_blur(
+        &self,
+        rect: egui::Rect,
+        corner_radius: CornerRadius,
+    ) -> crate::effects::BlurRect {
+        crate::effects::BlurRect {
             rect,
             radius: self.palette.surface_blur_radius,
             tint: self.palette.surface_blur,

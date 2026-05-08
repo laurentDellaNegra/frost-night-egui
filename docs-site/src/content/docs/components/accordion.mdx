@@ -17,7 +17,7 @@ Collapsible content sections grouped together. Supports exclusive mode where onl
 
 ## Usage
 
-<CodeBlock code={`use ui_theme::components::accordion;
+<CodeBlock code={`use frost_night_egui::containers::accordion;
 
 let titles = &["Flight Info", "Weather", "Navigation"];
 let mut open = vec![true, false, false];
@@ -49,7 +49,7 @@ accordion(ui, &theme, &["Layers", "Filters"], &mut outer_open, false, |ui, i| {
   { name: "ui", type: "&mut Ui", description: "The egui UI context" },
   { name: "theme", type: "&Theme", description: "Theme instance" },
   { name: "items", type: "&[&str]", description: "Section header titles" },
-  { name: "open", type: "&mut Vec<bool>", description: "Which sections are expanded (must match items length)" },
+  { name: "open", type: "&mut [bool]", description: "Which sections are expanded (must match items length)" },
   { name: "exclusive", type: "bool", default: "false", description: "When true, opening one section closes all others" },
   { name: "add_body", type: "impl FnMut(&mut Ui, usize)", description: "Renders content for each section by index (FnMut allows nested accordions)" },
 ]} />

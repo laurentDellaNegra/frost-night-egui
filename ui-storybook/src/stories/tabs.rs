@@ -1,5 +1,5 @@
-use ui_theme::components::tabs;
-use ui_theme::Theme;
+use frost_night_egui::containers::tabs;
+use frost_night_egui::Theme;
 
 pub struct TabsStoryState {
     pub selected: usize,
@@ -34,7 +34,9 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
         });
     });
 
-    let all_labels = ["Layers", "Filters", "Settings", "Weather", "Routes", "Status"];
+    let all_labels = [
+        "Layers", "Filters", "Settings", "Weather", "Routes", "Status",
+    ];
     let labels: Vec<&str> = all_labels.iter().take(state.tab_count).copied().collect();
 
     if state.selected >= state.tab_count {
@@ -47,9 +49,12 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
         tabs(ui, theme, &mut state.selected, &labels);
         ui.add_space(theme.spacing.md);
         ui.label(
-            egui::RichText::new(format!("Selected tab: {} (index {})", labels[state.selected], state.selected))
-                .size(13.0)
-                .color(theme.palette.muted_foreground),
+            egui::RichText::new(format!(
+                "Selected tab: {} (index {})",
+                labels[state.selected], state.selected
+            ))
+            .size(13.0)
+            .color(theme.palette.muted_foreground),
         );
     });
 
@@ -62,7 +67,12 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(ui, theme, &mut state.variant_selected_a, &["Active", "Inactive"]);
+        tabs(
+            ui,
+            theme,
+            &mut state.variant_selected_a,
+            &["Active", "Inactive"],
+        );
 
         ui.add_space(theme.spacing.lg);
         ui.label(
@@ -71,6 +81,11 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(ui, theme, &mut state.variant_selected_b, &["Maps", "Data", "Tools", "History", "Export"]);
+        tabs(
+            ui,
+            theme,
+            &mut state.variant_selected_b,
+            &["Maps", "Data", "Tools", "History", "Export"],
+        );
     });
 }

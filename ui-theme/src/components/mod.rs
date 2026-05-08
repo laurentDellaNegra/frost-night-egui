@@ -1,33 +1,58 @@
 //! Thin component wrappers that use the theme for styling.
 
-mod accordion;
 mod badge;
 mod button;
-mod card;
 mod checkbox;
-mod drag_card;
 mod input;
 mod segmented;
 mod separator;
-mod sidebar_card;
-mod tabs;
 mod toggle;
-mod toolbar;
-mod top_toolbar;
-mod zoom_toolbar;
 
-pub use accordion::accordion;
 pub use badge::{badge, BadgeVariant};
 pub use button::button;
-pub use card::card;
 pub use checkbox::{checkbox, checkbox_small};
-pub use drag_card::{drag_card, DragCardResponse, DragCardState};
 pub use input::text_input;
 pub use segmented::segmented;
 pub use separator::separator;
-pub use tabs::{tabs, tabs_with_icons};
 pub use toggle::toggle;
-pub use sidebar_card::{sidebar_card, SidebarCardResponse};
-pub use toolbar::{toolbar, ToolbarGroup, ToolbarItem, ToolbarResponse};
-pub use top_toolbar::{top_toolbar, TopToolbarResponse};
-pub use zoom_toolbar::{zoom_toolbar, ZoomToolbarResponse};
+
+use crate::theme::{ControlSize, ControlVariant, Theme};
+
+/// Ergonomic extension methods for adding Frost Night controls to an `egui::Ui`.
+pub trait FrostUiExt {
+    fn frost_button(
+        &mut self,
+        theme: &Theme,
+        label: impl Into<egui::WidgetText>,
+        variant: ControlVariant,
+        size: ControlSize,
+    ) -> egui::Response;
+
+    fn frost_text_input<S: egui::TextBuffer>(
+        &mut self,
+        theme: &Theme,
+        text: &mut S,
+        size: ControlSize,
+    ) -> egui::Response;
+}
+
+impl FrostUiExt for egui::Ui {
+    fn frost_button(
+        &mut self,
+        theme: &Theme,
+        label: impl Into<egui::WidgetText>,
+        variant: ControlVariant,
+        size: ControlSize,
+    ) -> egui::Response {
+        button(self, theme, label, variant, size)
+    }
+
+    fn frost_text_input<S: egui::TextBuffer>(
+        &mut self,
+        theme: &Theme,
+        text: &mut S,
+        size: ControlSize,
+    ) -> egui::Response {
+        text_input(self, theme, text, size)
+    }
+}

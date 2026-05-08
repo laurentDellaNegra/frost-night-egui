@@ -1,5 +1,5 @@
-use ui_theme::components::button;
-use ui_theme::{ControlSize, ControlVariant, Theme};
+use frost_night_egui::components::button;
+use frost_night_egui::{ControlSize, ControlVariant, Theme};
 
 const ALL_VARIANTS: [ControlVariant; 6] = [
     ControlVariant::Primary,

@@ -6,8 +6,7 @@
 
 use egui::{Color32, CornerRadius, Id, Pos2, Rect, Sense, Stroke, StrokeKind, Ui, Vec2};
 
-use crate::theme::Theme;
-use crate::tokens::mix;
+use crate::theme::{mix, Theme};
 
 /// Persistent state for a draggable card.
 #[derive(Clone, Debug)]
@@ -40,8 +39,8 @@ pub fn drag_card(
     let cr = CornerRadius::same(theme.radius.lg);
     let padding = theme.spacing.md;
     let dots_zone_h = theme.spacing.md; // top zone with 3 dots / grab bar
-    let title_h = theme.spacing.xl;     // title + close button row
-    let header_gap = theme.spacing.sm;  // space between dots zone and title
+    let title_h = theme.spacing.xl; // title + close button row
+    let header_gap = theme.spacing.sm; // space between dots zone and title
     let handle_h = dots_zone_h + header_gap + title_h;
 
     // --- Drag interaction on the full handle zone ---
@@ -55,10 +54,13 @@ pub fn drag_card(
 
     // --- Drag animation: fade + border glow ---
     let dragging = drag_response.dragged();
-    let drag_t = ui.ctx().animate_bool_with_time(id.with("drag_anim"), dragging, 0.2);
+    let drag_t = ui
+        .ctx()
+        .animate_bool_with_time(id.with("drag_anim"), dragging, 0.2);
 
     // --- Semi-transparent backdrop ---
-    ui.painter().rect_filled(card_rect, cr, theme.palette.surface_blur);
+    ui.painter()
+        .rect_filled(card_rect, cr, theme.palette.surface_blur);
 
     // Border glow: lerp from normal border to ring color, widen stroke
     let border_color = mix(theme.palette.border, theme.palette.ring, drag_t);
@@ -90,7 +92,9 @@ pub fn drag_card(
 
     // --- Handle indicator: 3 dots → grab bar ---
     let hovered = drag_response.hovered() || drag_response.dragged();
-    let hover_t = ui.ctx().animate_bool_with_time(id.with("handle_hover"), hovered, 0.15);
+    let hover_t = ui
+        .ctx()
+        .animate_bool_with_time(id.with("handle_hover"), hovered, 0.15);
 
     let dots_center_y = card_rect.top() + padding + dots_zone_h / 2.0;
     let dots_center_x = card_rect.center().x;
@@ -112,17 +116,17 @@ pub fn drag_card(
         // Draw 3 dots, fading out as hover_t increases
         let dot_alpha = ((1.0 - hover_t) * 255.0) as u8;
         let dot_color = Color32::from_rgba_unmultiplied(
-            handle_color.r(), handle_color.g(), handle_color.b(), dot_alpha,
+            handle_color.r(),
+            handle_color.g(),
+            handle_color.b(),
+            dot_alpha,
         );
         for i in [-1.0, 0.0, 1.0] {
             // Dots spread apart slightly as they fade, merging toward bar
             let spread = egui::lerp(1.0..=2.0, hover_t);
             let x = dots_center_x + i * dot_spacing * spread;
-            ui.painter().circle_filled(
-                egui::pos2(x, dots_center_y),
-                dot_radius,
-                dot_color,
-            );
+            ui.painter()
+                .circle_filled(egui::pos2(x, dots_center_y), dot_radius, dot_color);
         }
     }
 
@@ -130,7 +134,10 @@ pub fn drag_card(
         // Draw grab bar, fading in
         let bar_alpha = (hover_t * 255.0) as u8;
         let bar_color = Color32::from_rgba_unmultiplied(
-            handle_color.r(), handle_color.g(), handle_color.b(), bar_alpha,
+            handle_color.r(),
+            handle_color.g(),
+            handle_color.b(),
+            bar_alpha,
         );
         // Bar width grows in from dot cluster width
         let w = egui::lerp(dot_spacing..=bar_half_w, hover_t);
@@ -159,7 +166,8 @@ pub fn drag_card(
         card_rect.right() - padding - close_size / 2.0,
         title_center_y,
     );
-    let close_rect = Rect::from_center_size(close_center, Vec2::splat(close_size + theme.spacing.sm));
+    let close_rect =
+        Rect::from_center_size(close_center, Vec2::splat(close_size + theme.spacing.sm));
     let close_response = ui.interact(close_rect, id.with("close"), Sense::click());
 
     let x_color = if close_response.hovered() {
@@ -169,11 +177,17 @@ pub fn drag_card(
     };
     let s = close_size / 2.0 - 2.0;
     ui.painter().line_segment(
-        [close_center + egui::vec2(-s, -s), close_center + egui::vec2(s, s)],
+        [
+            close_center + egui::vec2(-s, -s),
+            close_center + egui::vec2(s, s),
+        ],
         Stroke::new(1.5, x_color),
     );
     ui.painter().line_segment(
-        [close_center + egui::vec2(s, -s), close_center + egui::vec2(-s, s)],
+        [
+            close_center + egui::vec2(s, -s),
+            close_center + egui::vec2(-s, s),
+        ],
         Stroke::new(1.5, x_color),
     );
 

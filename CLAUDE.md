@@ -15,7 +15,7 @@ frost-night-egui/
 │   │   ├── tokens.rs            # StateColors, VariantTokens, ControlVariant
 │   │   ├── scale.rs             # RadiusScale, SpacingScale, ControlSize
 │   │   ├── theme.rs             # Theme struct
-│   │   ├── helpers.rs           # apply_theme()
+│   │   ├── theme/style.rs       # install_theme(), apply_visuals()
 │   │   ├── blur.rs              # BlurRect (fallback, no shader)
 │   │   ├── oklch.rs             # OKLCH utilities
 │   │   ├── icons.rs             # Lucide font embed + constants
@@ -179,13 +179,13 @@ egui runs two layout passes per frame. The main pitfall is "Widget rect changed 
 
 ### Icons
 - Lucide icon font (TTF) is embedded via `include_bytes!` in `icons.rs`.
-- `load_icon_font(ctx)` is called automatically by `apply_theme()`.
+- `install_icon_font(ctx)` is called by `install_theme()` when font installation is enabled.
 - Named constants: `ICON_MAP`, `ICON_LAYERS`, `ICON_SETTINGS`, `ICON_CIRCLE_X`, `ICON_SNOWFLAKE`, `ICON_STAR`, `ICON_CHEVRON_RIGHT`, `ICON_CHEVRON_DOWN`, `ICON_SEARCH`, etc.
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app
 - All demo logic lives in `ui-theme/src/demo.rs` (gated behind `demo` feature).
-- `ui-theme/examples/demo.rs` and `web-demo/src/main.rs` are thin entry points — both call `ui_theme::demo::DemoApp::new(cc)`.
+- `ui-theme/examples/demo.rs` and `web-demo/src/main.rs` are thin entry points — both call `frost_night_egui::demo::DemoApp::new(cc)`.
 - Tracks animate continuously along velocity vectors (frame-rate independent with `dt`).
 - Floating card z-ordering: last in `Vec<FloatingCard>` renders on top. Dragging or clicking a card moves it to end. Toolbar click for a parked card highlights it and brings to front.
 

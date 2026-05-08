@@ -20,16 +20,16 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ui-theme = { path = "ui-theme" }
+frost-night-egui = { path = "ui-theme" }
 ```
 
 Apply the theme in your app:
 
 ```rust
-use ui_theme::{Theme, apply_theme};
+use frost_night_egui::{install_theme, InstallThemeOptions, Theme};
 
 let theme = Theme::dark();
-apply_theme(&ctx, &theme);
+install_theme(&ctx, &theme, InstallThemeOptions::default());
 ```
 
 ## Figma Mockups

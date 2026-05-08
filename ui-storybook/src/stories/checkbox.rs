@@ -1,5 +1,5 @@
-use ui_theme::components::checkbox;
-use ui_theme::Theme;
+use frost_night_egui::components::checkbox;
+use frost_night_egui::Theme;
 
 pub struct CheckboxStoryState {
     pub checked: bool,
@@ -35,7 +35,7 @@ pub fn checkbox_story(ui: &mut egui::Ui, theme: &Theme, state: &mut CheckboxStor
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
         ui.add_enabled_ui(state.enabled, |ui| {
-            checkbox(ui, theme, &mut state.checked, &state.label);
+            checkbox(ui, theme, &mut state.checked, state.label.as_str());
         });
     });
 

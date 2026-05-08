@@ -1,26 +1,28 @@
-//! Frost Night UI theme — a minimal egui design system.
+//! Frost Night UI theme — a reusable egui design system.
 //!
 //! Dark theme extracted from Figma mockups.
 //! Architecture inspired by shadcn patterns, written from scratch.
 
-pub mod blur;
 pub mod components;
-pub mod helpers;
+pub mod containers;
+pub mod effects;
+#[cfg(feature = "icons")]
 pub mod icons;
-pub mod oklch;
-pub mod palette;
-pub mod scale;
 pub mod theme;
-pub mod tokens;
-pub mod widgets;
+
+#[cfg(feature = "composites")]
+pub mod composites;
 
 #[cfg(feature = "demo")]
 pub mod demo;
 
-// Convenience re-exports
-pub use blur::BlurRect;
-pub use helpers::apply_theme;
-pub use palette::ColorPalette;
-pub use scale::{ControlSize, RadiusScale, SpacingScale};
-pub use theme::Theme;
-pub use tokens::{mix, ControlVariant, StateColors, VariantTokens};
+pub use components::FrostUiExt;
+pub use effects::BlurRect;
+#[cfg(feature = "icons")]
+pub use icons::{add_icon_font_to, install_icon_font};
+#[allow(deprecated)]
+pub use theme::apply_theme;
+pub use theme::{
+    apply_visuals, install_theme, ColorPalette, ControlSize, ControlVariant, InstallThemeOptions,
+    RadiusScale, SpacingScale, StateColors, Theme, VariantTokens,
+};

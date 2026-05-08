@@ -1,4 +1,4 @@
-use ui_theme::Theme;
+use frost_night_egui::Theme;
 
 /// Section header label (e.g. "Controls", "Playground", "All Variants")
 pub fn section_header(ui: &mut egui::Ui, theme: &Theme, label: &str) {
@@ -20,8 +20,7 @@ pub fn controls_panel(ui: &mut egui::Ui, theme: &Theme, add_controls: impl FnOnc
         .corner_radius(theme.radius.md)
         .stroke(egui::Stroke::new(1.0, theme.palette.border))
         .show(ui, |ui| {
-            ui.spacing_mut().item_spacing =
-                egui::vec2(theme.spacing.sm, theme.spacing.xs + 2.0);
+            ui.spacing_mut().item_spacing = egui::vec2(theme.spacing.sm, theme.spacing.xs + 2.0);
             add_controls(ui);
         });
 }

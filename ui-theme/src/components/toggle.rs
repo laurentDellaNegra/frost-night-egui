@@ -2,8 +2,8 @@
 
 use egui::{Color32, CornerRadius, Response, Sense, Ui, Vec2};
 
+use crate::theme::mix;
 use crate::theme::Theme;
-use crate::tokens::mix;
 
 /// A themed toggle switch matching the Frost Night design.
 ///
@@ -13,7 +13,7 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
     let desired_size = Vec2::new(40.0, 22.0);
     let (rect, mut response) = ui.allocate_exact_size(desired_size, Sense::click());
 
-    if response.clicked() {
+    if ui.is_enabled() && response.clicked() {
         *on = !*on;
         response.mark_changed();
     }
@@ -23,7 +23,11 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
 
         // Outer border (same color / style as checkbox)
         let outer_cr = CornerRadius::same(theme.radius.lg);
-        let border_color = mix(theme.palette.control_border, theme.palette.muted_foreground, how_on * 0.3);
+        let border_color = mix(
+            theme.palette.control_border,
+            theme.palette.muted_foreground,
+            how_on * 0.3,
+        );
         ui.painter().rect_stroke(
             rect,
             outer_cr,
@@ -45,7 +49,11 @@ pub fn toggle(ui: &mut Ui, theme: &Theme, on: &mut bool) -> Response {
             Vec2::splat(thumb_size),
         );
 
-        let thumb_color = mix(theme.palette.control_fill_off, theme.palette.control_fill_on, how_on);
+        let thumb_color = mix(
+            theme.palette.control_fill_off,
+            theme.palette.control_fill_on,
+            how_on,
+        );
         ui.painter().rect_filled(thumb_rect, inner_cr, thumb_color);
 
         // Checkmark on thumb when ON (fade in)

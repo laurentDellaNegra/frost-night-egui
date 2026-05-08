@@ -1,5 +1,5 @@
-use ui_theme::components::segmented;
-use ui_theme::Theme;
+use frost_night_egui::components::segmented;
+use frost_night_egui::Theme;
 
 pub struct SegmentedStoryState {
     pub selected: usize,
@@ -99,6 +99,11 @@ pub fn segmented_story(ui: &mut egui::Ui, theme: &Theme, state: &mut SegmentedSt
         );
         ui.add_space(theme.spacing.xs);
         let mut sel4 = 2;
-        segmented(ui, theme, &["All", "Active", "Pending", "Closed"], &mut sel4);
+        segmented(
+            ui,
+            theme,
+            &["All", "Active", "Pending", "Closed"],
+            &mut sel4,
+        );
     });
 }

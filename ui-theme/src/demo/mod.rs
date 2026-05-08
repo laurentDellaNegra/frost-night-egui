@@ -5,9 +5,14 @@
 use eframe::egui;
 
 use crate::components::*;
+use crate::composites::*;
+use crate::containers::*;
 use crate::icons::*;
-use crate::widgets::MapsMenuState;
-use crate::{apply_theme, ControlSize, ControlVariant, Theme};
+use crate::{install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme};
+
+mod maps_menu;
+
+use maps_menu::MapsMenuState;
 
 // ---------------------------------------------------------------------------
 // Track data
@@ -33,36 +38,216 @@ struct LiveTrack {
 }
 
 const TRACKS: &[Track] = &[
-    Track { nx: 0.15, ny: 0.12, callsign: "SWR142", vx: 30.0, vy: 15.0 },
-    Track { nx: 0.38, ny: 0.23, callsign: "BAW73C", vx: -20.0, vy: 25.0 },
-    Track { nx: 0.63, ny: 0.46, callsign: "EZY18P", vx: 25.0, vy: -10.0 },
-    Track { nx: 0.23, ny: 0.62, callsign: "DLH4N", vx: 15.0, vy: 20.0 },
-    Track { nx: 0.75, ny: 0.18, callsign: "AFR61", vx: -10.0, vy: 30.0 },
-    Track { nx: 0.53, ny: 0.69, callsign: "TAP9K", vx: 20.0, vy: -15.0 },
-    Track { nx: 0.09, ny: 0.38, callsign: "RYR3F", vx: 35.0, vy: 5.0 },
-    Track { nx: 0.69, ny: 0.77, callsign: "AUA22", vx: -15.0, vy: -20.0 },
-    Track { nx: 0.44, ny: 0.08, callsign: "FIN8B", vx: 10.0, vy: 25.0 },
-    Track { nx: 0.85, ny: 0.58, callsign: "KLM56", vx: -25.0, vy: 10.0 },
-    Track { nx: 0.11, ny: 0.80, callsign: "THY4A", vx: 28.0, vy: -8.0 },
-    Track { nx: 0.93, ny: 0.14, callsign: "SAS91", vx: -18.0, vy: 22.0 },
-    Track { nx: 0.25, ny: 0.31, callsign: "IBE34", vx: 22.0, vy: 18.0 },
-    Track { nx: 0.58, ny: 0.12, callsign: "AZA7F", vx: -12.0, vy: 28.0 },
-    Track { nx: 0.79, ny: 0.83, callsign: "LOT3B", vx: 15.0, vy: -25.0 },
-    Track { nx: 0.43, ny: 0.49, callsign: "CSA52", vx: -30.0, vy: 5.0 },
-    Track { nx: 0.19, ny: 0.89, callsign: "BEL9C", vx: 20.0, vy: -12.0 },
-    Track { nx: 0.65, ny: 0.29, callsign: "AAL88", vx: -8.0, vy: 32.0 },
-    Track { nx: 0.88, ny: 0.40, callsign: "UAL15", vx: -22.0, vy: -15.0 },
-    Track { nx: 0.35, ny: 0.74, callsign: "DAL67", vx: 18.0, vy: 12.0 },
-    Track { nx: 0.06, ny: 0.22, callsign: "JAL02", vx: 32.0, vy: 10.0 },
-    Track { nx: 0.73, ny: 0.65, callsign: "QFA8R", vx: -14.0, vy: -28.0 },
-    Track { nx: 0.50, ny: 0.86, callsign: "SIA32", vx: 10.0, vy: -18.0 },
-    Track { nx: 0.31, ny: 0.05, callsign: "CPA71", vx: -5.0, vy: 30.0 },
-    Track { nx: 0.95, ny: 0.74, callsign: "ANZ6D", vx: -20.0, vy: -10.0 },
-    Track { nx: 0.16, ny: 0.52, callsign: "ETH5A", vx: 25.0, vy: 15.0 },
-    Track { nx: 0.61, ny: 0.94, callsign: "RAM44", vx: 12.0, vy: -22.0 },
-    Track { nx: 0.83, ny: 0.28, callsign: "TAR12", vx: -28.0, vy: 8.0 },
-    Track { nx: 0.48, ny: 0.37, callsign: "VIR9B", vx: 16.0, vy: 20.0 },
-    Track { nx: 0.05, ny: 0.69, callsign: "EIN3G", vx: 30.0, vy: -5.0 },
+    Track {
+        nx: 0.15,
+        ny: 0.12,
+        callsign: "SWR142",
+        vx: 30.0,
+        vy: 15.0,
+    },
+    Track {
+        nx: 0.38,
+        ny: 0.23,
+        callsign: "BAW73C",
+        vx: -20.0,
+        vy: 25.0,
+    },
+    Track {
+        nx: 0.63,
+        ny: 0.46,
+        callsign: "EZY18P",
+        vx: 25.0,
+        vy: -10.0,
+    },
+    Track {
+        nx: 0.23,
+        ny: 0.62,
+        callsign: "DLH4N",
+        vx: 15.0,
+        vy: 20.0,
+    },
+    Track {
+        nx: 0.75,
+        ny: 0.18,
+        callsign: "AFR61",
+        vx: -10.0,
+        vy: 30.0,
+    },
+    Track {
+        nx: 0.53,
+        ny: 0.69,
+        callsign: "TAP9K",
+        vx: 20.0,
+        vy: -15.0,
+    },
+    Track {
+        nx: 0.09,
+        ny: 0.38,
+        callsign: "RYR3F",
+        vx: 35.0,
+        vy: 5.0,
+    },
+    Track {
+        nx: 0.69,
+        ny: 0.77,
+        callsign: "AUA22",
+        vx: -15.0,
+        vy: -20.0,
+    },
+    Track {
+        nx: 0.44,
+        ny: 0.08,
+        callsign: "FIN8B",
+        vx: 10.0,
+        vy: 25.0,
+    },
+    Track {
+        nx: 0.85,
+        ny: 0.58,
+        callsign: "KLM56",
+        vx: -25.0,
+        vy: 10.0,
+    },
+    Track {
+        nx: 0.11,
+        ny: 0.80,
+        callsign: "THY4A",
+        vx: 28.0,
+        vy: -8.0,
+    },
+    Track {
+        nx: 0.93,
+        ny: 0.14,
+        callsign: "SAS91",
+        vx: -18.0,
+        vy: 22.0,
+    },
+    Track {
+        nx: 0.25,
+        ny: 0.31,
+        callsign: "IBE34",
+        vx: 22.0,
+        vy: 18.0,
+    },
+    Track {
+        nx: 0.58,
+        ny: 0.12,
+        callsign: "AZA7F",
+        vx: -12.0,
+        vy: 28.0,
+    },
+    Track {
+        nx: 0.79,
+        ny: 0.83,
+        callsign: "LOT3B",
+        vx: 15.0,
+        vy: -25.0,
+    },
+    Track {
+        nx: 0.43,
+        ny: 0.49,
+        callsign: "CSA52",
+        vx: -30.0,
+        vy: 5.0,
+    },
+    Track {
+        nx: 0.19,
+        ny: 0.89,
+        callsign: "BEL9C",
+        vx: 20.0,
+        vy: -12.0,
+    },
+    Track {
+        nx: 0.65,
+        ny: 0.29,
+        callsign: "AAL88",
+        vx: -8.0,
+        vy: 32.0,
+    },
+    Track {
+        nx: 0.88,
+        ny: 0.40,
+        callsign: "UAL15",
+        vx: -22.0,
+        vy: -15.0,
+    },
+    Track {
+        nx: 0.35,
+        ny: 0.74,
+        callsign: "DAL67",
+        vx: 18.0,
+        vy: 12.0,
+    },
+    Track {
+        nx: 0.06,
+        ny: 0.22,
+        callsign: "JAL02",
+        vx: 32.0,
+        vy: 10.0,
+    },
+    Track {
+        nx: 0.73,
+        ny: 0.65,
+        callsign: "QFA8R",
+        vx: -14.0,
+        vy: -28.0,
+    },
+    Track {
+        nx: 0.50,
+        ny: 0.86,
+        callsign: "SIA32",
+        vx: 10.0,
+        vy: -18.0,
+    },
+    Track {
+        nx: 0.31,
+        ny: 0.05,
+        callsign: "CPA71",
+        vx: -5.0,
+        vy: 30.0,
+    },
+    Track {
+        nx: 0.95,
+        ny: 0.74,
+        callsign: "ANZ6D",
+        vx: -20.0,
+        vy: -10.0,
+    },
+    Track {
+        nx: 0.16,
+        ny: 0.52,
+        callsign: "ETH5A",
+        vx: 25.0,
+        vy: 15.0,
+    },
+    Track {
+        nx: 0.61,
+        ny: 0.94,
+        callsign: "RAM44",
+        vx: 12.0,
+        vy: -22.0,
+    },
+    Track {
+        nx: 0.83,
+        ny: 0.28,
+        callsign: "TAR12",
+        vx: -28.0,
+        vy: 8.0,
+    },
+    Track {
+        nx: 0.48,
+        ny: 0.37,
+        callsign: "VIR9B",
+        vx: 16.0,
+        vy: 20.0,
+    },
+    Track {
+        nx: 0.05,
+        ny: 0.69,
+        callsign: "EIN3G",
+        vx: 30.0,
+        vy: -5.0,
+    },
 ];
 
 const WAYPOINTS: &[(f32, f32, &str)] = &[
@@ -82,12 +267,59 @@ const WAYPOINTS: &[(f32, f32, &str)] = &[
 // Background
 // ---------------------------------------------------------------------------
 
-const MAP_AREAS: &[(&[(f32, f32)], [u8; 3])] = &[
-    (&[(0.10, 0.15), (0.35, 0.10), (0.45, 0.25), (0.40, 0.45), (0.15, 0.40)], [0x08, 0x12, 0x22]),
-    (&[(0.50, 0.05), (0.75, 0.08), (0.80, 0.30), (0.60, 0.35), (0.48, 0.20)], [0x0A, 0x16, 0x2A]),
-    (&[(0.55, 0.50), (0.80, 0.45), (0.90, 0.65), (0.85, 0.80), (0.60, 0.75)], [0x06, 0x0E, 0x1C]),
-    (&[(0.02, 0.55), (0.25, 0.50), (0.35, 0.70), (0.30, 0.90), (0.05, 0.85)], [0x09, 0x14, 0x26]),
-    (&[(0.35, 0.25), (0.55, 0.30), (0.58, 0.50), (0.40, 0.55), (0.30, 0.40)], [0x07, 0x10, 0x20]),
+type MapArea = (&'static [(f32, f32)], [u8; 3]);
+
+const MAP_AREAS: &[MapArea] = &[
+    (
+        &[
+            (0.10, 0.15),
+            (0.35, 0.10),
+            (0.45, 0.25),
+            (0.40, 0.45),
+            (0.15, 0.40),
+        ],
+        [0x08, 0x12, 0x22],
+    ),
+    (
+        &[
+            (0.50, 0.05),
+            (0.75, 0.08),
+            (0.80, 0.30),
+            (0.60, 0.35),
+            (0.48, 0.20),
+        ],
+        [0x0A, 0x16, 0x2A],
+    ),
+    (
+        &[
+            (0.55, 0.50),
+            (0.80, 0.45),
+            (0.90, 0.65),
+            (0.85, 0.80),
+            (0.60, 0.75),
+        ],
+        [0x06, 0x0E, 0x1C],
+    ),
+    (
+        &[
+            (0.02, 0.55),
+            (0.25, 0.50),
+            (0.35, 0.70),
+            (0.30, 0.90),
+            (0.05, 0.85),
+        ],
+        [0x09, 0x14, 0x26],
+    ),
+    (
+        &[
+            (0.35, 0.25),
+            (0.55, 0.30),
+            (0.58, 0.50),
+            (0.40, 0.55),
+            (0.30, 0.40),
+        ],
+        [0x07, 0x10, 0x20],
+    ),
 ];
 
 fn paint_background(ui: &egui::Ui, live_tracks: &[LiveTrack]) {
@@ -114,7 +346,10 @@ fn paint_background(ui: &egui::Ui, live_tracks: &[LiveTrack]) {
             let j = (i + 1) % points.len();
             painter.line_segment(
                 [points[i], points[j]],
-                egui::Stroke::new(0.5, egui::Color32::from_rgb(col[0] + 4, col[1] + 8, col[2] + 12)),
+                egui::Stroke::new(
+                    0.5,
+                    egui::Color32::from_rgb(col[0] + 4, col[1] + 8, col[2] + 12),
+                ),
             );
         }
     }
@@ -202,6 +437,7 @@ fn paint_background(ui: &egui::Ui, live_tracks: &[LiveTrack]) {
 // Demo card content
 // ---------------------------------------------------------------------------
 
+#[allow(clippy::too_many_arguments)]
 fn demo_card_content(
     ui: &mut egui::Ui,
     theme: &Theme,
@@ -288,12 +524,11 @@ fn demo_card_content(
     });
 }
 
-
 fn demo_accordion_content(
     ui: &mut egui::Ui,
     theme: &Theme,
     map_tab: &mut usize,
-    acc_open: &mut Vec<bool>,
+    acc_open: &mut [bool],
     nested: &mut [Vec<bool>; 4],
 ) {
     tabs(ui, theme, map_tab, &["Layers", "Filters", "Settings"]);
@@ -308,51 +543,92 @@ fn demo_accordion_content(
         |ui, i| match i {
             0 => {
                 accordion(
-                    ui, theme,
+                    ui,
+                    theme,
                     &["Standard", "Satellite", "Terrain"],
-                    &mut nested[0], true,
+                    &mut nested[0],
+                    true,
                     |ui, j| match j {
-                        0 => { ui.label("OpenStreetMap tiles"); ui.label("Light/dark variants"); }
-                        1 => { ui.label("High-res imagery"); ui.label("Cloud-free composite"); }
-                        2 => { ui.label("Elevation contours"); ui.label("Hillshade overlay"); }
+                        0 => {
+                            ui.label("OpenStreetMap tiles");
+                            ui.label("Light/dark variants");
+                        }
+                        1 => {
+                            ui.label("High-res imagery");
+                            ui.label("Cloud-free composite");
+                        }
+                        2 => {
+                            ui.label("Elevation contours");
+                            ui.label("Hillshade overlay");
+                        }
                         _ => {}
                     },
                 );
             }
             1 => {
                 accordion(
-                    ui, theme,
+                    ui,
+                    theme,
                     &["Airways", "Waypoints", "Navaids"],
-                    &mut nested[1], true,
+                    &mut nested[1],
+                    true,
                     |ui, j| match j {
-                        0 => { ui.label("Upper: UL/UT routes"); ui.label("Lower: L routes"); }
-                        1 => { ui.label("RNAV fixes"); ui.label("Conventional intersections"); }
-                        2 => { ui.label("VOR/DME stations"); ui.label("NDB beacons"); }
+                        0 => {
+                            ui.label("Upper: UL/UT routes");
+                            ui.label("Lower: L routes");
+                        }
+                        1 => {
+                            ui.label("RNAV fixes");
+                            ui.label("Conventional intersections");
+                        }
+                        2 => {
+                            ui.label("VOR/DME stations");
+                            ui.label("NDB beacons");
+                        }
                         _ => {}
                     },
                 );
             }
             2 => {
                 accordion(
-                    ui, theme,
+                    ui,
+                    theme,
                     &["TMA", "CTR", "FIR"],
-                    &mut nested[2], true,
+                    &mut nested[2],
+                    true,
                     |ui, j| match j {
-                        0 => { ui.label("TMA Zurich"); ui.label("TMA Geneva"); }
-                        1 => { ui.label("CTR Zurich 1/2"); ui.label("CTR Geneva"); }
-                        2 => { ui.label("LSAS Switzerland"); ui.label("Adjacent FIRs"); }
+                        0 => {
+                            ui.label("TMA Zurich");
+                            ui.label("TMA Geneva");
+                        }
+                        1 => {
+                            ui.label("CTR Zurich 1/2");
+                            ui.label("CTR Geneva");
+                        }
+                        2 => {
+                            ui.label("LSAS Switzerland");
+                            ui.label("Adjacent FIRs");
+                        }
                         _ => {}
                     },
                 );
             }
             3 => {
                 accordion(
-                    ui, theme,
+                    ui,
+                    theme,
                     &["Surface", "Upper air"],
-                    &mut nested[3], true,
+                    &mut nested[3],
+                    true,
                     |ui, j| match j {
-                        0 => { ui.label("METAR / SPECI"); ui.label("TAF forecasts"); }
-                        1 => { ui.label("SIGMET / AIRMET"); ui.label("Winds & temps aloft"); }
+                        0 => {
+                            ui.label("METAR / SPECI");
+                            ui.label("TAF forecasts");
+                        }
+                        1 => {
+                            ui.label("SIGMET / AIRMET");
+                            ui.label("Winds & temps aloft");
+                        }
                         _ => {}
                     },
                 );
@@ -397,7 +673,7 @@ pub struct DemoApp {
 impl DemoApp {
     pub fn new(cc: &eframe::CreationContext) -> Self {
         let theme = Theme::dark();
-        apply_theme(&cc.egui_ctx, &theme);
+        install_theme(&cc.egui_ctx, &theme, InstallThemeOptions::default());
 
         let ref_w = 800.0f32;
         let ref_h = 650.0f32;
@@ -451,10 +727,18 @@ impl eframe::App for DemoApp {
         for t in &mut self.live_tracks {
             t.nx += t.dnx * speed * dt;
             t.ny += t.dny * speed * dt;
-            if t.nx > 1.0 { t.nx -= 1.0; }
-            if t.nx < 0.0 { t.nx += 1.0; }
-            if t.ny > 1.0 { t.ny -= 1.0; }
-            if t.ny < 0.0 { t.ny += 1.0; }
+            if t.nx > 1.0 {
+                t.nx -= 1.0;
+            }
+            if t.nx < 0.0 {
+                t.nx += 1.0;
+            }
+            if t.ny > 1.0 {
+                t.ny -= 1.0;
+            }
+            if t.ny < 0.0 {
+                t.ny += 1.0;
+            }
         }
         ui.ctx().request_repaint();
 
@@ -475,9 +759,7 @@ impl eframe::App for DemoApp {
 
         // Left toolbar (fixed)
         let toolbar_groups: Vec<ToolbarGroup> = vec![
-            vec![
-                ToolbarItem::new(ICON_PANEL_LEFT),
-            ],
+            vec![ToolbarItem::new(ICON_PANEL_LEFT)],
             vec![
                 ToolbarItem::new(ICON_MAP).with_badge(egui::Color32::from_rgb(0xE0, 0x5A, 0x7A)),
                 ToolbarItem::new(ICON_LAYERS).with_badge(egui::Color32::from_rgb(0x4A, 0x90, 0xCF)),
@@ -499,42 +781,75 @@ impl eframe::App for DemoApp {
         // Top toolbar
         let top_tb_x = full_rect.left() + toolbar_margin;
         let top_tb_y = full_rect.top() + toolbar_margin;
-        let mut top_tb_ui = ui.new_child(
-            egui::UiBuilder::new()
-                .id_salt("top_toolbar")
-                .max_rect(
-                    egui::Rect::from_min_size(
-                        egui::pos2(top_tb_x, top_tb_y),
-                        egui::vec2(full_rect.width() - toolbar_margin * 2.0, top_tb_height),
-                    ),
-                ),
-        );
+        let mut top_tb_ui = ui.new_child(egui::UiBuilder::new().id_salt("top_toolbar").max_rect(
+            egui::Rect::from_min_size(
+                egui::pos2(top_tb_x, top_tb_y),
+                egui::vec2(full_rect.width() - toolbar_margin * 2.0, top_tb_height),
+            ),
+        ));
         let _top_response = top_toolbar(
             &mut top_tb_ui,
             &self.theme,
             "Frost Night egui",
-            "23:14:20",
-            "1016",
-            "80",
-            Some("ERROR"),
-            &[ICON_GRID, ICON_COMPASS, ICON_EYE],
+            &[
+                StatusField {
+                    label: "UTC",
+                    value: "23:14:20",
+                    kind: StatusFieldKind::Normal,
+                },
+                StatusField {
+                    label: "QNH",
+                    value: "1016",
+                    kind: StatusFieldKind::Normal,
+                },
+                StatusField {
+                    label: "TL",
+                    value: "80",
+                    kind: StatusFieldKind::Normal,
+                },
+                StatusField {
+                    label: "STATUS",
+                    value: "ERROR",
+                    kind: StatusFieldKind::Error,
+                },
+            ],
+            &[
+                ToolbarAction {
+                    icon: ICON_GRID,
+                    selected: false,
+                    disabled: false,
+                },
+                ToolbarAction {
+                    icon: ICON_COMPASS,
+                    selected: false,
+                    disabled: false,
+                },
+                ToolbarAction {
+                    icon: ICON_EYE,
+                    selected: false,
+                    disabled: false,
+                },
+            ],
         );
 
         // Left toolbar (below top toolbar)
         let tb_x = full_rect.left() + toolbar_margin;
         let tb_y = top_tb_y + top_tb_height + self.theme.spacing.xl;
-        let mut toolbar_ui = ui.new_child(
-            egui::UiBuilder::new()
-                .id_salt("left_toolbar")
-                .max_rect(
-                    egui::Rect::from_min_size(
-                        egui::pos2(tb_x, tb_y),
-                        egui::vec2(60.0, full_rect.height() - tb_y - toolbar_margin),
-                    ),
-                ),
+        let mut toolbar_ui = ui.new_child(egui::UiBuilder::new().id_salt("left_toolbar").max_rect(
+            egui::Rect::from_min_size(
+                egui::pos2(tb_x, tb_y),
+                egui::vec2(60.0, full_rect.height() - tb_y - toolbar_margin),
+            ),
+        ));
+        let floating_buttons: Vec<usize> =
+            self.floating_cards.iter().map(|f| f.from_button).collect();
+        let tb_response = toolbar(
+            &mut toolbar_ui,
+            &self.theme,
+            &toolbar_groups,
+            self.docked_button,
+            &floating_buttons,
         );
-        let floating_buttons: Vec<usize> = self.floating_cards.iter().map(|f| f.from_button).collect();
-        let tb_response = toolbar(&mut toolbar_ui, &self.theme, &toolbar_groups, self.docked_button, &floating_buttons);
 
         // Sidebar / floating card constants
         let left_tb_width = 36.0 + self.theme.spacing.xs * 2.0;
@@ -544,7 +859,11 @@ impl eframe::App for DemoApp {
 
         // Handle toolbar button clicks
         if let Some(clicked) = tb_response.clicked {
-            if let Some(idx) = self.floating_cards.iter().position(|f| f.from_button == clicked) {
+            if let Some(idx) = self
+                .floating_cards
+                .iter()
+                .position(|f| f.from_button == clicked)
+            {
                 self.floating_cards[idx].highlight_time = ui.input(|i| i.time);
                 let card = self.floating_cards.remove(idx);
                 self.floating_cards.push(card);
@@ -560,8 +879,16 @@ impl eframe::App for DemoApp {
         let docked_button_this_frame = self.docked_button;
 
         let panel_titles = [
-            "Panel", "", "Map", "Globe", "Add", "Radar", "Navigation",
-            "Crosshair", "Filter", "Settings",
+            "Panel",
+            "",
+            "Map",
+            "Globe",
+            "Add",
+            "Radar",
+            "Navigation",
+            "Crosshair",
+            "Filter",
+            "Settings",
         ];
 
         // --- Floating (parked) cards ---
@@ -587,27 +914,40 @@ impl eframe::App for DemoApp {
                 let card_resp = match from_button {
                     0 => {
                         let (it, to, ca, cb, cc, si) = (
-                            &mut self.input_text, &mut self.toggle_on,
-                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
+                            &mut self.input_text,
+                            &mut self.toggle_on,
+                            &mut self.check_a,
+                            &mut self.check_b,
+                            &mut self.check_c,
                             &mut self.segment_idx,
                         );
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| demo_card_content(ui, theme, from_button, it, to, ca, cb, cc, si))
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl, |ui| {
+                            demo_card_content(ui, theme, from_button, it, to, ca, cb, cc, si)
+                        })
                     }
                     1 => {
                         let mm = &mut self.maps_menu;
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| crate::widgets::maps_menu(ui, theme, mm))
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl, |ui| {
+                            maps_menu::maps_menu(ui, theme, mm)
+                        })
                     }
                     2 => {
-                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
+                        let (mt, ao, an) = (
+                            &mut self.map_tab,
+                            &mut self.accordion_open,
+                            &mut self.accordion_nested,
+                        );
+                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl, |ui| {
+                            demo_accordion_content(ui, theme, mt, ao, an)
+                        })
                     }
-                    _ => {
-                        sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl,
-                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
-                    }
+                    _ => sidebar_card(ui, theme, card_id, card_rect, 1.0, title, hl, |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{title} panel content"))
+                                .size(13.0)
+                                .color(theme.palette.muted_foreground),
+                        );
+                    }),
                 };
 
                 if card_resp.dragging {
@@ -615,9 +955,8 @@ impl eframe::App for DemoApp {
                     any_dragging_this_frame = true;
                     bring_to_front = Some(i);
                 } else if ui.input(|i| i.pointer.any_pressed())
-                    && card_rect.contains(
-                        ui.input(|i| i.pointer.interact_pos().unwrap_or_default()),
-                    )
+                    && card_rect
+                        .contains(ui.input(|i| i.pointer.interact_pos().unwrap_or_default()))
                 {
                     bring_to_front = Some(i);
                 }
@@ -655,7 +994,8 @@ impl eframe::App for DemoApp {
                     self.last_docked_pos = Some((pos, idx));
                     (pos, idx)
                 } else {
-                    self.last_docked_pos.unwrap_or((egui::pos2(dock_x, tb_y), 0))
+                    self.last_docked_pos
+                        .unwrap_or((egui::pos2(dock_x, tb_y), 0))
                 };
 
                 let card_rect = egui::Rect::from_min_size(
@@ -668,31 +1008,70 @@ impl eframe::App for DemoApp {
                 let card_resp = match button_idx {
                     0 => {
                         let (it, to, ca, cb, cc, si) = (
-                            &mut self.input_text, &mut self.toggle_on,
-                            &mut self.check_a, &mut self.check_b, &mut self.check_c,
+                            &mut self.input_text,
+                            &mut self.toggle_on,
+                            &mut self.check_a,
+                            &mut self.check_b,
+                            &mut self.check_c,
                             &mut self.segment_idx,
                         );
-                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
-                            card_rect, docked_open_t, title, false,
-                            |ui| demo_card_content(ui, theme, 0, it, to, ca, cb, cc, si))
+                        sidebar_card(
+                            ui,
+                            theme,
+                            egui::Id::new("docked_sidebar_card"),
+                            card_rect,
+                            docked_open_t,
+                            title,
+                            false,
+                            |ui| demo_card_content(ui, theme, 0, it, to, ca, cb, cc, si),
+                        )
                     }
                     1 => {
                         let mm = &mut self.maps_menu;
-                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
-                            card_rect, docked_open_t, title, false,
-                            |ui| crate::widgets::maps_menu(ui, theme, mm))
+                        sidebar_card(
+                            ui,
+                            theme,
+                            egui::Id::new("docked_sidebar_card"),
+                            card_rect,
+                            docked_open_t,
+                            title,
+                            false,
+                            |ui| maps_menu::maps_menu(ui, theme, mm),
+                        )
                     }
                     2 => {
-                        let (mt, ao, an) = (&mut self.map_tab, &mut self.accordion_open, &mut self.accordion_nested);
-                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
-                            card_rect, docked_open_t, title, false,
-                            |ui| demo_accordion_content(ui, theme, mt, ao, an))
+                        let (mt, ao, an) = (
+                            &mut self.map_tab,
+                            &mut self.accordion_open,
+                            &mut self.accordion_nested,
+                        );
+                        sidebar_card(
+                            ui,
+                            theme,
+                            egui::Id::new("docked_sidebar_card"),
+                            card_rect,
+                            docked_open_t,
+                            title,
+                            false,
+                            |ui| demo_accordion_content(ui, theme, mt, ao, an),
+                        )
                     }
-                    _ => {
-                        sidebar_card(ui, theme, egui::Id::new("docked_sidebar_card"),
-                            card_rect, docked_open_t, title, false,
-                            |ui| { ui.label(egui::RichText::new(format!("{title} panel content")).size(13.0).color(theme.palette.muted_foreground)); })
-                    }
+                    _ => sidebar_card(
+                        ui,
+                        theme,
+                        egui::Id::new("docked_sidebar_card"),
+                        card_rect,
+                        docked_open_t,
+                        title,
+                        false,
+                        |ui| {
+                            ui.label(
+                                egui::RichText::new(format!("{title} panel content"))
+                                    .size(13.0)
+                                    .color(theme.palette.muted_foreground),
+                            );
+                        },
+                    ),
                 };
 
                 if card_resp.dragging {
@@ -734,22 +1113,13 @@ impl eframe::App for DemoApp {
         // Bottom-right zoom control toolbar
         let zoom_margin = 12.0;
         let zoom_w = 36.0 + self.theme.spacing.xs * 2.0;
-        let zoom_h = self.theme.spacing.xs * 2.0
-            + 36.0 * 2.0
-            + self.theme.spacing.xs * 2.0
-            + 1.0
-            + 28.0;
+        let zoom_h =
+            self.theme.spacing.xs * 2.0 + 36.0 * 2.0 + self.theme.spacing.xs * 2.0 + 1.0 + 28.0;
         let zoom_pos = egui::pos2(
             full_rect.right() - zoom_margin - zoom_w,
             full_rect.bottom() - zoom_margin - zoom_h,
         );
         let zoom_rect = egui::Rect::from_min_size(zoom_pos, egui::vec2(zoom_w, zoom_h));
-        let _zoom_response = zoom_toolbar(
-            ui,
-            &self.theme,
-            zoom_rect,
-            ICON_PLUS,
-            ICON_MINUS,
-        );
+        let _zoom_response = zoom_toolbar(ui, &self.theme, zoom_rect, ICON_PLUS, ICON_MINUS);
     }
 }

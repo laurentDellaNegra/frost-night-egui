@@ -21,8 +21,8 @@ A single-line text input with consistent styling across sizes.
 
 ## Usage
 
-<CodeBlock code={`use ui_theme::components::text_input;
-use ui_theme::ControlSize;
+<CodeBlock code={`use frost_night_egui::components::text_input;
+use frost_night_egui::ControlSize;
 
 let mut text = String::new();
 text_input(ui, &theme, &mut text, ControlSize::Md);`} />
@@ -31,7 +31,7 @@ text_input(ui, &theme, &mut text, ControlSize::Md);`} />
 
 Compose a search bar with a Lucide icon, text input, and a clear button:
 
-<CodeBlock code={`use ui_theme::icons::{icon_text, ICON_SEARCH, ICON_CIRCLE_X};
+<CodeBlock code={`use frost_night_egui::icons::{icon_text, ICON_SEARCH, ICON_CIRCLE_X};
 
 ui.horizontal(|ui| {
     ui.set_height(28.0);

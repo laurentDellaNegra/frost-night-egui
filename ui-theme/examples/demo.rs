@@ -7,6 +7,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Frost Night UI Demo",
         options,
-        Box::new(|cc| Ok(Box::new(ui_theme::demo::DemoApp::new(cc)))),
+        Box::new(|cc| Ok(Box::new(frost_night_egui::demo::DemoApp::new(cc)))),
     )
 }

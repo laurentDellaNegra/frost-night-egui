@@ -3,11 +3,15 @@
 use egui::style::WidgetVisuals;
 use egui::CornerRadius;
 
-use crate::theme::Theme;
-use crate::tokens::{filled_tokens, with_alpha, StateColors, VariantTokens};
+use super::tokens::{filled_tokens, with_alpha, StateColors, VariantTokens};
+use super::Theme;
 
 /// Convert a [`StateColors`] into an egui [`WidgetVisuals`].
-fn to_widget_visuals(state: &StateColors, corner_radius: CornerRadius, expansion: f32) -> WidgetVisuals {
+fn to_widget_visuals(
+    state: &StateColors,
+    corner_radius: CornerRadius,
+    expansion: f32,
+) -> WidgetVisuals {
     WidgetVisuals {
         bg_fill: state.bg_fill,
         weak_bg_fill: state.bg_fill,
@@ -19,7 +23,7 @@ fn to_widget_visuals(state: &StateColors, corner_radius: CornerRadius, expansion
 }
 
 /// Convert [`VariantTokens`] to egui's native [`Widgets`](egui::style::Widgets) struct.
-pub fn to_egui_widgets(
+pub(crate) fn to_egui_widgets(
     tokens: &VariantTokens,
     corner_radius: CornerRadius,
     expansion: f32,
@@ -33,11 +37,28 @@ pub fn to_egui_widgets(
     }
 }
 
-/// Apply the theme globally to an egui context.
+/// Options for installing Frost Night into an egui context.
+#[derive(Clone, Copy, Debug)]
+pub struct InstallThemeOptions {
+    pub install_visuals: bool,
+    pub install_fonts: bool,
+}
+
+impl Default for InstallThemeOptions {
+    fn default() -> Self {
+        Self {
+            install_visuals: true,
+            install_fonts: true,
+        }
+    }
+}
+
+/// Apply Frost Night visuals globally to an egui context.
 ///
 /// Sets dark mode as the base, then overrides colors from the palette.
-/// Call once at app startup, or whenever the theme changes.
-pub fn apply_theme(ctx: &egui::Context, theme: &Theme) {
+/// Call once at app startup, or whenever the theme changes. This function does
+/// not install fonts.
+pub fn apply_visuals(ctx: &egui::Context, theme: &Theme) {
     let p = &theme.palette;
     let mut visuals = egui::Visuals::dark();
 
@@ -61,7 +82,23 @@ pub fn apply_theme(ctx: &egui::Context, theme: &Theme) {
     visuals.widgets = to_egui_widgets(&default_tokens, corner_radius, 1.0);
 
     ctx.set_visuals(visuals);
+}
 
-    // Load the Lucide icon font
-    crate::icons::load_icon_font(ctx);
+/// Install Frost Night visuals and, when the `icons` feature is enabled, the
+/// bundled Lucide icon font according to `options`.
+pub fn install_theme(ctx: &egui::Context, theme: &Theme, options: InstallThemeOptions) {
+    if options.install_visuals {
+        apply_visuals(ctx, theme);
+    }
+
+    if options.install_fonts {
+        #[cfg(feature = "icons")]
+        crate::icons::install_icon_font(ctx);
+    }
+}
+
+/// Apply the full Frost Night theme.
+#[deprecated(note = "Use install_theme or apply_visuals + install_icon_font instead")]
+pub fn apply_theme(ctx: &egui::Context, theme: &Theme) {
+    install_theme(ctx, theme, InstallThemeOptions::default());
 }

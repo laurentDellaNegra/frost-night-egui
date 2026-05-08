@@ -1,5 +1,5 @@
-use ui_theme::components::separator;
-use ui_theme::Theme;
+use frost_night_egui::components::separator;
+use frost_night_egui::Theme;
 
 pub struct SeparatorStoryState {
     pub count: usize,
