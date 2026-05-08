@@ -11,14 +11,22 @@ eframe = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
 
 [dev-dependencies]
-eframe = { workspace = true, features = ["default_fonts", "wgpu"] }
+eframe = { workspace = true, features = ["default_fonts", "wayland", "wgpu", "x11"] }
 env_logger = { workspace = true }
 
 [features]
 default = ["icons"]
 icons = []
 composites = ["dep:egui_flex", "icons"]
-demo = ["dep:eframe", "eframe/default_fonts", "eframe/wgpu", "composites", "icons"]
+demo = [
+    "dep:eframe",
+    "eframe/default_fonts",
+    "eframe/wayland",
+    "eframe/wgpu",
+    "eframe/x11",
+    "composites",
+    "icons",
+]
 serde = ["dep:serde", "egui/serde"]
 
 [[example]]

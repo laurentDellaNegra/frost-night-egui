@@ -9,7 +9,9 @@ frost-night-egui = { path = "../ui-theme", features = ["demo"] }
 egui = { workspace = true }
 eframe = { workspace = true, features = [
     "default_fonts",
+    "wayland",
     "wgpu",
+    "x11",
 ] }
 log = { workspace = true }
 
