@@ -1,5 +1,5 @@
-use ui_theme::containers::{drag_card, DragCardState};
-use ui_theme::Theme;
+use frost_night_egui::containers::{drag_card, DragCardState};
+use frost_night_egui::Theme;
 
 pub struct DragCardStoryState {
     pub title: String,

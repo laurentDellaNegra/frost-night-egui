@@ -1,5 +1,5 @@
-use ui_theme::components::{badge, BadgeVariant};
-use ui_theme::Theme;
+use frost_night_egui::components::{badge, BadgeVariant};
+use frost_night_egui::Theme;
 
 const ALL_VARIANTS: [BadgeVariant; 4] = [
     BadgeVariant::Primary,

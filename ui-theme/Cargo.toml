@@ -1,10 +1,8 @@
 [package]
-name = "ui-theme"
+name = "frost-night-egui"
 version = "0.1.0"
 edition = "2021"
 description = "Frost Night egui design system — dark theme with glassmorphism support"
-# TODO(#1): Rename the public crate/package to `frost-night-egui` once
-# downstream imports, docs, and published-package metadata can move together.
 
 [dependencies]
 egui = { workspace = true }

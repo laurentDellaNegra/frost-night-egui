@@ -1,5 +1,5 @@
-use ui_theme::components::segmented;
-use ui_theme::Theme;
+use frost_night_egui::components::segmented;
+use frost_night_egui::Theme;
 
 pub struct SegmentedStoryState {
     pub selected: usize,

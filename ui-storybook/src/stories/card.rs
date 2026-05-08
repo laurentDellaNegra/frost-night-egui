@@ -1,5 +1,5 @@
-use ui_theme::containers::card;
-use ui_theme::Theme;
+use frost_night_egui::containers::card;
+use frost_night_egui::Theme;
 
 pub struct CardStoryState {
     pub content: String,

@@ -27,8 +27,8 @@ The main sidebar toolbar with grouped icon buttons.
 
 ### Usage
 
-<CodeBlock code={`use ui_theme::composites::{toolbar, ToolbarItem, ToolbarGroup};
-use ui_theme::icons::*;
+<CodeBlock code={`use frost_night_egui::composites::{toolbar, ToolbarItem, ToolbarGroup};
+use frost_night_egui::icons::*;
 
 let groups: Vec<ToolbarGroup> = vec![
     vec![
@@ -46,8 +46,8 @@ let response = toolbar(ui, &theme, &groups, Some(0), &[]);`} />
 
 A horizontal toolbar with title, clock, and icon buttons.
 
-<CodeBlock code={`use ui_theme::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
-use ui_theme::icons::*;
+<CodeBlock code={`use frost_night_egui::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
+use frost_night_egui::icons::*;
 
 let fields = [
     StatusField { label: "UTC", value: "12:34:56", kind: StatusFieldKind::Normal },
@@ -69,7 +69,7 @@ let response = top_toolbar(
 
 Compact zoom controls with +/- and reset.
 
-<CodeBlock code={`use ui_theme::composites::zoom_toolbar;
-use ui_theme::icons::*;
+<CodeBlock code={`use frost_night_egui::composites::zoom_toolbar;
+use frost_night_egui::icons::*;
 
 let response = zoom_toolbar(ui, &theme, rect, ICON_PLUS, ICON_MINUS);`} />

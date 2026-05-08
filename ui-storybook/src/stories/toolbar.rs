@@ -1,9 +1,9 @@
-use ui_theme::composites::{
+use frost_night_egui::composites::{
     toolbar, top_toolbar, zoom_toolbar, StatusField, StatusFieldKind, ToolbarAction, ToolbarGroup,
     ToolbarItem,
 };
-use ui_theme::icons::*;
-use ui_theme::Theme;
+use frost_night_egui::icons::*;
+use frost_night_egui::Theme;
 
 pub struct ToolbarStoryState {
     pub selected: Option<usize>,

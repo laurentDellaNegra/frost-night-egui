@@ -1,5 +1,5 @@
 use egui::Color32;
-use ui_theme::Theme;
+use frost_night_egui::Theme;
 
 fn c(color: Color32) -> String {
     if color.a() == 255 {

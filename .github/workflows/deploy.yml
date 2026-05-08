@@ -41,10 +41,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            ui-theme/target
-            web-demo/target
-            ui-storybook/target
-          key: wasm-${{ hashFiles('web-demo/Cargo.lock', 'ui-storybook/Cargo.lock', 'ui-theme/Cargo.toml') }}
+            target
+          key: wasm-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'ui-theme/Cargo.toml', 'web-demo/Cargo.toml', 'ui-storybook/Cargo.toml') }}
           restore-keys: wasm-
 
       # 1. Generate CSS tokens from Rust palette

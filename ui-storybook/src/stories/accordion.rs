@@ -1,5 +1,5 @@
-use ui_theme::containers::accordion;
-use ui_theme::Theme;
+use frost_night_egui::containers::accordion;
+use frost_night_egui::Theme;
 
 pub struct AccordionStoryState {
     pub exclusive: bool,

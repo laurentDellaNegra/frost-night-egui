@@ -20,14 +20,14 @@ jobs:
       - name: Format
         run: cargo fmt --all -- --check
 
-      - name: Check ui-theme no default features
-        run: cargo check -p ui-theme --no-default-features
+      - name: Check frost-night-egui no default features
+        run: cargo check -p frost-night-egui --no-default-features
 
       - name: Check workspace
         run: cargo check --workspace
 
       - name: Check all features
-        run: cargo check -p ui-theme --all-features
+        run: cargo check -p frost-night-egui --all-features
 
       - name: Clippy
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings

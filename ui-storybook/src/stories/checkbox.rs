@@ -1,5 +1,5 @@
-use ui_theme::components::checkbox;
-use ui_theme::Theme;
+use frost_night_egui::components::checkbox;
+use frost_night_egui::Theme;
 
 pub struct CheckboxStoryState {
     pub checked: bool,

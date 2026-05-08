@@ -39,7 +39,7 @@ pub fn start_story(canvas_id: &str, story_name: &str) {
     });
 }
 
-use ui_theme::{install_theme, InstallThemeOptions, Theme};
+use frost_night_egui::{install_theme, InstallThemeOptions, Theme};
 
 struct StoryApp {
     theme: Theme,

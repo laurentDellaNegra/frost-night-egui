@@ -828,6 +828,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "frost-night-egui"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui",
+ "egui_flex",
+ "env_logger",
+ "serde",
+]
+
+[[package]]
 name = "futures-core"
 version = "0.3.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2503,22 +2514,11 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "egui",
+ "frost-night-egui",
  "log",
- "ui-theme",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
-]
-
-[[package]]
-name = "ui-theme"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "egui_flex",
- "env_logger",
- "serde",
 ]
 
 [[package]]
@@ -2806,8 +2806,8 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "env_logger",
+ "frost-night-egui",
  "log",
- "ui-theme",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",

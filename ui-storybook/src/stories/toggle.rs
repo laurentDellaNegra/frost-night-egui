@@ -1,5 +1,5 @@
-use ui_theme::components::toggle;
-use ui_theme::Theme;
+use frost_night_egui::components::toggle;
+use frost_night_egui::Theme;
 
 pub struct ToggleStoryState {
     pub on: bool,

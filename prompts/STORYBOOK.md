@@ -23,7 +23,7 @@ frost-night-egui/
 │   │   ├── tokens.rs               # StateColors, VariantTokens, mix()
 │   │   ├── scale.rs                # RadiusScale, SpacingScale, ControlSize, ControlVariant
 │   │   ├── theme.rs                # Theme struct
-│   │   ├── helpers.rs              # apply_theme()
+│   │   ├── theme/style.rs          # install_theme(), apply_visuals()
 │   │   ├── blur.rs                 # BlurRect (fallback, no shader yet)
 │   │   ├── oklch.rs                # OKLCH utilities
 │   │   ├── icons.rs                # Lucide font embed + constants (ICON_MAP, ICON_LAYERS, etc.)
@@ -58,10 +58,10 @@ frost-night-egui/
 - **wgpu backend** for WASM: `eframe = { features = ["wgpu"] }`. WebGPU required (Chrome 113+, Safari 18+). Blur is a semi-transparent tint fallback (shader possible in future).
 - **WebRunner takes HtmlCanvasElement** directly, not a string ID. You must `get_element_by_id().dyn_into::<HtmlCanvasElement>()`.
 - **No Cargo workspace** — `ui-theme` and `web-demo` are independent crates. `web-demo` depends on `ui-theme` via `path = "../ui-theme"`.
-- **`DemoApp::new(cc)` takes `&eframe::CreationContext`**, calls `apply_theme()` and `load_icon_font()` internally.
+- **`DemoApp::new(cc)` takes `&eframe::CreationContext`**, calls `install_theme()` internally.
 - **`--public-url ./`** is required for trunk builds when deploying to GitHub Pages (relative asset paths).
 - **Component API pattern**: `fn component(ui: &mut Ui, theme: &Theme, ...) -> Response`.
-- **Icons**: `load_icon_font(ctx)` is called by `apply_theme()`. Use `icon_text(ICON_NAME, size)` for `RichText`.
+- **Icons**: `install_icon_font(ctx)` is called by `install_theme()` when font installation is enabled. Use `icon_text(ICON_NAME, size)` for `RichText`.
 
 ## What to Build
 
@@ -148,7 +148,7 @@ Add an example to `ui-theme` that dumps `ColorPalette::dark()` as CSS variables:
 // ui-theme/examples/export_css.rs
 // (add to Cargo.toml: [[example]] name = "export_css")
 
-use ui_theme::{Theme, ColorPalette};
+use frost_night_egui::{Theme, ColorPalette};
 use egui::Color32;
 
 fn c(color: Color32) -> String {
@@ -233,8 +233,8 @@ Each story has a **state struct** (persists across frames) and two render functi
 
 ```rust
 // stories/button.rs
-use ui_theme::{Theme, ControlVariant, ControlSize};
-use ui_theme::components::button;
+use frost_night_egui::{Theme, ControlVariant, ControlSize};
+use frost_night_egui::components::button;
 
 pub struct ButtonStoryState {
     pub variant: ControlVariant,
@@ -340,7 +340,7 @@ pub fn start_story(canvas_id: &str, story_name: &str) {
     });
 }
 
-use ui_theme::{Theme, apply_theme};
+use frost_night_egui::{install_theme, InstallThemeOptions, Theme};
 
 struct StoryApp {
     theme: Theme,
@@ -360,7 +360,7 @@ struct StoryApp {
 impl StoryApp {
     fn new(cc: &eframe::CreationContext, story: String) -> Self {
         let theme = Theme::dark();
-        apply_theme(&cc.egui_ctx, &theme);
+        install_theme(&cc.egui_ctx, &theme, InstallThemeOptions::default());
         Self {
             theme,
             story,
@@ -582,9 +582,8 @@ A clickable control that triggers an action. Supports Primary, Secondary, Ghost,
 ## Usage
 
 <CodeBlock code={`
-use ui_theme::components::button;
-use ui_theme::tokens::ControlVariant;
-use ui_theme::scale::ControlSize;
+use frost_night_egui::components::button;
+use frost_night_egui::{ControlSize, ControlVariant};
 
 button(ui, &theme, "Click me", ControlVariant::Primary, ControlSize::Md);
 `} />

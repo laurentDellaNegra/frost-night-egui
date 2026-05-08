@@ -1,5 +1,5 @@
-use ui_theme::containers::tabs;
-use ui_theme::Theme;
+use frost_night_egui::containers::tabs;
+use frost_night_egui::Theme;
 
 pub struct TabsStoryState {
     pub selected: usize,

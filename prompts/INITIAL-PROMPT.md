@@ -31,7 +31,7 @@ Create `ui-theme` with:
 - `scale.rs` — Radius, spacing, typography scales (`RadiusScale`, `ControlSize`, `ControlVariant`)
 - `theme.rs` — Main `Theme` struct with `control()`/`input()` resolvers
 - `oklch.rs` — OKLCH color space utilities
-- `helpers.rs` — egui integration (`apply_theme`)
+- `theme/style.rs` — egui integration (`install_theme`, `apply_visuals`)
 - `blur.rs` — Semi-transparent backdrop fallback (API ready for future blur shader)
 
 ### Component wrappers

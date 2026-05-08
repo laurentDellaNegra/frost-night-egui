@@ -2,7 +2,7 @@
 
 Frost Night is an egui theme and component library for dark, glass-tinted operational interfaces.
 
-The repository name is `frost-night-egui`; the Rust package is still `ui-theme` for this refactor. The public crate/package should move to `frost-night-egui` in a follow-up once downstream imports and package metadata can be renamed together.
+The Rust package is `frost-night-egui`, imported from Rust as `frost_night_egui`.
 
 ## Overview
 
@@ -27,13 +27,13 @@ Application-specific behavior belongs in the consuming app: domain logic, operat
 | `effects` | core | `BlurRect` and fallback glass/tint painting |
 | `icons` | `icons` | Lucide font data, install helpers, icon constants |
 | `composites` | `composites` | optional toolbar/sidebar/zoom compositions |
-| `demo` | `demo` | demo application and sample map/menu data |
+| `demo` | `demo` | demo application and sample map/menu data, tracked for extraction in [#2](https://github.com/laurentDellaNegra/frost-night-egui/issues/2) |
 
 ## Features
 
 ```toml
 [dependencies]
-ui-theme = { path = "ui-theme" }
+frost-night-egui = { path = "ui-theme" }
 ```
 
 Available features:
@@ -47,16 +47,16 @@ Available features:
 The core crate compiles without default features:
 
 ```sh
-cargo check -p ui-theme --no-default-features
+cargo check -p frost-night-egui --no-default-features
 ```
 
 ## Integration
 
 ```rust
-use ui_theme::{
+use frost_night_egui::{
     install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme,
 };
-use ui_theme::components::*;
+use frost_night_egui::components::*;
 
 pub struct App {
     theme: Theme,
@@ -113,7 +113,7 @@ Host apps with custom fonts should add Lucide to their own font definitions befo
 
 ```rust
 let mut fonts = egui::FontDefinitions::default();
-ui_theme::add_icon_font_to(&mut fonts);
+frost_night_egui::add_icon_font_to(&mut fonts);
 ctx.set_fonts(fonts);
 ```
 
@@ -122,9 +122,9 @@ ctx.set_fonts(fonts);
 ## Components
 
 ```rust
-use ui_theme::{ControlSize, ControlVariant, Theme};
-use ui_theme::components::{badge, button, checkbox, segmented, text_input, toggle, BadgeVariant};
-use ui_theme::containers::{accordion, accordion_with_id, card, tabs, tabs_with_id};
+use frost_night_egui::{ControlSize, ControlVariant, Theme};
+use frost_night_egui::components::{badge, button, checkbox, segmented, text_input, toggle, BadgeVariant};
+use frost_night_egui::containers::{accordion, accordion_with_id, card, tabs, tabs_with_id};
 
 button(ui, &theme, "Primary", ControlVariant::Primary, ControlSize::Md);
 text_input(ui, &theme, &mut text, ControlSize::Md);
@@ -156,14 +156,14 @@ accordion_with_id(ui, &theme, "settings-accordion", &items, &mut open, false, |u
 Enable composites when you want the demo-style toolbar building blocks:
 
 ```toml
-ui-theme = { path = "ui-theme", features = ["composites"] }
+frost-night-egui = { path = "ui-theme", features = ["composites"] }
 ```
 
 `top_toolbar` is generic. The consuming app supplies domain labels such as QNH or TL:
 
 ```rust
-use ui_theme::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
-use ui_theme::icons::{ICON_GRID, ICON_SETTINGS};
+use frost_night_egui::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
+use frost_night_egui::icons::{ICON_GRID, ICON_SETTINGS};
 
 let fields = [
     StatusField { label: "UTC", value: "23:14:20", kind: StatusFieldKind::Normal },
@@ -182,7 +182,7 @@ let response = top_toolbar(ui, &theme, "Frost Night", &fields, &actions);
 Native:
 
 ```sh
-cargo run -p ui-theme --example demo --features demo
+cargo run -p frost-night-egui --example demo --features demo
 ```
 
 Web:

@@ -1,5 +1,5 @@
-use ui_theme::components::text_input;
-use ui_theme::{ControlSize, Theme};
+use frost_night_egui::components::text_input;
+use frost_night_egui::{ControlSize, Theme};
 
 const ALL_SIZES: [ControlSize; 3] = [ControlSize::Sm, ControlSize::Md, ControlSize::Lg];
 
