@@ -137,7 +137,8 @@ pub fn top_toolbar_with_id(
     let actions_w = if actions.is_empty() {
         0.0
     } else {
-        section_gap + 1.0 + section_gap + actions.len() as f32 * icon_btn_size
+        let action_gaps = actions.len().saturating_sub(1) as f32 * section_gap;
+        section_gap + 1.0 + section_gap + actions.len() as f32 * icon_btn_size + action_gaps
     };
     let total_w = pad_h + title_w + fields_section_w + actions_w + pad_h;
 
