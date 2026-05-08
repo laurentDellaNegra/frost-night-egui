@@ -27,7 +27,6 @@ Application-specific behavior belongs in the consuming app: domain logic, operat
 | `effects` | core | `BlurRect` and fallback glass/tint painting |
 | `icons` | `icons` | Lucide font data, install helpers, icon constants |
 | `composites` | `composites` | optional toolbar/sidebar/zoom compositions |
-| `demo` | `demo` | demo application and sample map/menu data, tracked for extraction in [#2](https://github.com/laurentDellaNegra/frost-night-egui/issues/2) |
 
 ## Features
 
@@ -41,13 +40,21 @@ Available features:
 - `default = ["icons"]`
 - `icons`: embedded Lucide icon font helpers and constants
 - `composites`: optional toolbar/sidebar/zoom compositions, depends on `egui_flex`
-- `demo`: demo app, depends on `eframe` and `composites`
 - `serde`: derives serde support for theme data where available
 
 The core crate compiles without default features:
 
 ```sh
 cargo check -p frost-night-egui --no-default-features
+```
+
+Common repository commands are available through the root script:
+
+```sh
+./run.sh ci
+./run.sh demo
+./run.sh wasm-demo
+./run.sh wasm-storybook
 ```
 
 ## Integration
@@ -179,10 +186,13 @@ let response = top_toolbar(ui, &theme, "Frost Night", &fields, &actions);
 
 ## Running The Demo
 
+The demo is a separate private workspace crate so sample aviation data and demo
+orchestration do not leak into the reusable `frost-night-egui` library API.
+
 Native:
 
 ```sh
-cargo run -p frost-night-egui --example demo --features demo
+cargo run -p frost-night-demo
 ```
 
 Web:
@@ -192,9 +202,15 @@ cd web-demo
 trunk serve
 ```
 
+The web launcher depends on `frost-night-demo`, which depends on
+`frost-night-egui` with the `composites` feature enabled.
+
 ## Project Structure
 
 ```text
+frost-night-demo/
+  src/          # DemoApp and private sample aviation/menu data
+
 ui-theme/src/
   theme/        # palette, tokens, scales, visuals/style integration
   components/   # generic controls
@@ -202,7 +218,6 @@ ui-theme/src/
   effects/      # glass/tint/blur intent
   icons/        # optional Lucide integration
   composites/   # optional composed tool surfaces
-  demo/         # demo app and sample data
 ```
 
 ## Design Tokens

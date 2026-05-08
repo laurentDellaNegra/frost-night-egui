@@ -876,13 +876,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "frost-night-egui"
+name = "frost-night-demo"
 version = "0.1.0"
 dependencies = [
  "eframe",
+ "env_logger",
+ "frost-night-egui",
+]
+
+[[package]]
+name = "frost-night-egui"
+version = "0.1.0"
+dependencies = [
  "egui",
  "egui_flex",
- "env_logger",
  "serde",
 ]
 
@@ -2959,7 +2966,7 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "env_logger",
- "frost-night-egui",
+ "frost-night-demo",
  "log",
  "wasm-bindgen",
  "wasm-bindgen-futures",

@@ -29,5 +29,11 @@ jobs:
       - name: Check all features
         run: cargo check -p frost-night-egui --all-features
 
+      - name: Check web demo wasm
+        run: cargo check -p web-demo --target wasm32-unknown-unknown
+
+      - name: Check storybook wasm
+        run: cargo check -p ui-storybook --target wasm32-unknown-unknown
+
       - name: Clippy
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings

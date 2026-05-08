@@ -13,9 +13,6 @@ pub mod theme;
 #[cfg(feature = "composites")]
 pub mod composites;
 
-#[cfg(feature = "demo")]
-pub mod demo;
-
 pub use components::FrostUiExt;
 pub use effects::BlurRect;
 #[cfg(feature = "icons")]

@@ -1,11 +1,11 @@
 //! Maps menu widget — composition of tabs, search input, checkbox grid, and accordions.
 
-use egui::{Sense, Ui, Vec2};
+use eframe::egui::{self, Sense, Ui, Vec2};
 
-use crate::components::checkbox_small;
-use crate::containers::{accordion, tabs};
-use crate::icons::{icon_text, ICON_CIRCLE_X, ICON_SEARCH};
-use crate::theme::Theme;
+use frost_night_egui::components::checkbox_small;
+use frost_night_egui::containers::{accordion, tabs};
+use frost_night_egui::icons::{icon_text, ICON_CIRCLE_X, ICON_SEARCH};
+use frost_night_egui::Theme;
 
 // ---------------------------------------------------------------------------
 // Data model

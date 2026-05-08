@@ -1,3 +1,4 @@
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result {
     env_logger::init();
     let options = eframe::NativeOptions {
@@ -7,6 +8,9 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Frost Night UI Demo",
         options,
-        Box::new(|cc| Ok(Box::new(frost_night_egui::demo::DemoApp::new(cc)))),
+        Box::new(|cc| Ok(Box::new(frost_night_demo::DemoApp::new(cc)))),
     )
 }
+
+#[cfg(target_arch = "wasm32")]
+fn main() {}

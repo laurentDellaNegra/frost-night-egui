@@ -1,0 +1,18 @@
+[package]
+name = "frost-night-demo"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Private native and web demo app for the Frost Night egui design system"
+
+[dependencies]
+frost-night-egui = { path = "../ui-theme", features = ["composites"] }
+eframe = { workspace = true, features = [
+    "default_fonts",
+    "wayland",
+    "wgpu",
+    "x11",
+] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+env_logger = { workspace = true }

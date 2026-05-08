@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-frost-night-egui = { path = "../ui-theme", features = ["demo"] }
+frost-night-demo = { path = "../frost-night-demo" }
 eframe = { workspace = true, features = [
     "default_fonts",
     "wayland",
