@@ -5,11 +5,58 @@ use egui::{CornerRadius, Response, Sense, Ui, Vec2};
 use crate::theme::mix;
 use crate::theme::Theme;
 
+/// Per-segment styling for the active segment state.
+#[derive(Clone, Copy, Debug)]
+pub struct SegmentStyle {
+    pub active_fill: egui::Color32,
+    pub active_text: Option<egui::Color32>,
+}
+
 /// A horizontal segmented control. Returns the newly selected index if changed.
 ///
 /// Same outer border, gap, and inner radius as checkbox/toggle.
 /// Active segment has a navy-filled inset rect; inactive segments are transparent.
 pub fn segmented(ui: &mut Ui, theme: &Theme, labels: &[&str], selected: &mut usize) -> Response {
+    let default_style = SegmentStyle {
+        active_fill: theme.palette.control_fill_on,
+        active_text: Some(theme.palette.foreground),
+    };
+
+    segmented_styled(ui, theme, labels, &[default_style], selected)
+}
+
+/// A horizontal segmented control with per-segment active fills.
+pub fn segmented_with_fills(
+    ui: &mut Ui,
+    theme: &Theme,
+    labels: &[&str],
+    active_fills: &[egui::Color32],
+    selected: &mut usize,
+) -> Response {
+    let styles: Vec<_> = active_fills
+        .iter()
+        .copied()
+        .map(|active_fill| SegmentStyle {
+            active_fill,
+            active_text: None,
+        })
+        .collect();
+
+    segmented_styled(ui, theme, labels, &styles, selected)
+}
+
+/// A horizontal segmented control with per-segment active styling.
+pub fn segmented_styled(
+    ui: &mut Ui,
+    theme: &Theme,
+    labels: &[&str],
+    styles: &[SegmentStyle],
+    selected: &mut usize,
+) -> Response {
+    let default_style = SegmentStyle {
+        active_fill: theme.palette.control_fill_on,
+        active_text: Some(theme.palette.foreground),
+    };
     let font = egui::FontId::proportional(12.0);
     let pad = Vec2::new(theme.spacing.lg, theme.spacing.xs + 2.0);
     let gap = theme.control_gap;
@@ -64,14 +111,17 @@ pub fn segmented(ui: &mut Ui, theme: &Theme, labels: &[&str], selected: &mut usi
 
             // Active segment: inset filled rect (3px gap, md radius)
             if is_active {
+                let style = styles.get(i).copied().unwrap_or(default_style);
                 let inset = seg_rect.shrink(gap);
-                ui.painter()
-                    .rect_filled(inset, inner_cr, theme.palette.control_fill_on);
+                ui.painter().rect_filled(inset, inner_cr, style.active_fill);
             }
 
             // Text
             let text_color = if is_active {
-                theme.palette.foreground
+                let style = styles.get(i).copied().unwrap_or(default_style);
+                style
+                    .active_text
+                    .unwrap_or_else(|| contrast_text_color(style.active_fill, theme))
             } else if hovered {
                 mix(
                     theme.palette.muted_foreground,
@@ -93,4 +143,17 @@ pub fn segmented(ui: &mut Ui, theme: &Theme, labels: &[&str], selected: &mut usi
     }
 
     response
+}
+
+fn contrast_text_color(fill: egui::Color32, theme: &Theme) -> egui::Color32 {
+    let luminance = (0.2126 * f32::from(fill.r())
+        + 0.7152 * f32::from(fill.g())
+        + 0.0722 * f32::from(fill.b()))
+        / 255.0;
+
+    if luminance > 0.62 {
+        theme.palette.background
+    } else {
+        egui::Color32::WHITE
+    }
 }

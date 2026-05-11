@@ -1,4 +1,4 @@
-use frost_night_egui::components::segmented;
+use frost_night_egui::components::{segmented, segmented_with_fills};
 use frost_night_egui::Theme;
 
 pub struct SegmentedStoryState {
@@ -104,6 +104,26 @@ pub fn segmented_story(ui: &mut egui::Ui, theme: &Theme, state: &mut SegmentedSt
             theme,
             &["All", "Active", "Pending", "Closed"],
             &mut sel4,
+        );
+
+        ui.add_space(theme.spacing.md);
+        ui.label(
+            egui::RichText::new("Colored active fills")
+                .size(12.0)
+                .color(theme.palette.muted_foreground),
+        );
+        ui.add_space(theme.spacing.xs);
+        let mut sel5 = 1;
+        segmented_with_fills(
+            ui,
+            theme,
+            &["Low", "Medium", "High"],
+            &[
+                theme.palette.primary,
+                theme.palette.accent,
+                theme.palette.destructive,
+            ],
+            &mut sel5,
         );
     });
 }

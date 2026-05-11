@@ -22,11 +22,11 @@ Application-specific behavior belongs in the consuming app: domain logic, operat
 | Module | Feature | Purpose |
 | --- | --- | --- |
 | `theme` | core | `Theme`, palette, tokens, scales, `apply_visuals`, `install_theme` |
-| `components` | core | `button`, `text_input`, `checkbox`, `toggle`, `segmented`, `badge`, `separator`, `FrostUiExt` |
+| `components` | core | `button`, `text_input`, `text_edit`, `checkbox`, `toggle`, `segmented`, `segmented_styled`, `badge`, `separator`, `FrostUiExt` |
 | `containers` | core | `card`, `surface`, `tabs`, `accordion`, `drag_card` |
 | `effects` | core | `BlurRect` and fallback glass/tint painting |
 | `icons` | `icons` | Lucide font data, install helpers, icon constants |
-| `composites` | `composites` | optional toolbar/sidebar/zoom compositions |
+| `composites` | `composites` | optional toolbar/sidebar/zoom/action toolbar compositions |
 
 ## Features
 
@@ -39,7 +39,7 @@ Available features:
 
 - `default = ["icons"]`
 - `icons`: embedded Lucide icon font helpers and constants
-- `composites`: optional toolbar/sidebar/zoom compositions, depends on `egui_flex`
+- `composites`: optional toolbar/sidebar/zoom/action toolbar compositions, depends on `egui_flex`
 - `serde`: derives serde support for theme data where available
 
 The core crate compiles without default features:
@@ -130,14 +130,30 @@ ctx.set_fonts(fonts);
 
 ```rust
 use frost_night_egui::{ControlSize, ControlVariant, Theme};
-use frost_night_egui::components::{badge, button, checkbox, segmented, text_input, toggle, BadgeVariant};
+use frost_night_egui::components::{
+    badge, button, checkbox, segmented, segmented_with_fills, text_edit, text_input, toggle,
+    BadgeVariant,
+};
 use frost_night_egui::containers::{accordion, accordion_with_id, card, tabs, tabs_with_id};
 
 button(ui, &theme, "Primary", ControlVariant::Primary, ControlSize::Md);
 text_input(ui, &theme, &mut text, ControlSize::Md);
+text_edit(
+    ui,
+    &theme,
+    egui::TextEdit::singleline(&mut text).hint_text("Search"),
+    ControlSize::Md,
+);
 checkbox(ui, &theme, &mut checked, "Enable feature");
 toggle(ui, &theme, &mut enabled);
 segmented(ui, &theme, &["One", "Two"], &mut selected);
+segmented_with_fills(
+    ui,
+    &theme,
+    &["Low", "Medium", "High"],
+    &[theme.palette.primary, theme.palette.accent, theme.palette.destructive],
+    &mut selected,
+);
 badge(ui, &theme, "Online", BadgeVariant::Accent);
 
 tabs(ui, &theme, &mut selected_tab, &["Layers", "Filters"]);
@@ -182,6 +198,34 @@ let actions = [
 ];
 
 let response = top_toolbar(ui, &theme, "Frost Night", &fields, &actions);
+```
+
+`action_toolbar` renders compact labeled actions and requires `features = ["composites", "icons"]`:
+
+```rust
+use frost_night_egui::composites::{action_toolbar, ActionToolbarItem};
+use frost_night_egui::icons::{ICON_FILTER, ICON_GRID};
+
+let response = action_toolbar(
+    ui,
+    &theme,
+    &[
+        ActionToolbarItem {
+            icon: ICON_GRID,
+            label: "Grid",
+            tooltip: "Show grid",
+            selected: true,
+            disabled: false,
+        },
+        ActionToolbarItem {
+            icon: ICON_FILTER,
+            label: "Filter",
+            tooltip: "Filter items",
+            selected: false,
+            disabled: false,
+        },
+    ],
+);
 ```
 
 ## Running The Demo
