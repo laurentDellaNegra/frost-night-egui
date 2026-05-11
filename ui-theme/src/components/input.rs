@@ -4,11 +4,22 @@ use egui::{Response, TextBuffer, TextEdit, Ui};
 
 use crate::theme::{ControlSize, Theme};
 
-/// A themed single-line text input.
-pub fn text_input<S: TextBuffer>(
+/// Apply Frost Night text input styling to a caller-provided text edit.
+pub fn text_edit(
     ui: &mut Ui,
     theme: &Theme,
-    text: &mut S,
+    text_edit: TextEdit<'_>,
+    size: ControlSize,
+) -> Response {
+    text_edit_enabled(ui, theme, true, text_edit, size)
+}
+
+/// Apply Frost Night text input styling to a caller-provided text edit.
+pub fn text_edit_enabled(
+    ui: &mut Ui,
+    theme: &Theme,
+    enabled: bool,
+    text_edit: TextEdit<'_>,
     size: ControlSize,
 ) -> Response {
     let vis = theme.input(size);
@@ -20,13 +31,28 @@ pub fn text_input<S: TextBuffer>(
         style.visuals.widgets.hovered.bg_stroke = egui::Stroke::new(1.0, theme.palette.ring);
         style.visuals.widgets.active.bg_stroke = egui::Stroke::new(1.0, theme.palette.ring);
 
-        ui.add(
-            TextEdit::singleline(text)
+        ui.add_enabled(
+            enabled,
+            text_edit
                 .font(vis.font)
                 .text_color(vis.text_color)
-                .desired_width(f32::INFINITY)
                 .margin(egui::Margin::symmetric(theme.spacing.sm as i8, 6)),
         )
     })
     .inner
+}
+
+/// A themed single-line text input.
+pub fn text_input<S: TextBuffer>(
+    ui: &mut Ui,
+    theme: &Theme,
+    text: &mut S,
+    size: ControlSize,
+) -> Response {
+    text_edit(
+        ui,
+        theme,
+        TextEdit::singleline(text).desired_width(f32::INFINITY),
+        size,
+    )
 }

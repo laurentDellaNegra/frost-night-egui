@@ -1,4 +1,4 @@
-use frost_night_egui::components::text_input;
+use frost_night_egui::components::{text_edit, text_input};
 use frost_night_egui::{ControlSize, Theme};
 
 const ALL_SIZES: [ControlSize; 3] = [ControlSize::Sm, ControlSize::Md, ControlSize::Lg];
@@ -61,6 +61,21 @@ pub fn input_story(ui: &mut egui::Ui, theme: &Theme, state: &mut InputStoryState
             text_input(ui, theme, &mut placeholder, *size);
             ui.add_space(theme.spacing.sm);
         }
+
+        ui.add_space(theme.spacing.sm);
+        ui.label(
+            egui::RichText::new("TextEdit with hint")
+                .size(12.0)
+                .color(theme.palette.muted_foreground),
+        );
+        ui.add_space(theme.spacing.xs);
+        let mut hinted_text = String::new();
+        text_edit(
+            ui,
+            theme,
+            egui::TextEdit::singleline(&mut hinted_text).hint_text("Search"),
+            ControlSize::Md,
+        );
 
         ui.add_space(theme.spacing.sm);
         ui.label(

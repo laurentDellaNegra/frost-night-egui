@@ -1,12 +1,13 @@
 use frost_night_egui::composites::{
-    toolbar, top_toolbar, zoom_toolbar, StatusField, StatusFieldKind, ToolbarAction, ToolbarGroup,
-    ToolbarItem,
+    action_toolbar, toolbar, top_toolbar, zoom_toolbar, ActionToolbarItem, StatusField,
+    StatusFieldKind, ToolbarAction, ToolbarGroup, ToolbarItem,
 };
 use frost_night_egui::icons::*;
 use frost_night_egui::Theme;
 
 pub struct ToolbarStoryState {
     pub selected: Option<usize>,
+    pub action_selected: usize,
     pub show_top: bool,
     pub show_zoom: bool,
 }
@@ -15,6 +16,7 @@ impl Default for ToolbarStoryState {
     fn default() -> Self {
         Self {
             selected: Some(0),
+            action_selected: 0,
             show_top: true,
             show_zoom: true,
         }
@@ -110,6 +112,38 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                     },
                 ],
             );
+        }
+
+        ui.add_space(theme.spacing.md);
+        let action_response = action_toolbar(
+            ui,
+            theme,
+            &[
+                ActionToolbarItem {
+                    icon: ICON_GRID,
+                    label: "Grid",
+                    tooltip: "Show grid",
+                    selected: state.action_selected == 0,
+                    disabled: false,
+                },
+                ActionToolbarItem {
+                    icon: ICON_FILTER,
+                    label: "Filter",
+                    tooltip: "Filter visible items",
+                    selected: state.action_selected == 1,
+                    disabled: false,
+                },
+                ActionToolbarItem {
+                    icon: ICON_SETTINGS,
+                    label: "Settings",
+                    tooltip: "Open settings",
+                    selected: false,
+                    disabled: true,
+                },
+            ],
+        );
+        if let Some(clicked) = action_response.clicked {
+            state.action_selected = clicked;
         }
 
         if state.show_zoom {
