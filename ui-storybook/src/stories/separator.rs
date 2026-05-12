@@ -1,5 +1,5 @@
-use frost_night_egui::components::separator;
-use frost_night_egui::Theme;
+use skyscope_design_system::components::separator;
+use skyscope_design_system::Theme;
 
 pub struct SeparatorStoryState {
     pub count: usize,

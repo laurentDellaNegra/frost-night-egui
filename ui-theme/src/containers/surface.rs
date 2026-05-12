@@ -1,10 +1,10 @@
-//! Generic Frost Night surface container.
+//! Generic Skyscope Design System surface container.
 
 use egui::{Response, Ui};
 
 use crate::theme::Theme;
 
-/// A translucent Frost Night surface with border and rounded corners.
+/// A translucent Skyscope Design System surface with border and rounded corners.
 pub fn surface(ui: &mut Ui, theme: &Theme, add_contents: impl FnOnce(&mut Ui)) -> Response {
     egui::Frame::new()
         .fill(theme.palette.surface_blur)

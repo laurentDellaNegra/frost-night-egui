@@ -13,7 +13,7 @@ A single-line text input with consistent styling across sizes.
 
 ## Figma Mockup
 
-![Text input](/frost-night-egui/mockups/input.png)
+![Text input](/skyscope-design-system/mockups/input.png)
 
 ## Preview
 
@@ -21,8 +21,8 @@ A single-line text input with consistent styling across sizes.
 
 ## Usage
 
-<CodeBlock code={`use frost_night_egui::components::text_input;
-use frost_night_egui::ControlSize;
+<CodeBlock code={`use skyscope_design_system::components::text_input;
+use skyscope_design_system::ControlSize;
 
 let mut text = String::new();
 text_input(ui, &theme, &mut text, ControlSize::Md);`} />
@@ -31,7 +31,7 @@ text_input(ui, &theme, &mut text, ControlSize::Md);`} />
 
 Compose a search bar with a Lucide icon, text input, and a clear button:
 
-<CodeBlock code={`use frost_night_egui::icons::{icon_text, ICON_SEARCH, ICON_CIRCLE_X};
+<CodeBlock code={`use skyscope_design_system::icons::{icon_text, ICON_SEARCH, ICON_CIRCLE_X};
 
 ui.horizontal(|ui| {
     ui.set_height(28.0);

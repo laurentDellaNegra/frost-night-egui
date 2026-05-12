@@ -1,8 +1,8 @@
 [package]
-name = "frost-night-egui"
+name = "skyscope-design-system"
 version = "0.1.0"
 edition = "2021"
-description = "Frost Night egui design system — dark theme with glassmorphism support"
+description = "Skyscope Design System for egui — dark theme with glassmorphism support"
 
 [dependencies]
 egui = { workspace = true }

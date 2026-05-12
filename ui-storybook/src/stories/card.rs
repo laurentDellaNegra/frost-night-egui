@@ -1,5 +1,5 @@
-use frost_night_egui::containers::card;
-use frost_night_egui::Theme;
+use skyscope_design_system::containers::card;
+use skyscope_design_system::Theme;
 
 pub struct CardStoryState {
     pub content: String,

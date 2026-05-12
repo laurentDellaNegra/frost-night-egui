@@ -1,5 +1,5 @@
-use frost_night_egui::components::toggle;
-use frost_night_egui::Theme;
+use skyscope_design_system::components::toggle;
+use skyscope_design_system::Theme;
 
 pub struct ToggleStoryState {
     pub on: bool,

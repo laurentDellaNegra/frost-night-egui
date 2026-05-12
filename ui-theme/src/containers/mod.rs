@@ -1,4 +1,4 @@
-//! Generic Frost Night containers.
+//! Generic Skyscope Design System containers.
 
 mod accordion;
 mod card;

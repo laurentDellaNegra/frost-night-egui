@@ -5,7 +5,7 @@ use egui::{Color32, CornerRadius, Response, Sense, Ui, Vec2};
 use crate::theme::mix;
 use crate::theme::Theme;
 
-/// A themed toggle switch matching the Frost Night design.
+/// A themed toggle switch matching the Skyscope Design System design.
 ///
 /// Pill-shaped outer border with a sliding rounded-rect thumb inside.
 /// Same border, gap, and inner radius as the checkbox.

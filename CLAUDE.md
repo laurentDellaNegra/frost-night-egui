@@ -2,12 +2,12 @@
 
 ## Project overview
 
-`frost-night-egui` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from aviation UI Figma mockups. Dark mode only. No external theming dependencies. The full demo and its sample aviation data live in a separate private workspace crate (`frost-night-demo`). Includes a design system documentation site (`docs-site`) with interactive WASM component playgrounds (`ui-storybook`).
+`skyscope-design-system` is a minimal egui 0.34 theming + component library (`ui-theme`) extracted from aviation UI Figma mockups. Dark mode only. No external theming dependencies. The full demo and its sample aviation data live in a separate private workspace crate (`skyscope-design-system-demo`). Includes a design system documentation site (`docs-site`) with interactive WASM component playgrounds (`ui-storybook`).
 
 ## Repository structure
 
 ```
-frost-night-egui/
+skyscope-design-system/
 ├── ui-theme/                    # The library crate
 │   ├── src/
 │   │   ├── lib.rs
@@ -20,7 +20,7 @@ frost-night-egui/
 │   │   └── composites/          # Optional composed tool surfaces
 │   └── examples/
 │       └── export_css.rs        # Dumps ColorPalette as CSS custom properties
-├── frost-night-demo/            # Private native DemoApp crate with sample/domain data
+├── skyscope-design-system-demo/            # Private native DemoApp crate with sample/domain data
 ├── web-demo/                    # WASM entry for the full interactive demo
 ├── ui-storybook/                # WASM crate for component story playgrounds
 │   ├── src/
@@ -32,7 +32,7 @@ frost-night-egui/
 │   │       └── ...              # Same pattern for all components
 │   └── index.html               # Trunk entry
 ├── docs-site/                   # Astro 6 documentation site
-│   ├── astro.config.mjs         # base: '/frost-night-egui'
+│   ├── astro.config.mjs         # base: '/skyscope-design-system'
 │   ├── src/
 │   │   ├── content.config.ts    # Content collection with glob loader
 │   │   ├── content/docs/        # MDX pages (foundations + components)
@@ -73,10 +73,10 @@ Or manually:
 
 ```sh
 cd ui-theme && cargo check
-cargo run -p frost-night-demo
-cargo run -p frost-night-egui --example export_css 2>/dev/null > docs-site/src/styles/tokens.css
-cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm --filehash false
-cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo --filehash false
+cargo run -p skyscope-design-system-demo
+cargo run -p skyscope-design-system --example export_css 2>/dev/null > docs-site/src/styles/tokens.css
+cd ui-storybook && trunk build --release --public-url /skyscope-design-system/wasm/ --dist ../docs-site/public/wasm --filehash false
+cd web-demo && trunk build --release --public-url /skyscope-design-system/demo/ --dist ../docs-site/public/demo --filehash false
 cd docs-site && npm run dev
 ```
 
@@ -138,8 +138,8 @@ Every component takes `(ui: &mut Ui, theme: &Theme, ...)` and returns `Response`
 - Animation duration: 0.12s. Underline thickness: 1.5px.
 - Click is deferred: `selected` is mutated at the end of the function to avoid ID instability between egui passes. Callers should snapshot the value before `tabs()` if using it for conditional rendering below.
 
-### Demo-only widgets (`frost-night-demo/src/`)
-Composed UI patterns and sample aviation data used by the demo. They are not exported by the reusable `frost-night-egui` crate.
+### Demo-only widgets (`skyscope-design-system-demo/src/`)
+Composed UI patterns and sample aviation data used by the demo. They are not exported by the reusable `skyscope-design-system` crate.
 - `maps_menu(ui, theme, state)` — full maps browser: tabs (Favorites / All Maps), search bar, checkbox grid, nested accordions with star-toggle favorites.
 - `MapsMenuState` holds tab, search text, category tree with per-map `favorite`/`selected` state.
 - Tab switching uses deferred mutation via `cumulative_pass_nr()` to avoid ID instability.
@@ -185,9 +185,9 @@ egui runs two layout passes per frame. The main pitfall is "Widget rect changed 
 - Use `icon_font(size)` for `FontId` or `icon_text(icon, size)` for `RichText`.
 
 ### Demo app
-- Demo logic lives in `frost-night-demo/src/lib.rs`.
-- Sample map/menu data lives in `frost-night-demo/src/maps_menu.rs`.
-- `frost-night-demo/src/main.rs` and `web-demo/src/main.rs` are thin entry points — both call `frost_night_demo::DemoApp::new(cc)`.
+- Demo logic lives in `skyscope-design-system-demo/src/lib.rs`.
+- Sample map/menu data lives in `skyscope-design-system-demo/src/maps_menu.rs`.
+- `skyscope-design-system-demo/src/main.rs` and `web-demo/src/main.rs` are thin entry points — both call `skyscope_design_system_demo::DemoApp::new(cc)`.
 - Tracks animate continuously along velocity vectors (frame-rate independent with `dt`).
 - Floating card z-ordering: last in `Vec<FloatingCard>` renders on top. Dragging or clicking a card moves it to end. Toolbar click for a parked card highlights it and brings to front.
 
@@ -253,6 +253,6 @@ If `ColorPalette`, `SpacingScale`, `RadiusScale`, or `Theme` fields change:
 ## Deployment
 - GitHub Pages via `.github/workflows/deploy.yml` — triggers on push to `main`.
 - Pipeline: generate CSS tokens → build storybook WASM → build demo WASM → build Astro site → deploy.
-- Astro `base: '/frost-night-egui'` — all routes and WASM imports use this base path.
-- Trunk builds use `--public-url /frost-night-egui/wasm/` and `--public-url /frost-night-egui/demo/`.
+- Astro `base: '/skyscope-design-system'` — all routes and WASM imports use this base path.
+- Trunk builds use `--public-url /skyscope-design-system/wasm/` and `--public-url /skyscope-design-system/demo/`.
 - Node 22+ required (Astro 6 dependency).

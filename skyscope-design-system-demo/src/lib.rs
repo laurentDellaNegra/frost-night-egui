@@ -1,16 +1,18 @@
 //! Shared demo app used by the native demo binary and the web-demo crate.
 //!
 //! This crate is intentionally private to the workspace. It owns the sample
-//! aviation/domain data so the reusable `frost-night-egui` crate stays focused
+//! aviation/domain data so the reusable `skyscope-design-system` crate stays focused
 //! on the design system.
 
 use eframe::egui;
 
-use frost_night_egui::components::*;
-use frost_night_egui::composites::*;
-use frost_night_egui::containers::*;
-use frost_night_egui::icons::*;
-use frost_night_egui::{install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme};
+use skyscope_design_system::components::*;
+use skyscope_design_system::composites::*;
+use skyscope_design_system::containers::*;
+use skyscope_design_system::icons::*;
+use skyscope_design_system::{
+    install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme,
+};
 
 mod maps_menu;
 
@@ -792,7 +794,7 @@ impl eframe::App for DemoApp {
         let _top_response = top_toolbar(
             &mut top_tb_ui,
             &self.theme,
-            "Frost Night egui",
+            "Skyscope Design System",
             &[
                 StatusField {
                     label: "UTC",

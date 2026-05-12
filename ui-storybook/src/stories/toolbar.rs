@@ -1,9 +1,9 @@
-use frost_night_egui::composites::{
+use skyscope_design_system::composites::{
     action_toolbar, toolbar, top_toolbar, zoom_toolbar, ActionToolbarItem, StatusField,
     StatusFieldKind, ToolbarAction, ToolbarGroup, ToolbarItem,
 };
-use frost_night_egui::icons::*;
-use frost_night_egui::Theme;
+use skyscope_design_system::icons::*;
+use skyscope_design_system::Theme;
 
 pub struct ToolbarStoryState {
     pub selected: Option<usize>,
@@ -76,7 +76,7 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
             top_toolbar(
                 ui,
                 theme,
-                "Frost Night",
+                "Skyscope Design System",
                 &[
                     StatusField {
                         label: "UTC",
@@ -186,7 +186,7 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
             top_toolbar(
                 ui,
                 theme,
-                "Frost Night",
+                "Skyscope Design System",
                 &[
                     StatusField {
                         label: "UTC",

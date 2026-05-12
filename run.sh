@@ -50,37 +50,37 @@ cmd_clippy() {
 
 cmd_ci() {
   cmd_fmt
-  echo "==> Checking frost-night-egui without default features..."
-  (cd "$ROOT" && cargo check -p frost-night-egui --no-default-features)
+  echo "==> Checking skyscope-design-system without default features..."
+  (cd "$ROOT" && cargo check -p skyscope-design-system --no-default-features)
   cmd_check
-  echo "==> Checking frost-night-egui with all features..."
-  (cd "$ROOT" && cargo check -p frost-night-egui --all-features)
+  echo "==> Checking skyscope-design-system with all features..."
+  (cd "$ROOT" && cargo check -p skyscope-design-system --all-features)
   cmd_wasm_check
   cmd_clippy
 }
 
 cmd_demo() {
-  (cd "$ROOT" && cargo run -p frost-night-demo)
+  (cd "$ROOT" && cargo run -p skyscope-design-system-demo)
 }
 
 cmd_demo_debug() {
-  (cd "$ROOT" && RUST_BACKTRACE=1 RUST_LOG=warn cargo run -p frost-night-demo)
+  (cd "$ROOT" && RUST_BACKTRACE=1 RUST_LOG=warn cargo run -p skyscope-design-system-demo)
 }
 
 cmd_tokens() {
   echo "==> Generating tokens.css..."
-  (cd "$ROOT" && cargo run -p frost-night-egui --example export_css 2>/dev/null) > "$ROOT/docs-site/src/styles/tokens.css"
+  (cd "$ROOT" && cargo run -p skyscope-design-system --example export_css 2>/dev/null) > "$ROOT/docs-site/src/styles/tokens.css"
   echo "    Done."
 }
 
 cmd_wasm_storybook() {
   echo "==> Building storybook WASM..."
-  (cd "$ROOT/ui-storybook" && trunk build --release --public-url /frost-night-egui/wasm/ --dist "$ROOT/docs-site/public/wasm" --filehash false)
+  (cd "$ROOT/ui-storybook" && trunk build --release --public-url /skyscope-design-system/wasm/ --dist "$ROOT/docs-site/public/wasm" --filehash false)
 }
 
 cmd_wasm_demo() {
   echo "==> Building demo WASM..."
-  (cd "$ROOT/web-demo" && trunk build --release --public-url /frost-night-egui/demo/ --dist "$ROOT/docs-site/public/demo" --filehash false)
+  (cd "$ROOT/web-demo" && trunk build --release --public-url /skyscope-design-system/demo/ --dist "$ROOT/docs-site/public/demo" --filehash false)
 }
 
 cmd_dev() {

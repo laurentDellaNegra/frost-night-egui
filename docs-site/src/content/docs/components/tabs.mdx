@@ -13,7 +13,7 @@ A horizontal tab bar with an animated underline indicator. The active tab has br
 
 ## Figma Mockup
 
-![Card with tabs](/frost-night-egui/mockups/card.png)
+![Card with tabs](/skyscope-design-system/mockups/card.png)
 
 ## Preview
 
@@ -21,7 +21,7 @@ A horizontal tab bar with an animated underline indicator. The active tab has br
 
 ## Usage
 
-<CodeBlock code={`use frost_night_egui::containers::tabs;
+<CodeBlock code={`use skyscope_design_system::containers::tabs;
 
 let mut selected = 0;
 tabs(ui, &theme, &mut selected, &["Layers", "Filters", "Settings"]);
@@ -36,8 +36,8 @@ match selected {
 
 ## With Icons
 
-<CodeBlock code={`use frost_night_egui::containers::tabs_with_icons;
-use frost_night_egui::icons::{ICON_STAR, ICON_SEARCH};
+<CodeBlock code={`use skyscope_design_system::containers::tabs_with_icons;
+use skyscope_design_system::icons::{ICON_STAR, ICON_SEARCH};
 
 let mut selected = 0;
 tabs_with_icons(

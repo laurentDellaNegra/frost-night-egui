@@ -37,7 +37,7 @@ pub(crate) fn to_egui_widgets(
     }
 }
 
-/// Options for installing Frost Night into an egui context.
+/// Options for installing Skyscope Design System into an egui context.
 #[derive(Clone, Copy, Debug)]
 pub struct InstallThemeOptions {
     pub install_visuals: bool,
@@ -53,7 +53,7 @@ impl Default for InstallThemeOptions {
     }
 }
 
-/// Apply Frost Night visuals globally to an egui context.
+/// Apply Skyscope Design System visuals globally to an egui context.
 ///
 /// Sets dark mode as the base, then overrides colors from the palette.
 /// Call once at app startup, or whenever the theme changes. This function does
@@ -84,7 +84,7 @@ pub fn apply_visuals(ctx: &egui::Context, theme: &Theme) {
     ctx.set_visuals(visuals);
 }
 
-/// Install Frost Night visuals and, when the `icons` feature is enabled, the
+/// Install Skyscope Design System visuals and, when the `icons` feature is enabled, the
 /// bundled Lucide icon font according to `options`.
 pub fn install_theme(ctx: &egui::Context, theme: &Theme, options: InstallThemeOptions) {
     if options.install_visuals {
@@ -97,7 +97,7 @@ pub fn install_theme(ctx: &egui::Context, theme: &Theme, options: InstallThemeOp
     }
 }
 
-/// Apply the full Frost Night theme.
+/// Apply the full Skyscope Design System theme.
 #[deprecated(note = "Use install_theme or apply_visuals + install_icon_font instead")]
 pub fn apply_theme(ctx: &egui::Context, theme: &Theme) {
     install_theme(ctx, theme, InstallThemeOptions::default());

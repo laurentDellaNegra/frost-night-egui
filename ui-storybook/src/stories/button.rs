@@ -1,5 +1,5 @@
-use frost_night_egui::components::button;
-use frost_night_egui::{ControlSize, ControlVariant, Theme};
+use skyscope_design_system::components::button;
+use skyscope_design_system::{ControlSize, ControlVariant, Theme};
 
 const ALL_VARIANTS: [ControlVariant; 6] = [
     ControlVariant::Primary,

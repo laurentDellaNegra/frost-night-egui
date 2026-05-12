@@ -4,7 +4,7 @@ use egui::{Response, TextBuffer, TextEdit, Ui};
 
 use crate::theme::{ControlSize, Theme};
 
-/// Apply Frost Night text input styling to a caller-provided text edit.
+/// Apply Skyscope Design System text input styling to a caller-provided text edit.
 pub fn text_edit(
     ui: &mut Ui,
     theme: &Theme,
@@ -14,7 +14,7 @@ pub fn text_edit(
     text_edit_enabled(ui, theme, true, text_edit, size)
 }
 
-/// Apply Frost Night text input styling to a caller-provided text edit.
+/// Apply Skyscope Design System text input styling to a caller-provided text edit.
 pub fn text_edit_enabled(
     ui: &mut Ui,
     theme: &Theme,

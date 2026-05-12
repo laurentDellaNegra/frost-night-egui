@@ -13,9 +13,9 @@ Three toolbar components for different positions and purposes.
 
 ## Figma Mockups
 
-![Top toolbar](/frost-night-egui/mockups/top-toolbar.png)
-![Left toolbar](/frost-night-egui/mockups/left-toolbar.png)
-![Control toolbar](/frost-night-egui/mockups/control-toolbar.png)
+![Top toolbar](/skyscope-design-system/mockups/top-toolbar.png)
+![Left toolbar](/skyscope-design-system/mockups/left-toolbar.png)
+![Control toolbar](/skyscope-design-system/mockups/control-toolbar.png)
 
 ## Vertical Toolbar
 
@@ -27,8 +27,8 @@ The main sidebar toolbar with grouped icon buttons.
 
 ### Usage
 
-<CodeBlock code={`use frost_night_egui::composites::{toolbar, ToolbarItem, ToolbarGroup};
-use frost_night_egui::icons::*;
+<CodeBlock code={`use skyscope_design_system::composites::{toolbar, ToolbarItem, ToolbarGroup};
+use skyscope_design_system::icons::*;
 
 let groups: Vec<ToolbarGroup> = vec![
     vec![
@@ -46,8 +46,8 @@ let response = toolbar(ui, &theme, &groups, Some(0), &[]);`} />
 
 A horizontal toolbar with title, clock, and icon buttons.
 
-<CodeBlock code={`use frost_night_egui::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
-use frost_night_egui::icons::*;
+<CodeBlock code={`use skyscope_design_system::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
+use skyscope_design_system::icons::*;
 
 let fields = [
     StatusField { label: "UTC", value: "12:34:56", kind: StatusFieldKind::Normal },
@@ -69,7 +69,7 @@ let response = top_toolbar(
 
 Compact zoom controls with +/- and reset.
 
-<CodeBlock code={`use frost_night_egui::composites::zoom_toolbar;
-use frost_night_egui::icons::*;
+<CodeBlock code={`use skyscope_design_system::composites::zoom_toolbar;
+use skyscope_design_system::icons::*;
 
 let response = zoom_toolbar(ui, &theme, rect, ICON_PLUS, ICON_MINUS);`} />

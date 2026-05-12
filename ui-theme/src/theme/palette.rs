@@ -1,4 +1,4 @@
-//! Semantic color palette for the Frost Night dark theme.
+//! Semantic color palette for the Skyscope Design System dark theme.
 
 use egui::Color32;
 
@@ -18,7 +18,7 @@ pub struct ColorPalette {
     pub background: Color32,
     /// Primary text color.
     pub foreground: Color32,
-    /// Primary accent (frost/silver).
+    /// Primary accent (ice/silver).
     pub primary: Color32,
     /// Text on primary-colored surfaces.
     pub primary_foreground: Color32,

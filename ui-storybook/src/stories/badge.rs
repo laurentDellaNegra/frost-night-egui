@@ -1,5 +1,5 @@
-use frost_night_egui::components::{badge, BadgeVariant};
-use frost_night_egui::Theme;
+use skyscope_design_system::components::{badge, BadgeVariant};
+use skyscope_design_system::Theme;
 
 const ALL_VARIANTS: [BadgeVariant; 4] = [
     BadgeVariant::Primary,

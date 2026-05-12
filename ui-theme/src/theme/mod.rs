@@ -1,4 +1,4 @@
-//! Frost Night theme tokens and egui integration.
+//! Skyscope Design System theme tokens and egui integration.
 
 use egui::CornerRadius;
 

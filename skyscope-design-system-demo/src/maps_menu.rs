@@ -2,10 +2,10 @@
 
 use eframe::egui::{self, Sense, Ui, Vec2};
 
-use frost_night_egui::components::checkbox_small;
-use frost_night_egui::containers::{accordion, tabs};
-use frost_night_egui::icons::{icon_text, ICON_CIRCLE_X, ICON_SEARCH};
-use frost_night_egui::Theme;
+use skyscope_design_system::components::checkbox_small;
+use skyscope_design_system::containers::{accordion, tabs};
+use skyscope_design_system::icons::{icon_text, ICON_CIRCLE_X, ICON_SEARCH};
+use skyscope_design_system::Theme;
 
 // ---------------------------------------------------------------------------
 // Data model

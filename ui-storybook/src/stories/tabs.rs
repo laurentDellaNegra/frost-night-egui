@@ -1,5 +1,5 @@
-use frost_night_egui::containers::tabs;
-use frost_night_egui::Theme;
+use skyscope_design_system::containers::tabs;
+use skyscope_design_system::Theme;
 
 pub struct TabsStoryState {
     pub selected: usize,

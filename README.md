@@ -1,12 +1,12 @@
-# frost-night-egui
+# skyscope-design-system
 
-Frost Night is an egui theme and component library for dark, glass-tinted operational interfaces.
+Skyscope Design System is an egui theme and component library for dark, glass-tinted operational interfaces.
 
-The Rust package is `frost-night-egui`, imported from Rust as `frost_night_egui`.
+The Rust package is `skyscope-design-system`, imported from Rust as `skyscope_design_system`.
 
 ## Overview
 
-The reusable library owns the Frost Night visual language:
+The reusable library owns the Skyscope Design System visual language:
 
 - semantic color palette and interaction tokens
 - spacing, radius, control size, and typography scales
@@ -22,7 +22,7 @@ Application-specific behavior belongs in the consuming app: domain logic, operat
 | Module | Feature | Purpose |
 | --- | --- | --- |
 | `theme` | core | `Theme`, palette, tokens, scales, `apply_visuals`, `install_theme` |
-| `components` | core | `button`, `text_input`, `text_edit`, `checkbox`, `toggle`, `segmented`, `segmented_styled`, `badge`, `separator`, `FrostUiExt` |
+| `components` | core | `button`, `text_input`, `text_edit`, `checkbox`, `toggle`, `segmented`, `segmented_styled`, `badge`, `separator`, `SkyscopeUiExt` |
 | `containers` | core | `card`, `surface`, `tabs`, `accordion`, `drag_card` |
 | `effects` | core | `BlurRect` and fallback glass/tint painting |
 | `icons` | `icons` | Lucide font data, install helpers, icon constants |
@@ -32,7 +32,7 @@ Application-specific behavior belongs in the consuming app: domain logic, operat
 
 ```toml
 [dependencies]
-frost-night-egui = { path = "ui-theme" }
+skyscope-design-system = { path = "ui-theme" }
 ```
 
 Available features:
@@ -45,25 +45,84 @@ Available features:
 The core crate compiles without default features:
 
 ```sh
-cargo check -p frost-night-egui --no-default-features
+cargo check -p skyscope-design-system --no-default-features
 ```
+
+## Repository Scripts
 
 Common repository commands are available through the root script:
 
-```sh
-./run.sh ci
-./run.sh demo
-./run.sh wasm-demo
-./run.sh wasm-storybook
-```
+| Command | Purpose |
+| --- | --- |
+| `./run.sh check` | Check the Rust workspace with `cargo check --workspace`. |
+| `./run.sh wasm-check` | Check `web-demo` and `ui-storybook` for `wasm32-unknown-unknown`. |
+| `./run.sh fmt` | Check Rust formatting with `cargo fmt --all -- --check`. |
+| `./run.sh clippy` | Run clippy for the workspace with all targets and features. |
+| `./run.sh ci` | Run the Rust CI sequence: formatting, no-default-features check, workspace check, all-features check, WASM checks, and clippy. |
+| `./run.sh demo` | Run the native Skyscope Design System demo. |
+| `./run.sh demo-debug` | Run the native demo with `RUST_BACKTRACE=1` and `RUST_LOG=warn`. |
+| `./run.sh tokens` | Generate `docs-site/src/styles/tokens.css` from the Rust theme palette. |
+| `./run.sh wasm-storybook` | Build the interactive storybook WASM bundle into `docs-site/public/wasm`. |
+| `./run.sh wasm-demo` | Build the demo WASM bundle into `docs-site/public/demo`. |
+| `./run.sh dev` | Start the Astro documentation dev server. |
+| `./run.sh site` | Build the Astro documentation site. |
+| `./run.sh preview` | Preview the production Astro documentation build. |
+| `./run.sh build` | Run the full docs pipeline: tokens, storybook WASM, demo WASM, then Astro build. |
+| `./run.sh clean` | Remove Rust target output and generated docs build artifacts. |
+
+The documentation site also exposes its local npm scripts from `docs-site/package.json`:
+
+| Command | Purpose |
+| --- | --- |
+| `cd docs-site && npm run dev` | Start Astro in development mode. |
+| `cd docs-site && npm run build` | Build the static documentation site. |
+| `cd docs-site && npm run preview` | Preview the built documentation site locally. |
+
+## External Dependencies
+
+Direct Rust dependencies are defined in the workspace manifests:
+
+| Dependency | Version | Used For |
+| --- | --- | --- |
+| `egui` | `0.34` | Core immediate-mode UI types, widgets, styling, and rendering integration. |
+| `eframe` | `0.34` | Native and web app shell for the demo and storybook crates. |
+| `egui_flex` | `0.6` | Optional composite layouts behind the `composites` feature. |
+| `serde` | `1` | Optional theme serialization support through the `serde` feature. |
+| `env_logger` | `0.11` | Native demo logging initialization. |
+| `log` | `0.4` | Logging facade used by web/demo crates. |
+| `wasm-bindgen` | `0.2` | WebAssembly bindings for browser builds. |
+| `wasm-bindgen-futures` | `0.4` | Async bridge support for WebAssembly builds. |
+| `web-sys` | `0.3` | Browser DOM types used by WASM launchers. |
+
+Direct documentation-site dependencies are defined in `docs-site/package.json`:
+
+| Dependency | Version | Used For |
+| --- | --- | --- |
+| `astro` | `^6.1.1` | Static documentation site framework. |
+| `@astrojs/mdx` | `^5.0.3` | MDX support for component and foundation docs. |
+
+Embedded third-party assets:
+
+| Asset | Version | License | Used For |
+| --- | --- | --- | --- |
+| Lucide icon font | `1.7.0` | ISC | Optional icon font embedded at `ui-theme/src/fonts/lucide.ttf`. |
+
+Required local tooling for repository scripts:
+
+| Tool | Used By |
+| --- | --- |
+| Rust toolchain with `cargo`, `cargo fmt`, and `cargo clippy` | Rust checks, examples, demos, and CI scripts. |
+| `wasm32-unknown-unknown` Rust target | `./run.sh wasm-check`, `./run.sh wasm-demo`, and `./run.sh wasm-storybook`. |
+| Trunk | WASM demo and storybook builds. |
+| Node.js and npm | Astro documentation scripts. |
 
 ## Integration
 
 ```rust
-use frost_night_egui::{
+use skyscope_design_system::{
     install_theme, ControlSize, ControlVariant, InstallThemeOptions, Theme,
 };
-use frost_night_egui::components::*;
+use skyscope_design_system::components::*;
 
 pub struct App {
     theme: Theme,
@@ -120,7 +179,7 @@ Host apps with custom fonts should add Lucide to their own font definitions befo
 
 ```rust
 let mut fonts = egui::FontDefinitions::default();
-frost_night_egui::add_icon_font_to(&mut fonts);
+skyscope_design_system::add_icon_font_to(&mut fonts);
 ctx.set_fonts(fonts);
 ```
 
@@ -129,12 +188,12 @@ ctx.set_fonts(fonts);
 ## Components
 
 ```rust
-use frost_night_egui::{ControlSize, ControlVariant, Theme};
-use frost_night_egui::components::{
+use skyscope_design_system::{ControlSize, ControlVariant, Theme};
+use skyscope_design_system::components::{
     badge, button, checkbox, segmented, segmented_with_fills, text_edit, text_input, toggle,
     BadgeVariant,
 };
-use frost_night_egui::containers::{accordion, accordion_with_id, card, tabs, tabs_with_id};
+use skyscope_design_system::containers::{accordion, accordion_with_id, card, tabs, tabs_with_id};
 
 button(ui, &theme, "Primary", ControlVariant::Primary, ControlSize::Md);
 text_input(ui, &theme, &mut text, ControlSize::Md);
@@ -179,14 +238,14 @@ accordion_with_id(ui, &theme, "settings-accordion", &items, &mut open, false, |u
 Enable composites when you want the demo-style toolbar building blocks:
 
 ```toml
-frost-night-egui = { path = "ui-theme", features = ["composites"] }
+skyscope-design-system = { path = "ui-theme", features = ["composites"] }
 ```
 
 `top_toolbar` is generic. The consuming app supplies domain labels such as QNH or TL:
 
 ```rust
-use frost_night_egui::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
-use frost_night_egui::icons::{ICON_GRID, ICON_SETTINGS};
+use skyscope_design_system::composites::{top_toolbar, StatusField, StatusFieldKind, ToolbarAction};
+use skyscope_design_system::icons::{ICON_GRID, ICON_SETTINGS};
 
 let fields = [
     StatusField { label: "UTC", value: "23:14:20", kind: StatusFieldKind::Normal },
@@ -197,14 +256,14 @@ let actions = [
     ToolbarAction { icon: ICON_SETTINGS, selected: false, disabled: false },
 ];
 
-let response = top_toolbar(ui, &theme, "Frost Night", &fields, &actions);
+let response = top_toolbar(ui, &theme, "Skyscope Design System", &fields, &actions);
 ```
 
 `action_toolbar` renders compact labeled actions and requires `features = ["composites", "icons"]`:
 
 ```rust
-use frost_night_egui::composites::{action_toolbar, ActionToolbarItem};
-use frost_night_egui::icons::{ICON_FILTER, ICON_GRID};
+use skyscope_design_system::composites::{action_toolbar, ActionToolbarItem};
+use skyscope_design_system::icons::{ICON_FILTER, ICON_GRID};
 
 let response = action_toolbar(
     ui,
@@ -231,12 +290,12 @@ let response = action_toolbar(
 ## Running The Demo
 
 The demo is a separate private workspace crate so sample aviation data and demo
-orchestration do not leak into the reusable `frost-night-egui` library API.
+orchestration do not leak into the reusable `skyscope-design-system` library API.
 
 Native:
 
 ```sh
-cargo run -p frost-night-demo
+cargo run -p skyscope-design-system-demo
 ```
 
 Web:
@@ -246,13 +305,13 @@ cd web-demo
 trunk serve
 ```
 
-The web launcher depends on `frost-night-demo`, which depends on
-`frost-night-egui` with the `composites` feature enabled.
+The web launcher depends on `skyscope-design-system-demo`, which depends on
+`skyscope-design-system` with the `composites` feature enabled.
 
 ## Project Structure
 
 ```text
-frost-night-demo/
+skyscope-design-system-demo/
   src/          # DemoApp and private sample aviation/menu data
 
 ui-theme/src/

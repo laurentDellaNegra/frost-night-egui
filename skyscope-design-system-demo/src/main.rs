@@ -6,9 +6,9 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
     eframe::run_native(
-        "Frost Night UI Demo",
+        "Skyscope Design System Demo",
         options,
-        Box::new(|cc| Ok(Box::new(frost_night_demo::DemoApp::new(cc)))),
+        Box::new(|cc| Ok(Box::new(skyscope_design_system_demo::DemoApp::new(cc)))),
     )
 }
 

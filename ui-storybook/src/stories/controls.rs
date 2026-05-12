@@ -1,4 +1,4 @@
-use frost_night_egui::Theme;
+use skyscope_design_system::Theme;
 
 /// Section header label (e.g. "Controls", "Playground", "All Variants")
 pub fn section_header(ui: &mut egui::Ui, theme: &Theme, label: &str) {

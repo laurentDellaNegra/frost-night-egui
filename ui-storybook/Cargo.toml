@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-frost-night-egui = { path = "../ui-theme", features = ["composites"] }
+skyscope-design-system = { path = "../ui-theme", features = ["composites"] }
 egui = { workspace = true }
 eframe = { workspace = true, features = [
     "default_fonts",

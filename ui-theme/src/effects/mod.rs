@@ -1,4 +1,4 @@
-//! Generic visual effects used by Frost Night components.
+//! Generic visual effects used by Skyscope Design System components.
 
 mod blur;
 

@@ -2,7 +2,7 @@
 resolver = "2"
 members = [
   "ui-theme",
-  "frost-night-demo",
+  "skyscope-design-system-demo",
   "web-demo",
   "ui-storybook",
 ]

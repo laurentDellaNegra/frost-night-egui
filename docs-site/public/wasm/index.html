@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frost Night Storybook</title>
+    <title>Skyscope Design System Storybook</title>
     
 <script type="module">
-import init, * as bindings from '/frost-night-egui/wasm/ui-storybook.js';
-const wasm = await init({ module_or_path: '/frost-night-egui/wasm/ui-storybook_bg.wasm' });
+import init, * as bindings from '/skyscope-design-system/wasm/ui-storybook.js';
+const wasm = await init({ module_or_path: '/skyscope-design-system/wasm/ui-storybook_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -16,6 +16,6 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-  <link rel="modulepreload" href="/frost-night-egui/wasm/ui-storybook.js" crossorigin="anonymous" integrity="sha384-PAW4LjcXIM2RwAjIDq4+UX08cvFdUgEfJuN58C466xiaMBqQUIQNVfPnQWDT1/E0"><link rel="preload" href="/frost-night-egui/wasm/ui-storybook_bg.wasm" crossorigin="anonymous" integrity="sha384-vpvm5kduc+EQIP9GZh8zrknD2p+HnuzjRoYd8AGT2p59OY87dCKDAe11j/yMLog4" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/skyscope-design-system/wasm/ui-storybook.js" crossorigin="anonymous" integrity="sha384-PAW4LjcXIM2RwAjIDq4+UX08cvFdUgEfJuN58C466xiaMBqQUIQNVfPnQWDT1/E0"><link rel="preload" href="/skyscope-design-system/wasm/ui-storybook_bg.wasm" crossorigin="anonymous" integrity="sha384-vpvm5kduc+EQIP9GZh8zrknD2p+HnuzjRoYd8AGT2p59OY87dCKDAe11j/yMLog4" as="fetch" type="application/wasm"></head>
   <body></body>
 </html>

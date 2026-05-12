@@ -18,9 +18,9 @@ pub use toggle::toggle;
 
 use crate::theme::{ControlSize, ControlVariant, Theme};
 
-/// Ergonomic extension methods for adding Frost Night controls to an `egui::Ui`.
-pub trait FrostUiExt {
-    fn frost_button(
+/// Ergonomic extension methods for adding Skyscope Design System controls to an `egui::Ui`.
+pub trait SkyscopeUiExt {
+    fn skyscope_button(
         &mut self,
         theme: &Theme,
         label: impl Into<egui::WidgetText>,
@@ -28,21 +28,21 @@ pub trait FrostUiExt {
         size: ControlSize,
     ) -> egui::Response;
 
-    fn frost_text_input<S: egui::TextBuffer>(
+    fn skyscope_text_input<S: egui::TextBuffer>(
         &mut self,
         theme: &Theme,
         text: &mut S,
         size: ControlSize,
     ) -> egui::Response;
 
-    fn frost_text_edit(
+    fn skyscope_text_edit(
         &mut self,
         theme: &Theme,
         editor: egui::TextEdit<'_>,
         size: ControlSize,
     ) -> egui::Response;
 
-    fn frost_text_edit_enabled(
+    fn skyscope_text_edit_enabled(
         &mut self,
         theme: &Theme,
         enabled: bool,
@@ -51,8 +51,8 @@ pub trait FrostUiExt {
     ) -> egui::Response;
 }
 
-impl FrostUiExt for egui::Ui {
-    fn frost_button(
+impl SkyscopeUiExt for egui::Ui {
+    fn skyscope_button(
         &mut self,
         theme: &Theme,
         label: impl Into<egui::WidgetText>,
@@ -62,7 +62,7 @@ impl FrostUiExt for egui::Ui {
         button(self, theme, label, variant, size)
     }
 
-    fn frost_text_input<S: egui::TextBuffer>(
+    fn skyscope_text_input<S: egui::TextBuffer>(
         &mut self,
         theme: &Theme,
         text: &mut S,
@@ -71,7 +71,7 @@ impl FrostUiExt for egui::Ui {
         text_input(self, theme, text, size)
     }
 
-    fn frost_text_edit(
+    fn skyscope_text_edit(
         &mut self,
         theme: &Theme,
         editor: egui::TextEdit<'_>,
@@ -80,7 +80,7 @@ impl FrostUiExt for egui::Ui {
         text_edit(self, theme, editor, size)
     }
 
-    fn frost_text_edit_enabled(
+    fn skyscope_text_edit_enabled(
         &mut self,
         theme: &Theme,
         enabled: bool,

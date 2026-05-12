@@ -1,5 +1,5 @@
-use frost_night_egui::components::{segmented, segmented_with_fills};
-use frost_night_egui::Theme;
+use skyscope_design_system::components::{segmented, segmented_with_fills};
+use skyscope_design_system::Theme;
 
 pub struct SegmentedStoryState {
     pub selected: usize,

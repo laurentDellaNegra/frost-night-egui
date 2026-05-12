@@ -42,7 +42,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: wasm-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'ui-theme/Cargo.toml', 'frost-night-demo/Cargo.toml', 'web-demo/Cargo.toml', 'ui-storybook/Cargo.toml') }}
+          key: wasm-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'ui-theme/Cargo.toml', 'skyscope-design-system-demo/Cargo.toml', 'web-demo/Cargo.toml', 'ui-storybook/Cargo.toml') }}
           restore-keys: wasm-
 
       # 1. Generate CSS tokens from Rust palette
@@ -51,11 +51,11 @@ jobs:
 
       # 2. Build storybook WASM → docs-site/public/wasm/
       - name: Build storybook WASM
-        run: cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm --filehash false
+        run: cd ui-storybook && trunk build --release --public-url /skyscope-design-system/wasm/ --dist ../docs-site/public/wasm --filehash false
 
       # 3. Build demo WASM → docs-site/public/demo/
       - name: Build demo WASM
-        run: cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo --filehash false
+        run: cd web-demo && trunk build --release --public-url /skyscope-design-system/demo/ --dist ../docs-site/public/demo --filehash false
 
       # 4. Build Astro site (includes wasm + demo from public/)
       - name: Build Astro site

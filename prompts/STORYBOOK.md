@@ -1,15 +1,15 @@
-# Claude Code Prompt: Design System Documentation Site for frost-night-egui
+# Claude Code Prompt: Design System Documentation Site for skyscope-design-system
 
 ## Context
 
-I have an egui design system crate called `ui-theme` inside the `frost-night-egui` repo. It provides a dark theme, design tokens, and 14 component wrappers for aviation-style UIs. There is already a working demo (`DemoApp` in `ui-theme/src/demo.rs`, gated behind the `demo` feature) deployed to GitHub Pages as a full-screen WASM app via `web-demo/`.
+I have an egui design system crate called `ui-theme` inside the `skyscope-design-system` repo. It provides a dark theme, design tokens, and 14 component wrappers for aviation-style UIs. There is already a working demo (`DemoApp` in `ui-theme/src/demo.rs`, gated behind the `demo` feature) deployed to GitHub Pages as a full-screen WASM app via `web-demo/`.
 
 I want to add a **design system documentation site** alongside the existing demo — both served from the same GitHub Pages deployment. The site should showcase foundations (colors, typography, spacing, radius, blur) and each component with interactive playgrounds (like Storybook).
 
 ## Existing Architecture (DO NOT CHANGE)
 
 ```
-frost-night-egui/
+skyscope-design-system/
 ├── .github/workflows/deploy.yml    # Current: builds web-demo, deploys to GH Pages
 ├── CLAUDE.md                       # Project conventions
 ├── DESIGN_TOKENS.md                # Extracted design tokens
@@ -68,7 +68,7 @@ frost-night-egui/
 ### New directories to add:
 
 ```
-frost-night-egui/
+skyscope-design-system/
 ├── ui-storybook/                   # NEW — WASM crate for component stories
 │   ├── Cargo.toml
 │   ├── index.html
@@ -148,7 +148,7 @@ Add an example to `ui-theme` that dumps `ColorPalette::dark()` as CSS variables:
 // ui-theme/examples/export_css.rs
 // (add to Cargo.toml: [[example]] name = "export_css")
 
-use frost_night_egui::{Theme, ColorPalette};
+use skyscope_design_system::{Theme, ColorPalette};
 use egui::Color32;
 
 fn c(color: Color32) -> String {
@@ -217,7 +217,7 @@ web-sys = { version = "0.3", features = ["Document", "Window", "HtmlCanvasElemen
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frost Night Storybook</title>
+    <title>Skyscope Design System Storybook</title>
     <link data-trunk rel="rust" data-wasm-opt="z" />
   </head>
   <body></body>
@@ -233,8 +233,8 @@ Each story has a **state struct** (persists across frames) and two render functi
 
 ```rust
 // stories/button.rs
-use frost_night_egui::{Theme, ControlVariant, ControlSize};
-use frost_night_egui::components::button;
+use skyscope_design_system::{Theme, ControlVariant, ControlSize};
+use skyscope_design_system::components::button;
 
 pub struct ButtonStoryState {
     pub variant: ControlVariant,
@@ -340,7 +340,7 @@ pub fn start_story(canvas_id: &str, story_name: &str) {
     });
 }
 
-use frost_night_egui::{install_theme, InstallThemeOptions, Theme};
+use skyscope_design_system::{install_theme, InstallThemeOptions, Theme};
 
 struct StoryApp {
     theme: Theme,
@@ -471,7 +471,7 @@ const canvasId = `story-${story}-${Math.random().toString(36).slice(2, 8)}`;
       canvas.dataset.loaded = "true";
 
       // Base path matches astro.config.mjs base
-      const wasm = await import('/frost-night-egui/wasm/ui-storybook.js');
+      const wasm = await import('/skyscope-design-system/wasm/ui-storybook.js');
       await wasm.default();
       wasm.start_story(canvas.id, story);
 
@@ -517,7 +517,7 @@ const { height = "85vh" } = Astro.props;
 
 <script>
   async function loadDemo() {
-    const wasm = await import('/frost-night-egui/demo/web-demo.js');
+    const wasm = await import('/skyscope-design-system/demo/web-demo.js');
     await wasm.default();
     // web-demo main() targets canvas id "the_canvas_id" — we use the same id
   }
@@ -582,8 +582,8 @@ A clickable control that triggers an action. Supports Primary, Secondary, Ghost,
 ## Usage
 
 <CodeBlock code={`
-use frost_night_egui::components::button;
-use frost_night_egui::{ControlSize, ControlVariant};
+use skyscope_design_system::components::button;
+use skyscope_design_system::{ControlSize, ControlVariant};
 
 button(ui, &theme, "Click me", ControlVariant::Primary, ControlSize::Md);
 `} />
@@ -623,27 +623,27 @@ import mdx from "@astrojs/mdx";
 
 export default defineConfig({
   site: "https://laurentdellanegra.github.io",
-  base: "/frost-night-egui",
+  base: "/skyscope-design-system",
   integrations: [mdx()],
 });
 ```
 
 ## Part 4: Deployment — CRITICAL
 
-The current deployment at `https://laurentdellanegra.github.io/frost-night-egui/` serves the web-demo WASM directly. The new deployment must serve **both** the Astro docs site AND the demo WASM from the same GitHub Pages.
+The current deployment at `https://laurentdellanegra.github.io/skyscope-design-system/` serves the web-demo WASM directly. The new deployment must serve **both** the Astro docs site AND the demo WASM from the same GitHub Pages.
 
 ### Strategy: Astro is the root, demo + storybook are WASM assets
 
-The Astro site becomes the root (`/frost-night-egui/`). The demo and storybook WASM are built by Trunk into Astro's `public/` folder, then included in the Astro build output.
+The Astro site becomes the root (`/skyscope-design-system/`). The demo and storybook WASM are built by Trunk into Astro's `public/` folder, then included in the Astro build output.
 
 ### Base URL handling
 
-GitHub Pages serves at `/frost-night-egui/`. This affects:
+GitHub Pages serves at `/skyscope-design-system/`. This affects:
 
-- **Astro**: `base: '/frost-night-egui'` in `astro.config.mjs`
-- **Trunk (storybook)**: build with `--public-url /frost-night-egui/wasm/`
-- **Trunk (demo)**: build with `--public-url /frost-night-egui/demo/`
-- **WASM imports in Astro components**: use absolute paths starting with `/frost-night-egui/`
+- **Astro**: `base: '/skyscope-design-system'` in `astro.config.mjs`
+- **Trunk (storybook)**: build with `--public-url /skyscope-design-system/wasm/`
+- **Trunk (demo)**: build with `--public-url /skyscope-design-system/demo/`
+- **WASM imports in Astro components**: use absolute paths starting with `/skyscope-design-system/`
 
 ### Updated `.github/workflows/deploy.yml`
 
@@ -703,11 +703,11 @@ jobs:
 
       # 2. Build storybook WASM → docs-site/public/wasm/
       - name: Build storybook WASM
-        run: cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm
+        run: cd ui-storybook && trunk build --release --public-url /skyscope-design-system/wasm/ --dist ../docs-site/public/wasm
 
       # 3. Build demo WASM → docs-site/public/demo/
       - name: Build demo WASM
-        run: cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo
+        run: cd web-demo && trunk build --release --public-url /skyscope-design-system/demo/ --dist ../docs-site/public/demo
 
       # 4. Build Astro site (includes wasm + demo from public/)
       - name: Build Astro site
@@ -741,10 +741,10 @@ jobs:
 cd ui-theme && cargo run --example export_css > ../docs-site/src/styles/tokens.css
 
 # 2. Build storybook WASM
-cd ui-storybook && trunk build --release --public-url /frost-night-egui/wasm/ --dist ../docs-site/public/wasm
+cd ui-storybook && trunk build --release --public-url /skyscope-design-system/wasm/ --dist ../docs-site/public/wasm
 
 # 3. Build demo WASM
-cd web-demo && trunk build --release --public-url /frost-night-egui/demo/ --dist ../docs-site/public/demo
+cd web-demo && trunk build --release --public-url /skyscope-design-system/demo/ --dist ../docs-site/public/demo
 
 # 4. Dev server
 cd docs-site && npm run dev
@@ -760,11 +760,11 @@ For local dev without the base path issue, you can temporarily set `base: '/'` i
 - **`fn ui()` not `fn update()`** — this is eframe 0.34 API.
 - **`WebRunner::start()` takes `HtmlCanvasElement`**, not a string ID.
 - **No frontend framework** — Astro components + vanilla JS only.
-- **Dark mode only** — site uses the same Frost Night tokens via CSS variables.
+- **Dark mode only** — site uses the same Skyscope Design System tokens via CSS variables.
 - **Lazy-load WASM** via IntersectionObserver in ComponentPreview.
 - **All spacing via CSS variables** from tokens.css — no hardcoded pixel values in the site CSS.
-- **GitHub Pages base path** `/frost-night-egui/` must be handled correctly in Astro config, Trunk public-url, and WASM import paths.
-- **Keep demo accessible** — the demo must work at `/frost-night-egui/demo/` and be embeddable in the docs site.
+- **GitHub Pages base path** `/skyscope-design-system/` must be handled correctly in Astro config, Trunk public-url, and WASM import paths.
+- **Keep demo accessible** — the demo must work at `/skyscope-design-system/demo/` and be embeddable in the docs site.
 - **Same deployment pattern** — use `actions/upload-pages-artifact@v3` + `actions/deploy-pages@v4` with proper permissions (matches current workflow).
 
 ## What NOT to do

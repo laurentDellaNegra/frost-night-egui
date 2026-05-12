@@ -27,7 +27,7 @@ Extracted from Figma mockups (visual analysis of `interface.png` and `windows.pn
 | `foreground_secondary` | `#8494A7`     | Labels, secondary text                |
 | `foreground_muted`     | `#5A6A7E`     | Placeholder text, disabled text       |
 
-### Primary (Frost/Silver)
+### Primary (Ice/Silver)
 
 | Token                 | Hex (approx.) | Usage                                            |
 | --------------------- | ------------- | ------------------------------------------------ |
@@ -145,7 +145,7 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 - **Exception**: Checkbox has no inner fill when unchecked (transparent); fill fades in with the checkmark.
 
 ### Buttons
-- **Primary**: Frost/silver fill (`#CCD4E2`), dark text. Rounded ~6px.
+- **Primary**: Ice/silver fill (`#CCD4E2`), dark text. Rounded ~6px.
 - **Secondary / Ghost**: Dark fill or transparent, light border, light text.
 
 ### Badges / Tags
@@ -241,7 +241,7 @@ Checkbox, toggle, and segmented controls follow a consistent structure:
 | ----------------------- | ------------------ | -------------------------------------------- |
 | `background`            | `#04070E`          | Figma-confirmed                              |
 | `foreground`            | `#E0E8F0`          | Primary text                                 |
-| `primary`               | `#CCD4E2`          | Frost/silver accent                          |
+| `primary`               | `#CCD4E2`          | Ice/silver accent                            |
 | `primary_foreground`    | `#0E1724`          | Dark text on primary                         |
 | `secondary`             | `#141E2E`          | Subtle dark fills                            |
 | `secondary_foreground`  | `#8A96A8`          | Muted text on secondary                      |

@@ -1,5 +1,5 @@
-use frost_night_egui::components::{text_edit, text_input};
-use frost_night_egui::{ControlSize, Theme};
+use skyscope_design_system::components::{text_edit, text_input};
+use skyscope_design_system::{ControlSize, Theme};
 
 const ALL_SIZES: [ControlSize; 3] = [ControlSize::Sm, ControlSize::Md, ControlSize::Lg];
 

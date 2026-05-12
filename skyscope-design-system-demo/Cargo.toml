@@ -1,12 +1,12 @@
 [package]
-name = "frost-night-demo"
+name = "skyscope-design-system-demo"
 version = "0.1.0"
 edition = "2021"
 publish = false
-description = "Private native and web demo app for the Frost Night egui design system"
+description = "Private native and web demo app for Skyscope Design System"
 
 [dependencies]
-frost-night-egui = { path = "../ui-theme", features = ["composites"] }
+skyscope-design-system = { path = "../ui-theme", features = ["composites"] }
 eframe = { workspace = true, features = [
     "default_fonts",
     "wayland",

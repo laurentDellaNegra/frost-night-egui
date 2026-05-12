@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frost Night UI Demo</title>
+    <title>Skyscope Design System Demo</title>
     
 <script type="module">
-import init, * as bindings from '/frost-night-egui/demo/web-demo.js';
-const wasm = await init({ module_or_path: '/frost-night-egui/demo/web-demo_bg.wasm' });
+import init, * as bindings from '/skyscope-design-system/demo/web-demo.js';
+const wasm = await init({ module_or_path: '/skyscope-design-system/demo/web-demo_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -30,7 +30,7 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
             height: 100% !important;
         }
     </style>
-<link rel="modulepreload" href="/frost-night-egui/demo/web-demo.js" crossorigin="anonymous" integrity="sha384-eDPrGKdJgEYI3Er+G3bhLeTUROnXrJDtEHZooG0nVGo2zBFz+Q44DW5ablgKXhhP"><link rel="preload" href="/frost-night-egui/demo/web-demo_bg.wasm" crossorigin="anonymous" integrity="sha384-CbRNJrslwQucbZP5CGXObbLqjC1LwAZhWhsXNEvmx+XLwFJ2RRfjcL+KGXWonwsx" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/skyscope-design-system/demo/web-demo.js" crossorigin="anonymous" integrity="sha384-eDPrGKdJgEYI3Er+G3bhLeTUROnXrJDtEHZooG0nVGo2zBFz+Q44DW5ablgKXhhP"><link rel="preload" href="/skyscope-design-system/demo/web-demo_bg.wasm" crossorigin="anonymous" integrity="sha384-CbRNJrslwQucbZP5CGXObbLqjC1LwAZhWhsXNEvmx+XLwFJ2RRfjcL+KGXWonwsx" as="fetch" type="application/wasm"></head>
 <body>
     <canvas id="the_canvas_id"></canvas>
 </body>

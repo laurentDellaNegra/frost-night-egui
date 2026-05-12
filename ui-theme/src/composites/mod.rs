@@ -1,4 +1,4 @@
-//! Optional higher-level Frost Night compositions.
+//! Optional higher-level Skyscope Design System compositions.
 //!
 //! These widgets combine generic components into opinionated tool surfaces.
 //! They are gated behind the `composites` feature so host applications can
