@@ -1,19 +1,21 @@
 ---
 const sizes = [
-  { name: 'Sm', size: '11px', usage: 'Small buttons, captions' },
-  { name: 'Md', size: '13px', usage: 'Default body, buttons' },
-  { name: 'Lg', size: '15px', usage: 'Large buttons, headings' },
+  { name: 'Sm', size: 11, usage: 'Small buttons, captions' },
+  { name: 'Md', size: 13, usage: 'Default body, buttons' },
+  { name: 'Lg', size: 15, usage: 'Large buttons, headings' },
 ];
 ---
 
 <div class="type-scale">
   {sizes.map(s => (
-    <div class="type-item">
-      <span class="type-sample" style={`font-size: ${s.size}`}>
-        The quick brown fox ({s.size})
-      </span>
+    <div class="type-item" style={`--font-size: ${s.size}px`}>
+      <div class="type-sample-wrap">
+        <span class="type-sample">Aa</span>
+        <span class="type-line">The quick brown fox jumps over the lazy dog</span>
+      </div>
       <div class="type-info">
         <code>{s.name}</code>
+        <span class="type-size">{s.size}px</span>
         <span class="type-usage">{s.usage}</span>
       </div>
     </div>
@@ -24,24 +26,65 @@ const sizes = [
   .type-scale {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
   }
   .type-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    gap: var(--spacing-md);
+    align-items: center;
     padding: var(--spacing-md);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .type-sample-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    min-width: 0;
   }
   .type-sample {
-    display: block;
-    margin-bottom: var(--spacing-sm);
+    display: inline-block;
+    min-width: 2.2em;
+    font-size: calc(var(--font-size) * 2);
+    line-height: 1;
+    color: var(--foreground);
+  }
+  .type-line {
+    font-size: var(--font-size);
+    line-height: 1.2;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .type-info {
-    display: flex;
-    gap: var(--spacing-md);
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: var(--spacing-xs) var(--spacing-sm);
+    align-items: baseline;
+    justify-content: start;
+  }
+  .type-size {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--foreground);
   }
   .type-usage {
+    grid-column: 1 / -1;
     font-size: 0.75rem;
     color: var(--muted-foreground);
+  }
+
+  @media (max-width: 640px) {
+    .type-item {
+      grid-template-columns: 1fr;
+    }
+    .type-sample-wrap {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
   }
 </style>

@@ -1,4 +1,4 @@
-use skyscope_design_system::containers::tabs;
+use skyscope_design_system::containers::tabs_with_id;
 use skyscope_design_system::Theme;
 
 pub struct TabsStoryState {
@@ -46,7 +46,7 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
     // Playground
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
-        tabs(ui, theme, &mut state.selected, &labels);
+        tabs_with_id(ui, theme, "tabs-playground", &mut state.selected, &labels);
         ui.add_space(theme.spacing.md);
         ui.label(
             egui::RichText::new(format!(
@@ -67,9 +67,10 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(
+        tabs_with_id(
             ui,
             theme,
+            "tabs-two-variants",
             &mut state.variant_selected_a,
             &["Active", "Inactive"],
         );
@@ -81,9 +82,10 @@ pub fn tabs_story(ui: &mut egui::Ui, theme: &Theme, state: &mut TabsStoryState) 
                 .color(theme.palette.muted_foreground),
         );
         ui.add_space(theme.spacing.xs);
-        tabs(
+        tabs_with_id(
             ui,
             theme,
+            "tabs-five-variants",
             &mut state.variant_selected_b,
             &["Maps", "Data", "Tools", "History", "Export"],
         );

@@ -1,6 +1,6 @@
 use skyscope_design_system::composites::{
-    action_toolbar, toolbar, top_toolbar, zoom_toolbar, ActionToolbarItem, StatusField,
-    StatusFieldKind, ToolbarAction, ToolbarGroup, ToolbarItem,
+    action_toolbar_with_id, toolbar_with_id, top_toolbar_with_id, zoom_toolbar_with_id,
+    ActionToolbarItem, StatusField, StatusFieldKind, ToolbarAction, ToolbarGroup, ToolbarItem,
 };
 use skyscope_design_system::icons::*;
 use skyscope_design_system::Theme;
@@ -66,17 +66,25 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
         let groups = demo_groups();
-        let resp = toolbar(ui, theme, &groups, state.selected, &[]);
+        let resp = toolbar_with_id(
+            ui,
+            theme,
+            "toolbar-playground",
+            &groups,
+            state.selected,
+            &[],
+        );
         if let Some(clicked) = resp.clicked {
             state.selected = Some(clicked);
         }
 
         if state.show_top {
             ui.add_space(theme.spacing.md);
-            top_toolbar(
+            top_toolbar_with_id(
                 ui,
                 theme,
-                "Skyscope Design System",
+                "toolbar-top-playground",
+                "Skyscope",
                 &[
                     StatusField {
                         label: "UTC",
@@ -115,9 +123,10 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
         }
 
         ui.add_space(theme.spacing.md);
-        let action_response = action_toolbar(
+        let action_response = action_toolbar_with_id(
             ui,
             theme,
+            "toolbar-actions-playground",
             &[
                 ActionToolbarItem {
                     icon: ICON_GRID,
@@ -152,7 +161,14 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                 ui.cursor().min + egui::vec2(0.0, theme.spacing.xs),
                 egui::vec2(44.0, 140.0),
             );
-            zoom_toolbar(ui, theme, zoom_rect, ICON_PLUS, ICON_MINUS);
+            zoom_toolbar_with_id(
+                ui,
+                theme,
+                "toolbar-zoom-playground",
+                zoom_rect,
+                ICON_PLUS,
+                ICON_MINUS,
+            );
             ui.allocate_space(egui::vec2(44.0, 140.0 + theme.spacing.xs));
         }
     });
@@ -168,7 +184,14 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
         ui.add_space(theme.spacing.xs);
 
         let gallery_groups = demo_groups();
-        let gallery_resp = toolbar(ui, theme, &gallery_groups, state.selected, &[]);
+        let gallery_resp = toolbar_with_id(
+            ui,
+            theme,
+            "toolbar-gallery",
+            &gallery_groups,
+            state.selected,
+            &[],
+        );
         if let Some(clicked) = gallery_resp.clicked {
             state.selected = Some(clicked);
         }
@@ -183,10 +206,11 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                     .color(theme.palette.muted_foreground),
             );
             ui.add_space(theme.spacing.xs);
-            top_toolbar(
+            top_toolbar_with_id(
                 ui,
                 theme,
-                "Skyscope Design System",
+                "toolbar-top-gallery",
+                "Skyscope",
                 &[
                     StatusField {
                         label: "UTC",
@@ -238,7 +262,14 @@ pub fn toolbar_story(ui: &mut egui::Ui, theme: &Theme, state: &mut ToolbarStoryS
                 ui.cursor().min + egui::vec2(0.0, theme.spacing.xs),
                 egui::vec2(44.0, 140.0),
             );
-            zoom_toolbar(ui, theme, zoom_rect, ICON_PLUS, ICON_MINUS);
+            zoom_toolbar_with_id(
+                ui,
+                theme,
+                "toolbar-zoom-gallery",
+                zoom_rect,
+                ICON_PLUS,
+                ICON_MINUS,
+            );
             ui.allocate_space(egui::vec2(44.0, 140.0 + theme.spacing.xs));
         }
     });

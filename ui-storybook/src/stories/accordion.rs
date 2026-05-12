@@ -1,4 +1,4 @@
-use skyscope_design_system::containers::accordion;
+use skyscope_design_system::containers::accordion_with_id;
 use skyscope_design_system::Theme;
 
 pub struct AccordionStoryState {
@@ -63,9 +63,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
     // Playground
     super::controls::section_divider(ui, theme);
     super::controls::section_frame(ui, theme, "Playground", |ui| {
-        accordion(
+        accordion_with_id(
             ui,
             theme,
+            "accordion-playground",
             &titles,
             &mut state.open,
             state.exclusive,
@@ -111,9 +112,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
         );
         ui.add_space(theme.spacing.xs);
 
-        accordion(
+        accordion_with_id(
             ui,
             theme,
+            "accordion-exclusive-demo",
             &["Section A", "Section B", "Section C"],
             &mut state.exclusive_demo_open,
             true,
@@ -130,9 +132,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
         );
         ui.add_space(theme.spacing.xs);
 
-        accordion(
+        accordion_with_id(
             ui,
             theme,
+            "accordion-multi-demo",
             &["Section X", "Section Y", "Section Z"],
             &mut state.multi_demo_open,
             false,
@@ -150,9 +153,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
         ui.add_space(theme.spacing.xs);
 
         let nested_titles = &["Layers", "Filters", "Settings"];
-        accordion(
+        accordion_with_id(
             ui,
             theme,
+            "accordion-nested-outer",
             nested_titles,
             &mut state.nested_outer,
             false,
@@ -160,9 +164,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
                 let inner = &mut state.nested_inner[i];
                 match i {
                     0 => {
-                        accordion(
+                        accordion_with_id(
                             ui,
                             theme,
+                            "accordion-nested-layers",
                             &["Base maps", "Overlays"],
                             inner,
                             true,
@@ -180,9 +185,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
                         );
                     }
                     1 => {
-                        accordion(
+                        accordion_with_id(
                             ui,
                             theme,
+                            "accordion-nested-filters",
                             &["Altitude", "Type"],
                             inner,
                             true,
@@ -199,9 +205,10 @@ pub fn accordion_story(ui: &mut egui::Ui, theme: &Theme, state: &mut AccordionSt
                         );
                     }
                     2 => {
-                        accordion(
+                        accordion_with_id(
                             ui,
                             theme,
+                            "accordion-nested-settings",
                             &["Display", "Units"],
                             inner,
                             true,
